@@ -2,49 +2,110 @@
 
 ---
 
-<section id="countdown" class="relative overflow-hidden bg-[var(--color-blush)] py-24" data-animate="countdown">
+<section
+  id="countdown"
+  class="relative overflow-hidden bg-[#f7efe0] py-24"
+  data-animate="countdown"
+  data-section-title="Countdown"
+>
   <div class="mx-auto max-w-4xl px-6 text-center">
-    <p class="section-reveal font-sans text-[10px] uppercase tracking-[0.4em] text-[var(--color-gold)] opacity-0">Counting Down To</p>
-    <h2
-      class="section-reveal mt-3 text-4xl text-[var(--color-charcoal)] opacity-0 md:text-5xl"
-      style="font-family: var(--font-family-script), cursive"
+    <p
+      class="section-reveal font-sans text-[10px] uppercase tracking-[0.4em] text-[var(--color-gold)] opacity-0"
     >
-      Our Special Day
+      Countdown
+    </p>
+    <h2
+      class="section-reveal mt-3 font-serif text-4xl font-semibold text-[var(--color-charcoal)] opacity-0 md:text-5xl"
+    >
+      Until we say “I do”
     </h2>
-    <div id="countdown-timer" class="mt-14 flex items-center justify-center gap-4 md:gap-8" data-date="2026-12-15T14:00:00">
+    <div
+      id="countdown-timer"
+      class="mt-14 flex flex-wrap items-center justify-center gap-4 md:gap-8"
+      data-date="2026-12-16T14:00:00"
+    >
       <div class="countdown-unit section-reveal opacity-0">
-        <div class="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-lg md:h-28 md:w-28">
-          <span id="cd-days" class="countdown-num font-serif text-3xl font-bold text-[var(--color-charcoal)] md:text-5xl">0</span>
+        <div
+          class="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border border-[var(--color-gold)]/15 bg-white/70 shadow-[0_18px_50px_rgba(90,50,26,0.08)] md:h-28 md:w-28"
+        >
+          <span
+            id="cd-days"
+            class="countdown-num font-serif text-3xl font-semibold text-[var(--color-charcoal)] md:text-5xl"
+            >0</span
+          >
         </div>
-        <p class="mt-3 font-sans text-[10px] uppercase tracking-[0.2em] text-gray-400 md:text-xs">Days</p>
+        <p
+          class="mt-3 font-sans text-[10px] uppercase tracking-[0.2em] text-gray-400 md:text-xs"
+        >
+          Days
+        </p>
       </div>
-      <span class="countdown-colon section-reveal mt-[-20px] font-serif text-2xl text-[var(--color-gold-light)] opacity-0 md:text-3xl">:</span>
+      <span
+        class="countdown-colon section-reveal mt-[-20px] font-serif text-2xl text-[var(--color-gold-light)] opacity-0 md:text-3xl"
+        >:</span
+      >
       <div class="countdown-unit section-reveal opacity-0">
-        <div class="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-lg md:h-28 md:w-28">
-          <span id="cd-hours" class="countdown-num font-serif text-3xl font-bold text-[var(--color-charcoal)] md:text-5xl">0</span>
+        <div
+          class="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border border-[var(--color-gold)]/15 bg-white/70 shadow-[0_18px_50px_rgba(90,50,26,0.08)] md:h-28 md:w-28"
+        >
+          <span
+            id="cd-hours"
+            class="countdown-num font-serif text-3xl font-semibold text-[var(--color-charcoal)] md:text-5xl"
+            >0</span
+          >
         </div>
-        <p class="mt-3 font-sans text-[10px] uppercase tracking-[0.2em] text-gray-400 md:text-xs">Hours</p>
+        <p
+          class="mt-3 font-sans text-[10px] uppercase tracking-[0.2em] text-gray-400 md:text-xs"
+        >
+          Hours
+        </p>
       </div>
-      <span class="countdown-colon section-reveal mt-[-20px] font-serif text-2xl text-[var(--color-gold-light)] opacity-0 md:text-3xl">:</span>
+      <span
+        class="countdown-colon section-reveal mt-[-20px] font-serif text-2xl text-[var(--color-gold-light)] opacity-0 md:text-3xl"
+        >:</span
+      >
       <div class="countdown-unit section-reveal opacity-0">
-        <div class="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-lg md:h-28 md:w-28">
-          <span id="cd-mins" class="countdown-num font-serif text-3xl font-bold text-[var(--color-charcoal)] md:text-5xl">0</span>
+        <div
+          class="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border border-[var(--color-gold)]/15 bg-white/70 shadow-[0_18px_50px_rgba(90,50,26,0.08)] md:h-28 md:w-28"
+        >
+          <span
+            id="cd-mins"
+            class="countdown-num font-serif text-3xl font-semibold text-[var(--color-charcoal)] md:text-5xl"
+            >0</span
+          >
         </div>
-        <p class="mt-3 font-sans text-[10px] uppercase tracking-[0.2em] text-gray-400 md:text-xs">Minutes</p>
+        <p
+          class="mt-3 font-sans text-[10px] uppercase tracking-[0.2em] text-gray-400 md:text-xs"
+        >
+          Minutes
+        </p>
       </div>
-      <span class="countdown-colon section-reveal mt-[-20px] font-serif text-2xl text-[var(--color-gold-light)] opacity-0 md:text-3xl">:</span>
+      <span
+        class="countdown-colon section-reveal mt-[-20px] font-serif text-2xl text-[var(--color-gold-light)] opacity-0 md:text-3xl"
+        >:</span
+      >
       <div class="countdown-unit section-reveal opacity-0">
-        <div class="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-lg md:h-28 md:w-28">
-          <span id="cd-secs" class="countdown-num font-serif text-3xl font-bold text-[var(--color-charcoal)] md:text-5xl">0</span>
+        <div
+          class="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border border-[var(--color-gold)]/15 bg-white/70 shadow-[0_18px_50px_rgba(90,50,26,0.08)] md:h-28 md:w-28"
+        >
+          <span
+            id="cd-secs"
+            class="countdown-num font-serif text-3xl font-semibold text-[var(--color-charcoal)] md:text-5xl"
+            >0</span
+          >
         </div>
-        <p class="mt-3 font-sans text-[10px] uppercase tracking-[0.2em] text-gray-400 md:text-xs">Seconds</p>
+        <p
+          class="mt-3 font-sans text-[10px] uppercase tracking-[0.2em] text-gray-400 md:text-xs"
+        >
+          Seconds
+        </p>
       </div>
     </div>
   </div>
 </section>
 <script is:inline>
   (function startCountdown() {
-    const el = document.getElementById('countdown-timer');
+    const el = document.getElementById("countdown-timer");
     if (!el || !el.dataset.date) return;
     const target = new Date(el.dataset.date).getTime();
     function update() {
@@ -54,14 +115,14 @@
       const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
       const mins = Math.floor((diff / (1000 * 60)) % 60);
       const secs = Math.floor((diff / 1000) % 60);
-      const d = document.getElementById('cd-days');
-      const h = document.getElementById('cd-hours');
-      const m = document.getElementById('cd-mins');
-      const s = document.getElementById('cd-secs');
+      const d = document.getElementById("cd-days");
+      const h = document.getElementById("cd-hours");
+      const m = document.getElementById("cd-mins");
+      const s = document.getElementById("cd-secs");
       if (d) d.textContent = String(days);
-      if (h) h.textContent = String(hours).padStart(2, '0');
-      if (m) m.textContent = String(mins).padStart(2, '0');
-      if (s) s.textContent = String(secs).padStart(2, '0');
+      if (h) h.textContent = String(hours).padStart(2, "0");
+      if (m) m.textContent = String(mins).padStart(2, "0");
+      if (s) s.textContent = String(secs).padStart(2, "0");
     }
     update();
     setInterval(update, 1000);

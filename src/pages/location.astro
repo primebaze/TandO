@@ -1,0 +1,300 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Location — Tayo & Ope"
+  description="Marrakech, Morocco — the destination for our wedding celebration."
+>
+  <main class="relative min-h-[100svh] overflow-hidden bg-[#0c0a08] text-white">
+    <video
+      class="absolute inset-0 h-full w-full object-cover"
+      src="/hero.mp4"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+      aria-hidden="true"></video>
+
+    <div
+      class="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-black/70 via-black/55 to-black/85"
+      aria-hidden="true"
+    >
+    </div>
+    <div
+      class="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(ellipse_at_center,transparent_28%,rgba(0,0,0,0.6)_88%)]"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="relative z-10 mx-auto max-w-5xl px-6 pb-24 pt-16 md:px-10">
+      <a
+        href="/"
+        class="inline-flex items-center gap-2 font-sans text-[10px] uppercase tracking-[0.4em] text-white/60 transition hover:text-white"
+      >
+        <svg
+          class="h-3 w-3"
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M13 8H3M7 4L3 8l4 4"></path>
+        </svg>
+        Back
+      </a>
+
+      <header class="mt-12 text-center md:mt-16">
+        <span
+          class="inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 font-sans text-[10px] font-medium uppercase tracking-[0.42em] text-white/85 backdrop-blur-md"
+        >
+          <span class="h-1 w-1 rounded-full bg-[#e6c787]"></span>
+          The Destination
+          <span class="h-1 w-1 rounded-full bg-[#e6c787]"></span>
+        </span>
+        <h1
+          class="mt-7 text-[clamp(3.6rem,11vw,7.5rem)] font-normal leading-[0.85] tracking-tight text-white drop-shadow-[0_4px_30px_rgba(0,0,0,0.55)]"
+          style="font-family: var(--font-family-script), 'Great Vibes', cursive;"
+        >
+          Marrakech
+        </h1>
+        <p
+          class="mt-4 font-serif text-[clamp(1rem,2.2vw,1.25rem)] font-light italic text-white/80"
+        >
+          Morocco · The Red City
+        </p>
+      </header>
+
+      <!-- Quick facts -->
+      <section
+        class="mt-14 grid gap-4 md:mt-20 md:grid-cols-3"
+        aria-label="Key information"
+      >
+        <div
+          class="rounded-2xl border border-white/12 bg-white/[0.05] p-6 backdrop-blur-xl"
+        >
+          <p
+            class="font-sans text-[9px] font-semibold uppercase tracking-[0.4em] text-[#e6c787]"
+          >
+            Dates
+          </p>
+          <p
+            class="mt-3 font-serif text-2xl font-light leading-tight text-white md:text-3xl"
+          >
+            16 — 20 December
+          </p>
+          <p class="mt-1 font-sans text-sm text-white/60">2026</p>
+        </div>
+        <div
+          class="rounded-2xl border border-white/12 bg-white/[0.05] p-6 backdrop-blur-xl"
+        >
+          <p
+            class="font-sans text-[9px] font-semibold uppercase tracking-[0.4em] text-[#e6c787]"
+          >
+            Where
+          </p>
+          <p
+            class="mt-3 font-serif text-2xl font-light leading-tight text-white md:text-3xl"
+          >
+            Marrakech
+          </p>
+          <p class="mt-1 font-sans text-sm text-white/60">Morocco</p>
+        </div>
+        <div
+          class="rounded-2xl border border-white/12 bg-white/[0.05] p-6 backdrop-blur-xl"
+        >
+          <p
+            class="font-sans text-[9px] font-semibold uppercase tracking-[0.4em] text-[#e6c787]"
+          >
+            Airport
+          </p>
+          <p
+            class="mt-3 font-serif text-2xl font-light leading-tight text-white md:text-3xl"
+          >
+            RAK
+          </p>
+          <p class="mt-1 font-sans text-sm text-white/60">
+            Marrakech Menara Intl.
+          </p>
+        </div>
+      </section>
+
+      <!-- Story -->
+      <section class="mt-16 grid gap-10 md:mt-24 md:grid-cols-2 md:gap-14">
+        <div>
+          <p
+            class="font-sans text-[10px] font-semibold uppercase tracking-[0.4em] text-[#e6c787]"
+          >
+            Why Marrakech
+          </p>
+          <h2
+            class="mt-4 font-serif text-[clamp(1.8rem,4vw,2.6rem)] font-light leading-tight text-white"
+          >
+            A city of light, spice &amp; story
+          </h2>
+          <p
+            class="mt-5 font-serif text-[clamp(1rem,1.8vw,1.1rem)] font-light leading-[1.85] text-white/80"
+          >
+            Beneath the Atlas Mountains and behind ancient ochre walls,
+            Marrakech is a city alive with colour. Lantern-lit riads, hand-laid
+            zellige tiles, the scent of jasmine and saffron drifting through the
+            medina — every corner feels like a love letter.
+          </p>
+          <p
+            class="mt-4 font-serif text-[clamp(1rem,1.8vw,1.1rem)] font-light leading-[1.85] text-white/80"
+          >
+            We chose it because it&rsquo;s where romance, ritual, and warmth
+            meet. Five days here is more than a wedding — it&rsquo;s an
+            invitation to slow down, share meals under the stars, and dance
+            until the call of dawn.
+          </p>
+        </div>
+
+        <div
+          class="overflow-hidden rounded-3xl border border-white/12 bg-white/[0.03] shadow-[0_30px_80px_rgba(0,0,0,0.5)] backdrop-blur"
+        >
+          <div class="relative aspect-[4/5] w-full">
+            <iframe
+              title="Marrakech map"
+              class="h-full w-full"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              src="https://www.openstreetmap.org/export/embed.html?bbox=-8.10%2C31.58%2C-7.85%2C31.72&layer=mapnik&marker=31.6295%2C-7.9811"
+              style="border:0; filter: grayscale(0.2) contrast(1.05);"></iframe>
+            <div
+              class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"
+            >
+            </div>
+          </div>
+          <div class="flex items-center justify-between p-5">
+            <div>
+              <p
+                class="font-sans text-[9px] uppercase tracking-[0.35em] text-white/55"
+              >
+                Coordinates
+              </p>
+              <p class="mt-1 font-serif text-base text-white">
+                31.6295° N · 7.9811° W
+              </p>
+            </div>
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=Marrakech+Morocco"
+              target="_blank"
+              rel="noreferrer"
+              class="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/5 px-4 py-2 font-sans text-[10px] uppercase tracking-[0.3em] text-white transition hover:bg-white/10"
+            >
+              Open in Maps
+              <svg
+                class="h-3 w-3"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M5 3h8v8M13 3 5 11"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Travel info -->
+      <section class="mt-16 md:mt-24">
+        <p
+          class="text-center font-sans text-[10px] font-semibold uppercase tracking-[0.4em] text-[#e6c787]"
+        >
+          Getting there
+        </p>
+        <h2
+          class="mt-4 text-center font-serif text-[clamp(1.8rem,4vw,2.6rem)] font-light text-white"
+        >
+          Travel essentials
+        </h2>
+
+        <div class="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {
+            [
+              {
+                title: "Fly into RAK",
+                body: "Direct flights from London, Paris, Madrid, Dubai and most major European hubs. ~3.5 hrs from London.",
+              },
+              {
+                title: "Visa-friendly",
+                body: "Most passports (UK, EU, US, Canada, AUS) get visa-free entry for up to 90 days.",
+              },
+              {
+                title: "Climate in December",
+                body: "Sunny, dry days around 18–22°C. Cool desert nights — bring a wrap or light coat.",
+              },
+              {
+                title: "Currency & language",
+                body: "Moroccan Dirham (MAD). Arabic & French are widely spoken; English in tourist areas.",
+              },
+            ].map((item) => (
+              <div class="rounded-2xl border border-white/12 bg-white/[0.04] p-5 backdrop-blur-xl transition hover:border-white/25 hover:bg-white/[0.06]">
+                <p class="font-sans text-[9px] font-semibold uppercase tracking-[0.4em] text-[#e6c787]">
+                  {item.title}
+                </p>
+                <p class="mt-3 font-serif text-sm leading-relaxed text-white/80">
+                  {item.body}
+                </p>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="mt-16 text-center md:mt-24">
+        <p
+          class="font-sans text-[10px] font-semibold uppercase tracking-[0.4em] text-[#e6c787]"
+        >
+          Ready?
+        </p>
+        <h2
+          class="mt-4 font-serif text-[clamp(2rem,5vw,3.2rem)] font-light leading-tight text-white"
+        >
+          Tell us you&rsquo;re coming
+        </h2>
+        <p
+          class="mx-auto mt-5 max-w-md font-serif text-base font-light italic text-white/75"
+        >
+          Save your seat at the table, the dance floor, and under the stars.
+        </p>
+
+        <div
+          class="mt-9 flex flex-col items-center justify-center gap-3 md:flex-row md:gap-4"
+        >
+          <a
+            href="/rsvp"
+            class="group inline-flex min-h-12 min-w-[200px] items-center justify-center gap-2 rounded-full bg-white px-7 font-sans text-[11px] font-semibold uppercase tracking-[0.32em] text-[#1a1410] shadow-[0_18px_50px_rgba(0,0,0,0.4)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#e6c787]"
+          >
+            RSVP
+            <svg
+              class="h-3.5 w-3.5 transition group-hover:translate-x-0.5"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M3 8h10M9 4l4 4-4 4"></path>
+            </svg>
+          </a>
+          <a
+            href="/"
+            class="inline-flex min-h-12 min-w-[200px] items-center justify-center gap-2 rounded-full border border-white/25 bg-white/[0.04] px-7 font-sans text-[11px] font-semibold uppercase tracking-[0.32em] text-white backdrop-blur-md transition hover:-translate-y-0.5 hover:border-white/40 hover:bg-white/10"
+          >
+            Back to invitation
+          </a>
+        </div>
+      </section>
+    </div>
+  </main>
+</BaseLayout>

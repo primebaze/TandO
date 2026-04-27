@@ -1,0 +1,71 @@
+<svg viewBox="0 0 120 260" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="55%" r="50%">
+      <stop offset="0%" stop-color="#FFE6A8" stop-opacity="1"/>
+      <stop offset="40%" stop-color="#FFB347" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#9F4826" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="brass" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#E8C078"/>
+      <stop offset="55%" stop-color="#A87A2C"/>
+      <stop offset="100%" stop-color="#5A3414"/>
+    </radialGradient>
+    <linearGradient id="chain" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#5A3414" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#5A3414" stop-opacity="0.65"/>
+    </linearGradient>
+    <filter id="lampshadow" x="-50%" y="-20%" width="200%" height="160%">
+      <feGaussianBlur stdDeviation="6" />
+    </filter>
+  </defs>
+
+  <!-- chain -->
+  <line x1="60" y1="0" x2="60" y2="58" stroke="url(#chain)" stroke-width="1.4"/>
+  <circle cx="60" cy="6" r="2.2" fill="#5A3414" opacity="0.6"/>
+  <circle cx="60" cy="14" r="2.2" fill="#5A3414" opacity="0.55"/>
+  <circle cx="60" cy="22" r="2.2" fill="#5A3414" opacity="0.5"/>
+  <circle cx="60" cy="30" r="2.2" fill="#5A3414" opacity="0.45"/>
+
+  <!-- ambient glow halo -->
+  <ellipse cx="60" cy="150" rx="58" ry="72" fill="url(#glow)" opacity="0.55" filter="url(#lampshadow)"/>
+
+  <!-- top crown / finial -->
+  <path d="M50 60 Q60 48 70 60 L66 70 H54 Z" fill="url(#brass)"/>
+  <rect x="56" y="68" width="8" height="6" fill="#5A3414"/>
+  <!-- crown ring -->
+  <ellipse cx="60" cy="76" rx="14" ry="3" fill="url(#brass)"/>
+
+  <!-- shoulder dome -->
+  <path d="M40 78 Q60 60 80 78 L78 92 H42 Z" fill="url(#brass)"/>
+
+  <!-- main bulbous body -->
+  <path d="M34 92 Q24 130 38 168 Q60 184 82 168 Q96 130 86 92 Z" fill="url(#brass)"/>
+
+  <!-- decorative pierced cutouts (warm light through) -->
+  <g fill="#FFD27A" opacity="0.92">
+    <!-- 8-point star -->
+    <path d="M60 108 l3 6 6 1 -4 5 1 6 -6 -3 -6 3 1 -6 -4 -5 6 -1 z"/>
+    <!-- diamond cutouts -->
+    <path d="M46 128 l4 6 -4 6 -4 -6 z"/>
+    <path d="M74 128 l4 6 -4 6 -4 -6 z"/>
+    <path d="M60 132 l5 7 -5 7 -5 -7 z"/>
+    <!-- arch slits -->
+    <path d="M44 148 q4 -8 8 0 v8 h-8 z"/>
+    <path d="M68 148 q4 -8 8 0 v8 h-8 z"/>
+    <path d="M56 152 q4 -8 8 0 v10 h-8 z"/>
+  </g>
+
+  <!-- horizontal brass bands -->
+  <path d="M36 96 Q60 102 84 96" stroke="#3A1F0A" stroke-width="1" opacity="0.55" fill="none"/>
+  <path d="M34 168 Q60 178 86 168" stroke="#3A1F0A" stroke-width="1.2" opacity="0.7" fill="none"/>
+
+  <!-- bottom tier -->
+  <path d="M40 168 Q60 184 80 168 L74 188 Q60 196 46 188 Z" fill="url(#brass)"/>
+  <!-- bottom finial -->
+  <path d="M52 188 H68 L64 200 Q60 210 56 200 Z" fill="url(#brass)"/>
+  <circle cx="60" cy="212" r="3.5" fill="url(#brass)"/>
+  <path d="M58 215 Q60 226 62 215" stroke="#5A3414" stroke-width="1" fill="none"/>
+
+  <!-- highlight -->
+  <path d="M40 100 Q34 130 42 162" stroke="#FFE6A8" stroke-width="1.4" opacity="0.45" fill="none"/>
+</svg>

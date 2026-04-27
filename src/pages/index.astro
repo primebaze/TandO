@@ -1,56 +1,74 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import EnvelopeScreen from '../components/react/EnvelopeScreen';
-import Hero from '../components/sections/Hero.astro';
-import Countdown from '../components/sections/Countdown.astro';
-import Story from '../components/sections/Story.astro';
-import OrderOfDay from '../components/sections/OrderOfDay.astro';
-import Details from '../components/sections/Details.astro';
-import Gallery from '../components/sections/Gallery.astro';
-import DressCode from '../components/sections/DressCode.astro';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import EnvelopeScreen from "../components/react/EnvelopeScreen";
+import Hero from "../components/sections/Hero.astro";
+import Countdown from "../components/sections/Countdown.astro";
+import OrderOfDay from "../components/sections/OrderOfDay.astro";
+import Details from "../components/sections/Details.astro";
+import DressCode from "../components/sections/DressCode.astro";
+import Gallery from "../components/sections/Gallery.astro";
 ---
 
 <BaseLayout>
   <div id="main-content" class="opacity-0" aria-hidden="true">
     <Hero />
     <Countdown />
-    <Story />
-    <OrderOfDay />
     <Details />
-    <Gallery />
+    <OrderOfDay />
     <DressCode />
-    <footer id="rsvp-panel" class="relative overflow-hidden bg-[var(--color-charcoal)] py-24 text-center text-white" data-section-title="RSVP">
-      <div class="footer-content relative z-10 opacity-0">
-        <p class="font-[family-name:var(--font-family-script)] text-5xl text-[var(--color-gold-light)] md:text-6xl">Join Us</p>
-        <p class="mx-auto mt-6 max-w-md font-serif text-lg leading-relaxed text-gray-300">
-          Join us in Marrakesh, Morocco from 15th - 20th December 2026.
+    <Gallery />
+    <footer
+      id="rsvp-panel"
+      class="relative overflow-hidden bg-[#efe7d7] px-6 py-28 text-center text-[#3d3026]"
+      data-section-title="RSVP"
+    >
+      <div class="footer-content relative z-10 mx-auto max-w-3xl opacity-0">
+        <p
+          class="font-sans text-[10px] font-semibold uppercase tracking-[0.42em] text-[var(--color-gold)]"
+        >
+          RSVP
+        </p>
+        <h2 class="mt-4 font-serif text-4xl font-semibold md:text-6xl">
+          We hope you can make it
+        </h2>
+        <p
+          class="mx-auto mt-6 max-w-xl font-serif text-xl leading-relaxed text-[#5d574a]"
+        >
+          Your presence means everything to us as we gather in Marrakesh for a
+          week of celebration, culture, and love.
         </p>
         <a
           href="/rsvp"
-          class="group mt-10 inline-flex items-center gap-3 rounded-full border-2 border-[var(--color-gold)] px-12 py-4 font-sans text-sm font-semibold uppercase tracking-widest text-[var(--color-gold)] transition-all duration-500 hover:bg-[var(--color-gold)] hover:text-white hover:shadow-[0_0_40px_rgba(184,134,11,0.3)]"
+          class="mt-10 inline-flex min-h-14 items-center justify-center rounded-full border border-[var(--color-gold)] bg-white/60 px-12 font-serif text-sm uppercase tracking-[0.22em] text-[#4b3926] shadow-[0_18px_50px_rgba(90,50,26,0.10)] transition duration-300 hover:-translate-y-0.5 hover:bg-white"
         >
-          <span>RSVP Now</span>
-          <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-          </svg>
+          Send RSVP
         </a>
-        <p class="mt-16 text-xs text-gray-600">&copy; 2026 — Made with love</p>
+        <p
+          class="mt-16 font-[family-name:var(--font-family-script)] text-5xl text-[var(--color-gold)] md:text-6xl"
+        >
+          Tayo + Ope
+        </p>
+        <p
+          class="mt-3 font-sans text-[10px] uppercase tracking-[0.34em] text-[#5d574a]/60"
+        >
+          With love
+        </p>
       </div>
     </footer>
   </div>
   <EnvelopeScreen client:load />
   <script>
-    import { playHeroIntro, initScrollAnimations } from '../scripts/animations';
+    import { playHeroIntro, initScrollAnimations } from "../scripts/animations";
 
     window.addEventListener(
-      'envelope-opened',
+      "envelope-opened",
       () => {
         playHeroIntro();
         requestAnimationFrame(() => {
           initScrollAnimations();
         });
       },
-      { once: true }
+      { once: true },
     );
   </script>
 </BaseLayout>

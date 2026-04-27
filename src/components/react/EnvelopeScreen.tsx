@@ -228,7 +228,7 @@ export default function EnvelopeScreen() {
         className="pointer-events-none absolute inset-0 z-[32] opacity-0 will-change-transform"
         style={{
           backgroundImage:
-            'radial-gradient(ellipse at center, rgba(50,22,8,0.05) 0%, rgba(8,4,2,0.48) 76%), linear-gradient(180deg, rgba(255,205,130,0.12), rgba(20,8,4,0.48)), url(/images/hero.jpeg)',
+            'radial-gradient(circle at 50% 22%, rgba(255,249,235,0.88) 0%, rgba(239,225,198,0.42) 34%, rgba(239,225,198,0) 62%), radial-gradient(circle at 9% 16%, rgba(184,134,11,0.12), rgba(184,134,11,0) 26%), radial-gradient(circle at 88% 24%, rgba(159,72,38,0.12), rgba(159,72,38,0) 30%), linear-gradient(180deg, #efe1c6 0%, #f3e7cd 47%, #e8d4ae 100%)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           transformOrigin: '50% 50%',

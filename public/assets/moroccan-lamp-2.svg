@@ -1,0 +1,23 @@
+<svg viewBox="0 0 64 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g filter="url(#shadow)">
+    <ellipse cx="32" cy="116" rx="10" ry="6" fill="#e2b97f" fill-opacity="0.28"/>
+  </g>
+  <g>
+    <rect x="30" y="0" width="4" height="18" rx="2" fill="#bfa76a"/>
+    <ellipse cx="32" cy="18" rx="12" ry="8" fill="#f7e6c6" stroke="#bfa76a" stroke-width="1.2"/>
+    <ellipse cx="32" cy="18" rx="8" ry="5" fill="#e2b97f" stroke="#bfa76a" stroke-width="0.8"/>
+    <polygon points="32,26 52,100 12,100" fill="#e2b97f" stroke="#bfa76a" stroke-width="1.2"/>
+    <ellipse cx="32" cy="100" rx="20" ry="10" fill="#f7e6c6" stroke="#bfa76a" stroke-width="1.2"/>
+    <ellipse cx="32" cy="100" rx="14" ry="7" fill="#e2b97f" stroke="#bfa76a" stroke-width="0.8"/>
+    <ellipse cx="32" cy="18" rx="5" ry="3" fill="#fff6e4" fill-opacity="0.7"/>
+    <ellipse cx="32" cy="100" rx="7" ry="3" fill="#fff6e4" fill-opacity="0.7"/>
+    <ellipse cx="32" cy="0" rx="2" ry="2" fill="#7c5a2a"/>
+  </g>
+  <defs>
+    <filter id="shadow" x="0" y="110" width="64" height="18" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+      <feGaussianBlur stdDeviation="2" result="effect1_foregroundBlur"/>
+    </filter>
+  </defs>
+</svg>

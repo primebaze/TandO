@@ -1,17 +1,79 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import RSVPForm from '../components/react/RSVPForm';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import RSVPForm from "../components/react/RSVPForm";
 ---
 
-<BaseLayout title="RSVP — Tayo & Ope" description="RSVP for the wedding of Tayo & Ope in Marrakesh, Morocco.">
-  <div class="flex min-h-screen flex-col items-center justify-center bg-[var(--color-blush)] px-4 py-20">
-    <p class="font-[family-name:var(--font-family-script)] text-5xl text-[var(--color-gold)]">RSVP</p>
-    <p class="mt-4 max-w-lg text-center font-serif text-lg text-gray-600">
-      Please let us know if you&apos;ll be joining us for our special day.
-    </p>
-    <div class="mt-10 w-full max-w-lg">
-      <RSVPForm client:load />
+<BaseLayout
+  title="RSVP — Tayo & Ope"
+  description="RSVP for the wedding of Tayo & Ope in Marrakech, Morocco."
+>
+  <main class="relative min-h-[100svh] overflow-hidden bg-[#0c0a08] text-white">
+    <video
+      class="absolute inset-0 h-full w-full object-cover"
+      src="/hero.mp4"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+      aria-hidden="true"></video>
+
+    <div
+      class="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-black/75 via-black/65 to-black/90"
+      aria-hidden="true"
+    >
     </div>
-    <a href="/" class="mt-8 text-sm text-gray-500 underline hover:text-gray-700">&larr; Back to invitation</a>
-  </div>
+    <div
+      class="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(ellipse_at_center,transparent_20%,rgba(0,0,0,0.7)_85%)]"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div
+      class="relative z-10 mx-auto max-w-2xl px-4 pb-24 pt-12 md:px-6 md:pt-16"
+    >
+      <a
+        href="/"
+        class="inline-flex items-center gap-2 font-sans text-[10px] uppercase tracking-[0.4em] text-white/60 transition hover:text-white"
+      >
+        <svg
+          class="h-3 w-3"
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M13 8H3M7 4L3 8l4 4"></path>
+        </svg>
+        Back
+      </a>
+
+      <header class="mt-10 text-center md:mt-14">
+        <span
+          class="inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 font-sans text-[10px] font-medium uppercase tracking-[0.42em] text-white/85 backdrop-blur-md"
+        >
+          <span class="h-1 w-1 rounded-full bg-[#e6c787]"></span>
+          Kindly Reply
+          <span class="h-1 w-1 rounded-full bg-[#e6c787]"></span>
+        </span>
+        <h1
+          class="mt-7 text-[clamp(3.6rem,11vw,7rem)] font-normal leading-[0.85] tracking-tight text-white drop-shadow-[0_4px_30px_rgba(0,0,0,0.55)]"
+          style="font-family: var(--font-family-script), 'Great Vibes', cursive;"
+        >
+          RSVP
+        </h1>
+        <p
+          class="mx-auto mt-5 max-w-md font-serif text-[clamp(1rem,2.2vw,1.2rem)] font-light italic leading-relaxed text-white/80"
+        >
+          Your presence would mean the world to us.
+        </p>
+      </header>
+
+      <div class="mt-10 md:mt-14">
+        <RSVPForm client:load />
+      </div>
+    </div>
+  </main>
 </BaseLayout>

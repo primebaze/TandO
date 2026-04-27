@@ -1,0 +1,87 @@
+<svg viewBox="0 0 130 300" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <defs>
+    <radialGradient id="vl-glow" cx="50%" cy="55%" r="55%">
+      <stop offset="0%" stop-color="#F1D4F4" stop-opacity="0.85"/>
+      <stop offset="50%" stop-color="#A85FCF" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#3A1A55" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="vl-brass" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#F2CF7A"/>
+      <stop offset="55%" stop-color="#A87A2C"/>
+      <stop offset="100%" stop-color="#5A3414"/>
+    </linearGradient>
+    <linearGradient id="vl-brass-h" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0%" stop-color="#5A3414"/>
+      <stop offset="50%" stop-color="#E8C078"/>
+      <stop offset="100%" stop-color="#5A3414"/>
+    </linearGradient>
+    <linearGradient id="vl-violet" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#E0BCEE"/>
+      <stop offset="55%" stop-color="#7B3E9E"/>
+      <stop offset="100%" stop-color="#3A1A55"/>
+    </linearGradient>
+    <linearGradient id="vl-magenta" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#FFC0D8"/>
+      <stop offset="55%" stop-color="#C0307A"/>
+      <stop offset="100%" stop-color="#5A0E36"/>
+    </linearGradient>
+    <linearGradient id="vl-chain" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#5A3414" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#5A3414" stop-opacity="0.65"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Chain -->
+  <line x1="65" y1="0" x2="65" y2="40" stroke="url(#vl-chain)" stroke-width="1.2"/>
+  <g fill="#5A3414" opacity="0.55">
+    <circle cx="65" cy="8"  r="1.8"/>
+    <circle cx="65" cy="18" r="1.8"/>
+    <circle cx="65" cy="28" r="1.8"/>
+  </g>
+
+  <!-- Halo -->
+  <ellipse cx="65" cy="170" rx="56" ry="78" fill="url(#vl-glow)" opacity="0.6"/>
+
+  <!-- Top finial -->
+  <path d="M56 42 Q65 32 74 42 L71 50 H59 Z" fill="url(#vl-brass)"/>
+  <ellipse cx="65" cy="54" rx="11" ry="2.2" fill="url(#vl-brass-h)"/>
+
+  <!-- Tapered hexagonal body — long faceted lantern -->
+  <path d="M44 58 L86 58 L96 82 L94 188 L80 218 L50 218 L36 188 L34 82 Z" fill="#3A1F0A" opacity="0.92"/>
+
+  <!-- Top arched panels -->
+  <g stroke="url(#vl-brass)" stroke-width="1.6">
+    <path d="M40 84 q8 -10 16 0 v34 h-16 z" fill="url(#vl-magenta)"/>
+    <path d="M58 84 q8 -10 16 0 v34 h-16 z" fill="url(#vl-violet)"/>
+    <path d="M76 84 q7 -10 14 0 v34 h-14 z" fill="url(#vl-magenta)"/>
+  </g>
+  <g fill="#FFE6E0" opacity="0.4">
+    <path d="M44 88 q3 -5 6 0 v8 h-6 z"/>
+    <path d="M62 88 q3 -5 6 0 v8 h-6 z"/>
+    <path d="M80 88 q2 -5 5 0 v8 h-5 z"/>
+  </g>
+
+  <!-- Mid band -->
+  <path d="M36 124 Q65 132 94 124 L92 132 Q65 140 38 132 Z" fill="url(#vl-brass-h)"/>
+
+  <!-- Long lower facets -->
+  <g stroke="url(#vl-brass)" stroke-width="1.5">
+    <path d="M38 138 L54 134 L54 196 L42 196 Z" fill="url(#vl-violet)"/>
+    <path d="M54 134 L76 134 L76 196 L54 196 Z" fill="url(#vl-magenta)"/>
+    <path d="M76 134 L92 138 L88 196 L76 196 Z" fill="url(#vl-violet)"/>
+  </g>
+
+  <!-- inner panel highlight -->
+  <path d="M58 142 L70 142 L70 192 L58 192 Z" fill="#FFE6E0" opacity="0.08"/>
+
+  <!-- Bottom band -->
+  <path d="M40 196 Q65 204 88 196 L84 208 Q65 214 46 208 Z" fill="url(#vl-brass)"/>
+
+  <!-- Bottom finial -->
+  <path d="M55 210 H75 L72 224 Q65 240 58 224 Z" fill="url(#vl-brass)"/>
+  <circle cx="65" cy="246" r="3" fill="url(#vl-brass)"/>
+  <path d="M63 250 Q65 264 67 250" stroke="#5A3414" stroke-width="0.9" fill="none"/>
+
+  <!-- left highlight -->
+  <path d="M38 86 Q30 140 40 192" stroke="#F1D4F4" stroke-width="1" opacity="0.35" fill="none"/>
+</svg>

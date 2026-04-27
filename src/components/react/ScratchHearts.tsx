@@ -5,13 +5,15 @@ const FADE_THRESHOLD = 0.45;
 
 function drawOverlay(ctx: CanvasRenderingContext2D, w: number, h: number) {
   const g = ctx.createLinearGradient(0, 0, w, h);
-  g.addColorStop(0, '#c9a24a');
+  g.addColorStop(0, '#d8b260');
   g.addColorStop(0.45, '#b3882f');
   g.addColorStop(1, '#8b6914');
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, w, h);
+
+  // subtle hearts pattern
   ctx.save();
-  ctx.fillStyle = 'rgba(0,0,0,0.12)';
+  ctx.fillStyle = 'rgba(0,0,0,0.10)';
   for (let i = 0; i < 5; i++) {
     for (let j = 0; j < 2; j++) {
       const cx = (i + 0.5) * (w / 5);
@@ -25,6 +27,24 @@ function drawOverlay(ctx: CanvasRenderingContext2D, w: number, h: number) {
       ctx.fill();
     }
   }
+  ctx.restore();
+
+  // big "SCRATCH HERE" call-to-action centered on the overlay
+  ctx.save();
+  const scale = w / 420; // canvas is high-DPI; scale text relative to base width
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = 'rgba(255, 248, 225, 0.95)';
+  ctx.shadowColor = 'rgba(70, 45, 10, 0.55)';
+  ctx.shadowBlur = 12 * scale;
+  ctx.shadowOffsetY = 2 * scale;
+  ctx.font = `700 ${22 * scale}px 'Inter', system-ui, sans-serif`;
+  ctx.fillText('👆  SCRATCH HERE  👆', w / 2, h / 2 - 8 * scale);
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetY = 0;
+  ctx.font = `500 ${11 * scale}px 'Inter', system-ui, sans-serif`;
+  ctx.fillStyle = 'rgba(255, 248, 225, 0.85)';
+  ctx.fillText('SAVE THE DATE', w / 2, h / 2 + 18 * scale);
   ctx.restore();
 }
 
@@ -100,15 +120,20 @@ export default function ScratchHearts() {
 
   return (
     <div ref={wrapRef} className="relative w-full min-h-32 select-none" role="img" aria-label="Scratch the gold area to reveal the date. Drag your finger or mouse.">
-      <div className="absolute inset-0 z-0 flex min-h-32 items-center justify-center overflow-hidden rounded-xl border border-[#3d3026]/10 bg-gradient-to-b from-[#f8f4ec] to-[#efe6d8] px-4">
+      <div className="absolute inset-0 z-0 flex min-h-32 flex-col items-center justify-center overflow-hidden rounded-xl border border-[#8b6914]/25 bg-gradient-to-b from-[#fff7e3] to-[#f1e3c2] px-4 shadow-[inset_0_0_0_1px_rgba(255,250,238,0.6),0_18px_44px_rgba(90,50,26,0.12)]">
         <p
-          className="text-center font-serif text-sm leading-relaxed text-[#3d3026] transition-opacity duration-500 md:text-base"
+          className="font-sans text-[8px] uppercase tracking-[0.42em] text-[#8b6914] transition-opacity duration-500"
+          style={{ opacity: cleared ? 1 : 0.85 }}
+        >
+          Save the date
+        </p>
+        <p
+          className="mt-1 text-center font-serif text-xl leading-tight text-[#5A321A] transition-opacity duration-500 md:text-2xl"
           style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: cleared ? 1 : 0.85 }}
         >
-          Marrakesh, Morocco
-          <br />
-          <span className="text-[#8b6914]">15th — 20th December 2026</span>
+          16<span className="text-[#8b6914]">—</span>20 December 2026
         </p>
+        <p className="mt-1 font-sans text-[8px] uppercase tracking-[0.4em] text-[#8b6914]/80">Marrakech · Morocco</p>
       </div>
       <canvas
         ref={canvasRef}
