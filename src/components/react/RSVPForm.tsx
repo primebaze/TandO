@@ -327,7 +327,7 @@ export default function RSVPForm() {
       </div>
 
       {/* Companions */}
-      <div className="mb-8">
+      <div id="companions" className="mb-8 scroll-mt-24">
         <div className="mb-1 flex items-center justify-between">
           <span className={labelCls.replace('mb-2', 'mb-0')}>Companions</span>
         </div>

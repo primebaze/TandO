@@ -1,5 +1,6 @@
 ---
-import '../styles/global.css';
+import "../styles/global.css";
+import FloatingControls from "../components/react/FloatingControls";
 
 interface Props {
   title?: string;
@@ -7,8 +8,8 @@ interface Props {
 }
 
 const {
-  title = 'Tayo & Ope — Our Wedding',
-  description = 'You are cordially invited to celebrate the wedding of Tayo & Ope in Marrakesh, Morocco.',
+  title = "Tayo & Ope — Our Wedding",
+  description = "You are cordially invited to celebrate the wedding of Tayo & Ope in Marrakesh, Morocco.",
 } = Astro.props;
 ---
 
@@ -29,5 +30,6 @@ const {
   </head>
   <body class="min-h-screen">
     <slot />
+    <FloatingControls client:load />
   </body>
 </html>

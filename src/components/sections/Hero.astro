@@ -1,14 +1,11 @@
----
-import ScratchHearts from "../react/ScratchHearts";
----
-
 <section
   id="hero"
-  class="hero-section relative min-h-[100svh] overflow-hidden bg-[#0c0a08] text-white"
+  class="hero-section relative flex min-h-[100svh] items-start justify-center overflow-hidden bg-[#e8e2cd] pt-[42vh] text-[#626951]"
 >
   <video
-    class="hero-video absolute inset-0 h-full w-full object-cover"
-    src="/hero.mp4"
+    class="hero-video absolute inset-0 z-[1] h-full w-full object-cover object-center"
+    src="/reference/majestic-hero-bg.mp4"
+    poster="/reference/majestic-hero-poster.jpg"
     autoplay
     muted
     loop
@@ -16,110 +13,34 @@ import ScratchHearts from "../react/ScratchHearts";
     preload="auto"
     aria-hidden="true"></video>
 
-  <!-- cinematic scrims for legibility -->
   <div
-    class="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-black/55 via-black/30 to-black/75"
-    aria-hidden="true"
+    class="relative z-10 flex flex-col items-center px-6 pt-[70px] text-center"
   >
-  </div>
-  <div
-    class="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.55)_85%)]"
-    aria-hidden="true"
-  >
-  </div>
-  <div
-    class="hero-grain pointer-events-none absolute inset-0 z-[2] opacity-[0.08] mix-blend-overlay"
-    aria-hidden="true"
-  >
-  </div>
-
-  <div
-    class="relative z-10 mx-auto flex min-h-[100svh] max-w-4xl flex-col items-center px-6 pb-14 pt-[14vh] text-center md:px-10 md:pb-16 md:pt-[16vh]"
-  >
-    <span
-      class="hero-morph inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 font-sans text-[10px] font-medium uppercase tracking-[0.42em] text-white/85 backdrop-blur-md"
+    <p
+      class="hero-morph mb-4 font-sans text-sm font-medium uppercase tracking-[0.3em] text-[#626951]/80 md:text-base"
     >
-      <span class="h-1 w-1 rounded-full bg-[#e6c787]"></span>
-      Marrakech · Morocco
-      <span class="h-1 w-1 rounded-full bg-[#e6c787]"></span>
-    </span>
+      We are getting married
+    </p>
 
     <h1
-      class="hero-morph mt-8 text-[clamp(5rem,17vw,10rem)] font-normal leading-[0.78] tracking-tight text-white drop-shadow-[0_4px_30px_rgba(0,0,0,0.55)]"
+      class="hero-morph mb-3 text-6xl font-normal leading-none text-[#596347] md:text-8xl"
       style="font-family: var(--font-family-script), 'Great Vibes', cursive;"
     >
-      Tayo <span class="text-[#e6c787]">&amp;</span> Ope
+      Tayo &amp; Ope
     </h1>
 
     <p
-      class="hero-morph mt-7 max-w-[28rem] font-serif text-[clamp(1.05rem,2.4vw,1.35rem)] font-light italic leading-relaxed text-white/85 md:mt-9"
+      class="hero-morph font-serif text-sm uppercase tracking-[0.2em] text-[#626951]/70 md:text-base"
     >
-      We&rsquo;re getting married &mdash; join us for five days of love,
-      laughter, and unforgettable moments.
+      December 16 - 20, 2026
     </p>
-
-    <div class="hero-morph mt-9 w-full max-w-[440px] md:mt-11">
-      <ScratchHearts client:load />
-    </div>
-
-    <div
-      class="hero-morph mt-10 flex w-full max-w-[440px] flex-col items-center gap-3 md:mt-12 md:flex-row md:justify-center md:gap-4"
-    >
-      <a
-        href="/rsvp"
-        class="group inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-white px-7 font-sans text-[11px] font-semibold uppercase tracking-[0.32em] text-[#1a1410] shadow-[0_18px_50px_rgba(0,0,0,0.4)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#e6c787] focus:outline-none focus:ring-2 focus:ring-[#e6c787]/60 md:w-auto"
-      >
-        RSVP
-        <svg
-          class="h-3.5 w-3.5 transition group-hover:translate-x-0.5"
-          viewBox="0 0 16 16"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M3 8h10M9 4l4 4-4 4"></path>
-        </svg>
-      </a>
-
-      <a
-        href="/location"
-        class="group inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-white/25 bg-white/[0.04] px-7 font-sans text-[11px] font-semibold uppercase tracking-[0.32em] text-white backdrop-blur-md transition duration-300 hover:-translate-y-0.5 hover:border-white/40 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/40 md:w-auto"
-      >
-        Explore
-        <svg
-          class="h-3.5 w-3.5 transition group-hover:translate-x-0.5"
-          viewBox="0 0 16 16"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M3 8h10M9 4l4 4-4 4"></path>
-        </svg>
-      </a>
-    </div>
-  </div>
-
-  <!-- subtle scroll cue -->
-  <div
-    class="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 font-sans text-[9px] uppercase tracking-[0.5em] text-white/45"
-    aria-hidden="true"
-  >
-    Scroll
   </div>
 </section>
 
 <style>
   .hero-video {
-    filter: saturate(1.05) contrast(1.02);
-  }
-
-  .hero-grain {
-    background-image: url("/assets/paper-texture.jpg");
-    background-size: cover;
+    filter: saturate(0.94) contrast(0.98) brightness(1.04)
+      drop-shadow(0 0 34px rgba(42, 39, 28, 0.18));
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -127,12 +48,13 @@ import ScratchHearts from "../react/ScratchHearts";
       display: none;
     }
     .hero-section {
-      background: radial-gradient(
-        circle at 50% 30%,
-        #2a1f17 0%,
-        #14100c 60%,
-        #0c0a08 100%
-      );
+      background:
+        radial-gradient(
+          circle at 50% 42%,
+          rgba(255, 250, 232, 0.92),
+          transparent 42%
+        ),
+        #e8e2cd;
     }
   }
 </style>
