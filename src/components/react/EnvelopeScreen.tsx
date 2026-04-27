@@ -482,6 +482,9 @@ export default function EnvelopeScreen() {
         style={{
           transformOrigin: '50% 0%',
           transformStyle: 'preserve-3d',
+          WebkitTransformStyle: 'preserve-3d',
+          backfaceVisibility: 'hidden',
+          WebkitBackfaceVisibility: 'hidden',
           willChange: 'transform',
         }}
       >
@@ -490,7 +493,12 @@ export default function EnvelopeScreen() {
           className="absolute inset-0"
           style={{
             clipPath: 'polygon(0% 0%, 100% 0%, 50% 50%)',
+            WebkitClipPath: 'polygon(0% 0%, 100% 0%, 50% 50%)',
+            backgroundColor: '#EFE1C6',
             backfaceVisibility: 'hidden',
+            WebkitBackfaceVisibility: 'hidden',
+            transform: 'translateZ(0.2px)',
+            WebkitTransform: 'translateZ(0.2px)',
           }}
         >
           <PaperSurface />
@@ -555,8 +563,12 @@ export default function EnvelopeScreen() {
           className="absolute inset-0"
           style={{
             clipPath: 'polygon(0% 0%, 100% 0%, 50% 50%)',
+            WebkitClipPath: 'polygon(0% 0%, 100% 0%, 50% 50%)',
+            backgroundColor: '#EFE1C6',
             backfaceVisibility: 'hidden',
+            WebkitBackfaceVisibility: 'hidden',
             transform: 'rotateX(180deg)',
+            WebkitTransform: 'rotateX(180deg)',
           }}
         >
           <div
