@@ -671,13 +671,13 @@ export default function EnvelopeScreen() {
         aria-hidden
       >
         <svg
-          className="absolute inset-0 h-full w-full"
+          className="absolute inset-0 block h-full w-full"
           viewBox="0 0 100 100"
           preserveAspectRatio="none"
           role="presentation"
         >
           <polygon points="0,0 100,0 50,50" fill="#EFE1C6" />
-          <polygon points="0,0 100,0 50,50" fill="url(#mobileFlapShade)" />
+          <polygon points="0,0 100,0 50,50" fill="#5A321A" opacity="0.045" />
           <path
             d="M1.8 0.8 L50 49.2 L98.2 0.8"
             fill="none"
@@ -685,26 +685,56 @@ export default function EnvelopeScreen() {
             strokeWidth="1.5"
             vectorEffect="non-scaling-stroke"
           />
-          <defs>
-            <linearGradient id="mobileFlapShade" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="rgba(255,248,235,0.10)" />
-              <stop offset="58%" stopColor="rgba(239,225,198,0)" />
-              <stop offset="100%" stopColor="rgba(90,50,26,0.08)" />
-            </linearGradient>
-          </defs>
         </svg>
         <div
-          className="absolute inset-0"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
           style={{
-            clipPath: 'polygon(0% 0%, 100% 0%, 50% 50%)',
-            WebkitClipPath: 'polygon(0% 0%, 100% 0%, 50% 50%)',
-            backgroundImage: 'url(/assets/paper-texture.jpg)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            opacity: 0.12,
-            mixBlendMode: 'multiply',
+            width: 'clamp(118px, 34vw, 156px)',
+            height: 'clamp(118px, 34vw, 156px)',
+            filter:
+              'drop-shadow(0 1px 1px rgba(0,0,0,0.30))' +
+              ' drop-shadow(0 5px 10px rgba(0,0,0,0.42))' +
+              ' drop-shadow(0 12px 22px rgba(0,0,0,0.30))',
           }}
-        />
+        >
+          <div className="relative h-full w-full overflow-hidden rounded-full bg-[#5A321A]">
+            {sealUseImg ? (
+              <img
+                src="/assets/wax-seal.png"
+                alt="Wax seal T and O"
+                draggable={false}
+                className="h-full w-full object-cover"
+                style={{ filter: 'grayscale(1) contrast(1.2)', mixBlendMode: 'luminosity', opacity: 0.42 }}
+                onError={() => setSealUseImg(false)}
+              />
+            ) : (
+              <SealFallback />
+            )}
+            {sealUseImg && (
+              <div
+                className="pointer-events-none absolute inset-0 rounded-full"
+                style={{ background: '#5A321A', mixBlendMode: 'color', opacity: 1 }}
+              />
+            )}
+            <div
+              className="pointer-events-none absolute inset-0 rounded-full"
+              style={{
+                background:
+                  'radial-gradient(circle at 32% 28%, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 38%)',
+                mixBlendMode: 'screen',
+              }}
+            />
+            <div
+              className="pointer-events-none absolute inset-0 rounded-full"
+              style={{
+                boxShadow:
+                  'inset 0 0 14px rgba(0,0,0,0.28),' +
+                  ' inset 0 -2px 8px rgba(0,0,0,0.32),' +
+                  ' inset 0 2px 4px rgba(255,255,255,0.10)',
+              }}
+            />
+          </div>
+        </div>
       </div>
 
       <style>{`
