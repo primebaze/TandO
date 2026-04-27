@@ -59,6 +59,7 @@ export default function RSVPForm() {
   const [companions, setCompanions] = useState<Companion[]>([]);
   const [song, setSong] = useState('');
   const [message, setMessage] = useState('');
+  const [website, setWebsite] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -120,19 +121,18 @@ export default function RSVPForm() {
     };
 
     try {
-      const { error: submitError } = await supabase.from('rsvps').insert({
-        attending: payload.attending,
-        title: payload.title || null,
-        first_name: payload.firstName.trim(),
-        last_name: payload.lastName.trim(),
-        email: payload.email.trim().toLowerCase(),
-        phone: payload.phone,
-        allergies: payload.allergies || null,
-        companions: payload.companions,
-        song: payload.song || null,
-        message: payload.message || null,
-        notification_email: 'primebazeweb@gmail.com',
-        submitted_at: payload.submittedAt,
+      const { error: submitError } = await supabase.rpc('submit_rsvp', {
+        p_attending: payload.attending,
+        p_title: payload.title || null,
+        p_first_name: payload.firstName.trim(),
+        p_last_name: payload.lastName.trim(),
+        p_email: payload.email.trim().toLowerCase(),
+        p_phone: payload.phone,
+        p_allergies: payload.allergies || null,
+        p_companions: payload.companions,
+        p_song: payload.song || null,
+        p_message: payload.message || null,
+        p_honeypot: website,
       });
 
       if (submitError) {
@@ -190,6 +190,19 @@ export default function RSVPForm() {
 
   return (
     <form onSubmit={handleSubmit} className={sectionCls} noValidate>
+      <div className="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
+        <label htmlFor="website">Website</label>
+        <input
+          id="website"
+          name="website"
+          type="text"
+          value={website}
+          onChange={(e) => setWebsite(e.target.value)}
+          tabIndex={-1}
+          autoComplete="off"
+        />
+      </div>
+
       {/* Attending */}
       <fieldset className="mb-8">
         <legend className={labelCls}>Will you attend? *</legend>
