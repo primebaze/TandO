@@ -4,102 +4,141 @@
 
 <section
   id="countdown"
-  class="relative overflow-hidden bg-[#f7efe0] py-24"
+  class="relative overflow-hidden bg-[#f7efe0] px-6 py-24 text-[#3d3026] md:py-28"
   data-animate="countdown"
   data-section-title="Countdown"
 >
-  <div class="mx-auto max-w-4xl px-6 text-center">
+  <div
+    class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-gold)]/25 to-transparent"
+  >
+  </div>
+  <div
+    class="pointer-events-none absolute left-1/2 top-12 h-72 w-72 -translate-x-1/2 rounded-full bg-[#fff9e8]/45 blur-3xl"
+  >
+  </div>
+
+  <div class="relative z-10 mx-auto max-w-5xl text-center">
     <p
-      class="section-reveal font-sans text-[10px] uppercase tracking-[0.4em] text-[var(--color-gold)] opacity-0"
+      class="section-reveal font-sans text-[10px] font-semibold uppercase tracking-[0.44em] text-[var(--color-gold)] opacity-0"
     >
       Countdown
     </p>
     <h2
-      class="section-reveal mt-3 font-serif text-4xl font-semibold text-[var(--color-charcoal)] opacity-0 md:text-5xl"
+      class="section-reveal mx-auto mt-4 max-w-3xl font-serif text-4xl font-semibold leading-tight text-[#2d271f] opacity-0 md:text-6xl"
     >
       Until we say “I do”
     </h2>
+    <p
+      class="section-reveal mx-auto mt-5 max-w-xl font-serif text-lg leading-relaxed text-[#626951]/80 opacity-0 md:text-xl"
+    >
+      The celebration begins in Marrakech. Every second brings us closer.
+    </p>
+
     <div
       id="countdown-timer"
-      class="mt-14 flex flex-wrap items-center justify-center gap-4 md:gap-8"
+      class="mt-14 grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-5"
       data-date="2026-12-16T14:00:00"
     >
       <div class="countdown-unit section-reveal opacity-0">
         <div
-          class="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border border-[var(--color-gold)]/15 bg-white/70 shadow-[0_18px_50px_rgba(90,50,26,0.08)] md:h-28 md:w-28"
+          class="countdown-card group relative flex min-h-36 flex-col items-center justify-center overflow-hidden rounded-[1.25rem] border border-[var(--color-gold)]/15 bg-[#fffaf0]/72 px-4 py-7 shadow-[0_26px_80px_rgba(90,50,26,0.10)] backdrop-blur md:min-h-44"
         >
+          <span
+            class="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-gold-light)]/60 to-transparent"
+          ></span>
+          <span
+            class="absolute -right-8 -top-8 h-24 w-24 rounded-full border border-[var(--color-gold)]/10 transition duration-500 group-hover:scale-110"
+          ></span>
           <span
             id="cd-days"
-            class="countdown-num font-serif text-3xl font-semibold text-[var(--color-charcoal)] md:text-5xl"
+            class="countdown-num font-serif text-5xl font-semibold leading-none text-[#2d271f] md:text-6xl"
             >0</span
           >
+          <p
+            class="mt-5 font-sans text-[10px] font-semibold uppercase tracking-[0.32em] text-[#626951]/55 md:text-xs"
+          >
+            Days
+          </p>
         </div>
-        <p
-          class="mt-3 font-sans text-[10px] uppercase tracking-[0.2em] text-gray-400 md:text-xs"
-        >
-          Days
-        </p>
       </div>
-      <span
-        class="countdown-colon section-reveal mt-[-20px] font-serif text-2xl text-[var(--color-gold-light)] opacity-0 md:text-3xl"
-        >:</span
-      >
       <div class="countdown-unit section-reveal opacity-0">
         <div
-          class="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border border-[var(--color-gold)]/15 bg-white/70 shadow-[0_18px_50px_rgba(90,50,26,0.08)] md:h-28 md:w-28"
+          class="countdown-card group relative flex min-h-36 flex-col items-center justify-center overflow-hidden rounded-[1.25rem] border border-[var(--color-gold)]/15 bg-[#fffaf0]/72 px-4 py-7 shadow-[0_26px_80px_rgba(90,50,26,0.10)] backdrop-blur md:min-h-44"
         >
+          <span
+            class="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-gold-light)]/60 to-transparent"
+          ></span>
+          <span
+            class="absolute -right-8 -top-8 h-24 w-24 rounded-full border border-[var(--color-gold)]/10 transition duration-500 group-hover:scale-110"
+          ></span>
           <span
             id="cd-hours"
-            class="countdown-num font-serif text-3xl font-semibold text-[var(--color-charcoal)] md:text-5xl"
+            class="countdown-num font-serif text-5xl font-semibold leading-none text-[#2d271f] md:text-6xl"
             >0</span
           >
+          <p
+            class="mt-5 font-sans text-[10px] font-semibold uppercase tracking-[0.32em] text-[#626951]/55 md:text-xs"
+          >
+            Hours
+          </p>
         </div>
-        <p
-          class="mt-3 font-sans text-[10px] uppercase tracking-[0.2em] text-gray-400 md:text-xs"
-        >
-          Hours
-        </p>
       </div>
-      <span
-        class="countdown-colon section-reveal mt-[-20px] font-serif text-2xl text-[var(--color-gold-light)] opacity-0 md:text-3xl"
-        >:</span
-      >
       <div class="countdown-unit section-reveal opacity-0">
         <div
-          class="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border border-[var(--color-gold)]/15 bg-white/70 shadow-[0_18px_50px_rgba(90,50,26,0.08)] md:h-28 md:w-28"
+          class="countdown-card group relative flex min-h-36 flex-col items-center justify-center overflow-hidden rounded-[1.25rem] border border-[var(--color-gold)]/15 bg-[#fffaf0]/72 px-4 py-7 shadow-[0_26px_80px_rgba(90,50,26,0.10)] backdrop-blur md:min-h-44"
         >
+          <span
+            class="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-gold-light)]/60 to-transparent"
+          ></span>
+          <span
+            class="absolute -right-8 -top-8 h-24 w-24 rounded-full border border-[var(--color-gold)]/10 transition duration-500 group-hover:scale-110"
+          ></span>
           <span
             id="cd-mins"
-            class="countdown-num font-serif text-3xl font-semibold text-[var(--color-charcoal)] md:text-5xl"
+            class="countdown-num font-serif text-5xl font-semibold leading-none text-[#2d271f] md:text-6xl"
             >0</span
           >
+          <p
+            class="mt-5 font-sans text-[10px] font-semibold uppercase tracking-[0.32em] text-[#626951]/55 md:text-xs"
+          >
+            Minutes
+          </p>
         </div>
-        <p
-          class="mt-3 font-sans text-[10px] uppercase tracking-[0.2em] text-gray-400 md:text-xs"
-        >
-          Minutes
-        </p>
       </div>
-      <span
-        class="countdown-colon section-reveal mt-[-20px] font-serif text-2xl text-[var(--color-gold-light)] opacity-0 md:text-3xl"
-        >:</span
-      >
       <div class="countdown-unit section-reveal opacity-0">
         <div
-          class="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border border-[var(--color-gold)]/15 bg-white/70 shadow-[0_18px_50px_rgba(90,50,26,0.08)] md:h-28 md:w-28"
+          class="countdown-card group relative flex min-h-36 flex-col items-center justify-center overflow-hidden rounded-[1.25rem] border border-[var(--color-gold)]/15 bg-[#fffaf0]/72 px-4 py-7 shadow-[0_26px_80px_rgba(90,50,26,0.10)] backdrop-blur md:min-h-44"
         >
           <span
+            class="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-gold-light)]/60 to-transparent"
+          ></span>
+          <span
+            class="absolute -right-8 -top-8 h-24 w-24 rounded-full border border-[var(--color-gold)]/10 transition duration-500 group-hover:scale-110"
+          ></span>
+          <span
             id="cd-secs"
-            class="countdown-num font-serif text-3xl font-semibold text-[var(--color-charcoal)] md:text-5xl"
+            class="countdown-num font-serif text-5xl font-semibold leading-none text-[#2d271f] md:text-6xl"
             >0</span
           >
+          <p
+            class="mt-5 font-sans text-[10px] font-semibold uppercase tracking-[0.32em] text-[#626951]/55 md:text-xs"
+          >
+            Seconds
+          </p>
         </div>
-        <p
-          class="mt-3 font-sans text-[10px] uppercase tracking-[0.2em] text-gray-400 md:text-xs"
-        >
-          Seconds
-        </p>
       </div>
+    </div>
+
+    <div
+      class="section-reveal mx-auto mt-12 flex max-w-xl items-center justify-center gap-4 opacity-0"
+    >
+      <span class="h-px flex-1 bg-[var(--color-gold)]/20"></span>
+      <p
+        class="font-sans text-[10px] font-semibold uppercase tracking-[0.32em] text-[#626951]/60"
+      >
+        16 December 2026
+      </p>
+      <span class="h-px flex-1 bg-[var(--color-gold)]/20"></span>
     </div>
   </div>
 </section>

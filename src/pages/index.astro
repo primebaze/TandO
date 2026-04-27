@@ -1,22 +1,20 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import EnvelopeScreen from "../components/react/EnvelopeScreen";
+import DateReveal from "../components/react/DateReveal";
 import Hero from "../components/sections/Hero.astro";
 import Countdown from "../components/sections/Countdown.astro";
-import OrderOfDay from "../components/sections/OrderOfDay.astro";
 import Details from "../components/sections/Details.astro";
 import DressCode from "../components/sections/DressCode.astro";
-import Gallery from "../components/sections/Gallery.astro";
 ---
 
 <BaseLayout>
   <div id="main-content" class="opacity-0" aria-hidden="true">
     <Hero />
+    <DateReveal client:load />
     <Countdown />
     <Details />
-    <OrderOfDay />
     <DressCode />
-    <Gallery />
     <footer
       id="rsvp-panel"
       class="relative overflow-hidden bg-[#efe7d7] px-6 py-28 text-center text-[#3d3026]"

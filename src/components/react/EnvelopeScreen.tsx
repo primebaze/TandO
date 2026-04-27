@@ -58,7 +58,6 @@ function PaperSurface() {
 
 export default function EnvelopeScreen() {
   const screenRef = useRef<HTMLDivElement>(null);
-  const heroBridgeRef = useRef<HTMLDivElement>(null);
   const flapRef = useRef<HTMLDivElement>(null);
   const linerRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -72,15 +71,12 @@ export default function EnvelopeScreen() {
   const openEnvelope = useCallback(() => {
     if (openedRef.current) return;
     const screen = screenRef.current;
-    const heroBridge = heroBridgeRef.current;
     const flap = flapRef.current;
     const liner = linerRef.current;
     const card = cardRef.current;
     const body = envelopeBodyRef.current;
     const main = document.getElementById('main-content');
-    const heroBg = document.querySelector('.hero-bg');
-    const heroGrain = document.querySelector('.hero-grain');
-    if (!screen || !heroBridge || !flap || !liner || !card || !body || !main) return;
+    if (!screen || !flap || !liner || !card || !body || !main) return;
 
     openedRef.current = true;
     if (openButtonRef.current) {
@@ -142,20 +138,10 @@ export default function EnvelopeScreen() {
     //        The bridge uses the same photo as the hero, so the handoff feels
     //        like the envelope is opening into Marrakesh instead of cutting away.
     tl.set(main, { opacity: 1 }, 1.45);
-    tl.set(heroBg, { opacity: 1, scale: 1.02 }, 1.45);
-    tl.set(heroGrain, { opacity: 0.28 }, 1.45);
     tl.add(() => {
       document.body.dataset.heroPrimed = 'true';
       main.setAttribute('aria-hidden', 'false');
       window.dispatchEvent(new CustomEvent('envelope-opened'));
-    }, 1.45);
-
-    tl.to(heroBridge, {
-      opacity: 0.92,
-      scale: 1,
-      filter: 'blur(0px)',
-      duration: 0.45,
-      ease: 'power2.inOut',
     }, 1.45);
 
     // 1.65–2.3s — Once T & O is visible on the paper, dissolve quickly.
@@ -183,7 +169,6 @@ export default function EnvelopeScreen() {
     }
 
     gsap.set(screenRef.current, { opacity: 1, clearProps: 'display' });
-    gsap.set(heroBridgeRef.current, { opacity: 0, scale: 1.06, filter: 'blur(12px)' });
     gsap.set(flapRef.current, { rotateX: 0, zIndex: 25, opacity: 1 });
     gsap.set(linerRef.current, { opacity: 1 });
     gsap.set(envelopeBodyRef.current, { opacity: 1 });
@@ -219,21 +204,6 @@ export default function EnvelopeScreen() {
           event.stopPropagation();
           openEnvelope();
         }}
-      />
-
-      {/* Hero bridge — same image as the hero, used only during the final
-          dissolve so the envelope blends into Marrakesh instead of cutting. */}
-      <div
-        ref={heroBridgeRef}
-        className="pointer-events-none absolute inset-0 z-[32] opacity-0 will-change-transform"
-        style={{
-          backgroundImage:
-            'radial-gradient(circle at 50% 22%, rgba(255,249,235,0.88) 0%, rgba(239,225,198,0.42) 34%, rgba(239,225,198,0) 62%), radial-gradient(circle at 9% 16%, rgba(184,134,11,0.12), rgba(184,134,11,0) 26%), radial-gradient(circle at 88% 24%, rgba(159,72,38,0.12), rgba(159,72,38,0) 30%), linear-gradient(180deg, #efe1c6 0%, #f3e7cd 47%, #e8d4ae 100%)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          transformOrigin: '50% 50%',
-        }}
-        aria-hidden
       />
 
       {/* === CREAM LINER (under everything — visible when flap opens) === */}

@@ -14,26 +14,28 @@
     aria-hidden="true"></video>
 
   <div
-    class="relative z-10 flex flex-col items-center px-6 pt-[70px] text-center"
+    class="relative z-10 flex flex-col items-center px-6 pt-[68px] text-center"
   >
     <p
-      class="hero-morph mb-4 font-sans text-sm font-medium uppercase tracking-[0.3em] text-[#626951]/80 md:text-base"
+      class="hero-morph mb-3 font-sans text-[11px] font-semibold uppercase tracking-[0.34em] text-[#626951]/75 md:text-sm"
     >
       We are getting married
     </p>
 
     <h1
-      class="hero-morph mb-3 text-6xl font-normal leading-none text-[#596347] md:text-8xl"
+      class="hero-morph text-[4.75rem] font-normal leading-[0.86] text-[#596347] drop-shadow-[0_2px_12px_rgba(255,250,232,0.42)] md:text-8xl"
       style="font-family: var(--font-family-script), 'Great Vibes', cursive;"
     >
       Tayo &amp; Ope
     </h1>
 
-    <p
-      class="hero-morph font-serif text-sm uppercase tracking-[0.2em] text-[#626951]/70 md:text-base"
-    >
-      December 16 - 20, 2026
-    </p>
+    <div class="hero-morph mt-5 flex items-center gap-4 text-[#626951]/75">
+      <span class="h-px w-10 bg-current/35 md:w-14"></span>
+      <p class="font-serif text-sm uppercase tracking-[0.24em] md:text-base">
+        Marrakech, Morocco
+      </p>
+      <span class="h-px w-10 bg-current/35 md:w-14"></span>
+    </div>
   </div>
 </section>
 
@@ -43,7 +45,19 @@
       drop-shadow(0 0 34px rgba(42, 39, 28, 0.18));
   }
 
+  .hero-morph {
+    opacity: 0;
+    transform: translateY(32px);
+    filter: blur(8px);
+  }
+
   @media (prefers-reduced-motion: reduce) {
+    .hero-morph {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+
     .hero-video {
       display: none;
     }
