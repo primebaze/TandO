@@ -59,6 +59,7 @@ function PaperSurface() {
 export default function EnvelopeScreen() {
   const screenRef = useRef<HTMLDivElement>(null);
   const flapRef = useRef<HTMLDivElement>(null);
+  const mobileFlapRef = useRef<HTMLDivElement>(null);
   const linerRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const envelopeBodyRef = useRef<HTMLDivElement>(null);
@@ -71,7 +72,8 @@ export default function EnvelopeScreen() {
   const openEnvelope = useCallback(() => {
     if (openedRef.current) return;
     const screen = screenRef.current;
-    const flap = flapRef.current;
+    const isMobileEnvelope = window.matchMedia('(max-width: 767px)').matches;
+    const flap = isMobileEnvelope ? mobileFlapRef.current : flapRef.current;
     const liner = linerRef.current;
     const card = cardRef.current;
     const body = envelopeBodyRef.current;
@@ -116,17 +118,28 @@ export default function EnvelopeScreen() {
       ease: 'power2.out',
     }, 0);
 
-    // 0.15-2.65s - Flap opens in 3D, revealing the paper inside slowly.
-    tl.to(flap, {
-      rotateX: -160,
-      duration: 2.5,
-      ease: 'power3.inOut',
-    }, 0.15);
+    if (isMobileEnvelope) {
+      tl.to(flap, {
+        yPercent: -16,
+        opacity: 0,
+        duration: 0.85,
+        ease: 'power2.inOut',
+      }, 0.15);
+    } else {
+      // 0.15-2.65s - Flap opens in 3D, revealing the paper inside slowly.
+      tl.to(flap, {
+        rotateX: -160,
+        duration: 2.5,
+        ease: 'power3.inOut',
+      }, 0.15);
+    }
 
     // Once the flap has lifted enough to reveal the paper, move it behind
     // the card but keep the side flaps and bottom pocket above the paper.
     // This prevents the rotating flap back face from covering the card again.
-    tl.set(flap, { zIndex: 14 }, 1.45);
+    if (!isMobileEnvelope) {
+      tl.set(flap, { zIndex: 14 }, 1.45);
+    }
 
     // 0.65-2.15s - Cream interior brightens as the flap rises.
     tl.to(liner, {
@@ -171,6 +184,7 @@ export default function EnvelopeScreen() {
 
     gsap.set(screenRef.current, { opacity: 1, clearProps: 'display' });
     gsap.set(flapRef.current, { rotateX: 0, zIndex: 25, opacity: 1 });
+    gsap.set(mobileFlapRef.current, { yPercent: 0, zIndex: 25, opacity: 1 });
     gsap.set(linerRef.current, { opacity: 1 });
     gsap.set(envelopeBodyRef.current, { opacity: 1 });
 
@@ -478,7 +492,7 @@ export default function EnvelopeScreen() {
       {/* === FLAP + WAX SEAL — rotates as one piece in 3D === */}
       <div
         ref={flapRef}
-        className="pointer-events-none absolute inset-0 z-[25]"
+        className="pointer-events-none absolute inset-0 z-[25] hidden md:block"
         style={{
           transformOrigin: '50% 0%',
           transformStyle: 'preserve-3d',
@@ -648,6 +662,49 @@ export default function EnvelopeScreen() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* === MOBILE FLAP — SVG-based to avoid iOS 3D clip-path artifacts === */}
+      <div
+        ref={mobileFlapRef}
+        className="pointer-events-none absolute inset-0 z-[25] md:hidden"
+        aria-hidden
+      >
+        <svg
+          className="absolute inset-0 h-full w-full"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          role="presentation"
+        >
+          <polygon points="0,0 100,0 50,50" fill="#EFE1C6" />
+          <polygon points="0,0 100,0 50,50" fill="url(#mobileFlapShade)" />
+          <path
+            d="M1.8 0.8 L50 49.2 L98.2 0.8"
+            fill="none"
+            stroke="rgba(255,252,238,0.42)"
+            strokeWidth="1.5"
+            vectorEffect="non-scaling-stroke"
+          />
+          <defs>
+            <linearGradient id="mobileFlapShade" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stopColor="rgba(255,248,235,0.10)" />
+              <stop offset="58%" stopColor="rgba(239,225,198,0)" />
+              <stop offset="100%" stopColor="rgba(90,50,26,0.08)" />
+            </linearGradient>
+          </defs>
+        </svg>
+        <div
+          className="absolute inset-0"
+          style={{
+            clipPath: 'polygon(0% 0%, 100% 0%, 50% 50%)',
+            WebkitClipPath: 'polygon(0% 0%, 100% 0%, 50% 50%)',
+            backgroundImage: 'url(/assets/paper-texture.jpg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: 0.12,
+            mixBlendMode: 'multiply',
+          }}
+        />
       </div>
 
       <style>{`
