@@ -1,0 +1,199 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+  --font-family-script: "Great Vibes", cursive;
+  --color-gold: #8b6914;
+  --color-gold-light: #b8860b;
+  --color-ivory: #faf7f2;
+  --color-walnut: #3d3026;
+  --color-blush: #fdf2f0;
+  --color-sage: #9caf88;
+  --color-charcoal: #2c2c2c;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-walnut);
+    background-color: var(--color-ivory);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  ::selection {
+    background-color: var(--color-gold-light);
+    color: #fff;
+  }
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
+.envelope-scene {
+  perspective: 1200px;
+}
+
+.envelope-film {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+.hero-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+}
+
+.lux-hover {
+  @apply transition-all duration-500 ease-out;
+}
+.lux-hover:hover {
+  @apply -translate-y-0.5 shadow-[0_20px_50px_-20px_rgba(60,45,30,0.12)];
+}
+
+html.morph-active,
+body.morph-active {
+  height: 100%;
+  overflow: hidden;
+}
+
+.morph-shell {
+  position: relative;
+  height: 100svh;
+  min-height: 100svh;
+  overflow: hidden;
+  background: #120b08;
+}
+
+.morph-shell > section,
+.morph-shell > footer {
+  position: absolute;
+  inset: 0;
+  min-height: 100svh;
+  height: 100svh;
+  width: 100%;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(100%);
+  transform-origin: 50% 50%;
+  will-change: transform, opacity, filter;
+}
+
+.morph-shell > section.is-morph-active,
+.morph-shell > footer.is-morph-active {
+  pointer-events: auto;
+}
+
+.morph-shell > section:not(#hero),
+.morph-shell > footer {
+  display: flex;
+  align-items: center;
+  padding-top: clamp(3rem, 8vh, 5rem) !important;
+  padding-bottom: clamp(3rem, 8vh, 5rem) !important;
+}
+
+.morph-shell > section:not(#hero) > div,
+.morph-shell > footer > div {
+  width: 100%;
+  max-height: calc(100svh - 7rem);
+  overflow: hidden;
+}
+
+.morph-shell .mt-20 {
+  margin-top: clamp(1.75rem, 4vh, 3rem);
+}
+.morph-shell .mt-16 {
+  margin-top: clamp(1.5rem, 4vh, 3rem);
+}
+.morph-shell .mt-14 {
+  margin-top: clamp(1.4rem, 3.5vh, 2.5rem);
+}
+
+.morph-shell #story .mt-20,
+.morph-shell #gallery .mt-16 {
+  max-height: min(58vh, 520px);
+  overflow: hidden;
+}
+
+.morph-shell #story .story-block:nth-child(n + 3),
+.morph-shell #gallery .gallery-item:nth-child(n + 5) {
+  display: none;
+}
+
+.morph-nav {
+  position: fixed;
+  left: 50%;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transform: translateX(-50%);
+  padding: 0.55rem 0.7rem;
+  border: 1px solid rgba(245, 211, 145, 0.24);
+  border-radius: 999px;
+  background: rgba(15, 9, 7, 0.48);
+  color: rgba(255, 246, 228, 0.9);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.24);
+}
+
+.morph-arrow {
+  display: grid;
+  height: 2rem;
+  width: 2rem;
+  place-items: center;
+  border-radius: 999px;
+  color: inherit;
+  transition:
+    background-color 180ms ease,
+    transform 180ms ease,
+    opacity 180ms ease;
+}
+
+.morph-arrow:hover {
+  background: rgba(245, 211, 145, 0.16);
+  transform: translateY(-1px);
+}
+
+.morph-arrow:disabled {
+  opacity: 0.32;
+  pointer-events: none;
+}
+
+.morph-arrow svg {
+  height: 1.1rem;
+  width: 1.1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.morph-dots {
+  display: flex;
+  align-items: center;
+  gap: 0.48rem;
+}
+
+.morph-dot {
+  height: 0.42rem;
+  width: 0.42rem;
+  border-radius: 999px;
+  background: rgba(255, 246, 228, 0.42);
+  transition:
+    width 240ms ease,
+    background-color 240ms ease;
+}
+
+.morph-dot.is-active {
+  width: 1.25rem;
+  background: rgba(245, 211, 145, 0.95);
+}

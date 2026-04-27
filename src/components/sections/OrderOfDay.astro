@@ -1,0 +1,52 @@
+---
+
+---
+
+<section id="order" class="relative overflow-hidden bg-white py-32" data-animate="order" data-section-title="Celebration">
+  <div class="mx-auto max-w-3xl px-6">
+    <div class="text-center">
+      <p class="section-reveal font-sans text-[10px] uppercase tracking-[0.4em] text-[var(--color-gold)] opacity-0">15th - 20th December 2026</p>
+      <h2
+        class="section-reveal mt-3 font-serif text-4xl font-semibold text-[var(--color-charcoal)] opacity-0 md:text-5xl"
+      >
+        Celebration Week
+      </h2>
+    </div>
+    <div class="relative mt-20">
+      <div
+        class="timeline-line absolute left-6 top-0 h-full w-px origin-top scale-y-0 bg-gradient-to-b from-[var(--color-gold)] via-[var(--color-gold-light)] to-transparent md:left-1/2 md:-translate-x-px"
+      >
+      </div>
+      {
+        [
+          { time: '15 Dec', title: 'Arrival in Marrakesh', desc: 'Guests settle in and the celebration begins', emoji: '01', side: 'left' as const },
+          { time: '16 Dec', title: 'Welcome Evening', desc: 'A relaxed night beneath lantern light', emoji: '02', side: 'right' as const },
+          { time: '17 Dec', title: 'Family Celebration', desc: 'Time with loved ones before the wedding day', emoji: '03', side: 'left' as const },
+          { time: '18 Dec', title: 'The Wedding', desc: 'The ceremony and reception for Tayo & Ope', emoji: '04', side: 'right' as const },
+          { time: '19 Dec', title: 'Marrakesh Moments', desc: 'A day to explore, unwind, and celebrate together', emoji: '05', side: 'left' as const },
+          { time: '20 Dec', title: 'Farewell', desc: 'Goodbyes and beautiful memories', emoji: '06', side: 'right' as const },
+        ].map((row) => (
+          <div
+            class={`timeline-item relative mb-12 flex items-start gap-6 opacity-0 last:mb-0 md:gap-0 ${row.side === 'right' ? 'md:flex-row-reverse' : 'md:flex-row'}`}
+          >
+            <div
+              class={
+                row.side === 'left'
+                  ? 'flex-1 md:w-1/2 md:pr-16 md:text-right'
+                  : 'flex-1 md:w-1/2 md:pl-16 md:text-left'
+              }
+            >
+              <span class="font-sans text-xs font-semibold tracking-widest text-[var(--color-gold)]">{row.time}</span>
+              <h3 class="mt-1 font-serif text-xl font-semibold text-[var(--color-charcoal)]">{row.title}</h3>
+              <p class="mt-1 font-sans text-sm leading-relaxed text-gray-500">{row.desc}</p>
+            </div>
+            <div class="timeline-dot absolute left-6 flex h-12 w-12 -translate-x-1/2 items-center justify-center rounded-full border-2 border-[var(--color-gold-light)] bg-white text-xl shadow-sm md:left-1/2">
+              {row.emoji}
+            </div>
+            <div class="hidden flex-1 md:block md:w-1/2" />
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

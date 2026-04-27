@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import EnvelopeScreen from '../components/react/EnvelopeScreen';
+import Hero from '../components/sections/Hero.astro';
+import Countdown from '../components/sections/Countdown.astro';
+import Story from '../components/sections/Story.astro';
+import OrderOfDay from '../components/sections/OrderOfDay.astro';
+import Details from '../components/sections/Details.astro';
+import Gallery from '../components/sections/Gallery.astro';
+import DressCode from '../components/sections/DressCode.astro';
+---
+
+<BaseLayout>
+  <div id="main-content" class="opacity-0" aria-hidden="true">
+    <Hero />
+    <Countdown />
+    <Story />
+    <OrderOfDay />
+    <Details />
+    <Gallery />
+    <DressCode />
+    <footer id="rsvp-panel" class="relative overflow-hidden bg-[var(--color-charcoal)] py-24 text-center text-white" data-section-title="RSVP">
+      <div class="footer-content relative z-10 opacity-0">
+        <p class="font-[family-name:var(--font-family-script)] text-5xl text-[var(--color-gold-light)] md:text-6xl">Join Us</p>
+        <p class="mx-auto mt-6 max-w-md font-serif text-lg leading-relaxed text-gray-300">
+          Join us in Marrakesh, Morocco from 15th - 20th December 2026.
+        </p>
+        <a
+          href="/rsvp"
+          class="group mt-10 inline-flex items-center gap-3 rounded-full border-2 border-[var(--color-gold)] px-12 py-4 font-sans text-sm font-semibold uppercase tracking-widest text-[var(--color-gold)] transition-all duration-500 hover:bg-[var(--color-gold)] hover:text-white hover:shadow-[0_0_40px_rgba(184,134,11,0.3)]"
+        >
+          <span>RSVP Now</span>
+          <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+        <p class="mt-16 text-xs text-gray-600">&copy; 2026 — Made with love</p>
+      </div>
+    </footer>
+  </div>
+  <EnvelopeScreen client:load />
+  <script>
+    import { playHeroIntro, initScrollAnimations } from '../scripts/animations';
+
+    window.addEventListener(
+      'envelope-opened',
+      () => {
+        playHeroIntro();
+        requestAnimationFrame(() => {
+          initScrollAnimations();
+        });
+      },
+      { once: true }
+    );
+  </script>
+</BaseLayout>
