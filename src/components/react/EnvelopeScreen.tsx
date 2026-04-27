@@ -82,6 +82,7 @@ export default function EnvelopeScreen() {
     if (openButtonRef.current) {
       openButtonRef.current.style.pointerEvents = 'none';
     }
+    gsap.set(tapRef.current, { autoAlpha: 0 });
 
     const finish = () => {
       screen.style.display = 'none';
@@ -108,48 +109,48 @@ export default function EnvelopeScreen() {
 
     // Card is already hidden via useEffect; no need to re-set here.
 
-    // 0.0–0.3s — Guidance text fades
-    tl.to([tapRef.current, scriptRef.current], {
+    // 0.0-0.55s - Invitation script fades.
+    tl.to(scriptRef.current, {
       opacity: 0,
-      duration: 0.3,
+      duration: 0.55,
       ease: 'power2.out',
     }, 0);
 
-    // 0.1–1.4s — Flap opens in 3D, revealing the paper inside quickly.
+    // 0.15-2.65s - Flap opens in 3D, revealing the paper inside slowly.
     tl.to(flap, {
       rotateX: -160,
-      duration: 1.3,
-      ease: 'power2.inOut',
-    }, 0.1);
+      duration: 2.5,
+      ease: 'power3.inOut',
+    }, 0.15);
 
     // Once the flap has lifted enough to reveal the paper, move it behind
     // the card but keep the side flaps and bottom pocket above the paper.
     // This prevents the rotating flap back face from covering the card again.
-    tl.set(flap, { zIndex: 14 }, 0.75);
+    tl.set(flap, { zIndex: 14 }, 1.45);
 
-    // 0.3–1.0s — Cream interior brightens as the flap rises.
+    // 0.65-2.15s - Cream interior brightens as the flap rises.
     tl.to(liner, {
       opacity: 1,
-      duration: 0.7,
+      duration: 1.5,
       ease: 'power2.out',
-    }, 0.3);
+    }, 0.65);
 
-    // 1.45s — Reveal homepage underneath as soon as the flap finishes opening.
+    // 2.85s - Reveal homepage underneath once the flap finishes opening.
     //        The bridge uses the same photo as the hero, so the handoff feels
     //        like the envelope is opening into Marrakesh instead of cutting away.
-    tl.set(main, { opacity: 1 }, 1.45);
+    tl.set(main, { opacity: 1 }, 2.85);
     tl.add(() => {
       document.body.dataset.heroPrimed = 'true';
       main.setAttribute('aria-hidden', 'false');
       window.dispatchEvent(new CustomEvent('envelope-opened'));
-    }, 1.45);
+    }, 2.85);
 
-    // 1.65–2.3s — Once T & O is visible on the paper, dissolve quickly.
+    // 3.1-4.15s - Once T & O is visible on the paper, dissolve gently.
     tl.to(screen, {
       opacity: 0,
-      duration: 0.65,
+      duration: 1.05,
       ease: 'power2.inOut',
-    }, 1.65);
+    }, 3.1);
   }, []);
 
   useEffect(() => {
@@ -280,26 +281,36 @@ export default function EnvelopeScreen() {
             borderRadius: '3px',
           }}
         />
-        {/* Monogram */}
+        {/* Monogram and note */}
         <div
-          className="absolute inset-0 flex items-center justify-center"
-          style={{
-            fontFamily: "'Great Vibes', cursive",
-            fontSize: 'clamp(2.7rem, 8vw, 4.25rem)',
-            color: '#8a6337',
-            letterSpacing: '0.01em',
-            background: 'linear-gradient(180deg, #f1d18a 0%, #9b6a35 42%, #5f422c 100%)',
-            WebkitBackgroundClip: 'text',
-            backgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            textShadow:
-              '0 1px 0 rgba(255,248,230,0.65),' +
-              '0 0 16px rgba(255,171,72,0.22),' +
-              '0 10px 24px rgba(75,43,18,0.18)',
-            transform: 'translateY(-38%)',
-          }}
+          className="absolute inset-x-0 top-[8%] flex flex-col items-center px-8 text-center"
         >
-          T &amp; O
+          <span
+            style={{
+              fontFamily: "'Great Vibes', cursive",
+              fontSize: 'clamp(2.7rem, 8vw, 4.25rem)',
+              color: '#8a6337',
+              letterSpacing: '0.01em',
+              background: 'linear-gradient(180deg, #f1d18a 0%, #9b6a35 42%, #5f422c 100%)',
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              textShadow:
+                '0 1px 0 rgba(255,248,230,0.65),' +
+                '0 0 16px rgba(255,171,72,0.22),' +
+                '0 10px 24px rgba(75,43,18,0.18)',
+            }}
+          >
+            T &amp; O
+          </span>
+          <p
+            className="mt-3 max-w-[320px] font-serif text-[clamp(0.78rem,1.85vw,0.94rem)] italic leading-snug text-[#5d4634]"
+            style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+          >
+            This space has been thoughtfully created to guide you through every
+            detail as our wedding approaches. For now, please RSVP, and more
+            information about the wedding schedule will be shared shortly.
+          </p>
         </div>
       </div>
 

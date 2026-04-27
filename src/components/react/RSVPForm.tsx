@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import confetti from 'canvas-confetti';
+import { supabase } from '../../lib/supabase';
 
 type Attending = 'yes' | 'no' | null;
 
@@ -118,38 +119,26 @@ export default function RSVPForm() {
       submittedAt: new Date().toISOString(),
     };
 
-    // Configurable endpoint (e.g. Web3Forms, Formspree, Resend webhook).
-    // Set PUBLIC_RSVP_ENDPOINT in .env to enable auto email confirmation.
-    const endpoint = (import.meta as unknown as { env: Record<string, string> }).env
-      ?.PUBLIC_RSVP_ENDPOINT;
-
     try {
-      if (endpoint) {
-        const res = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify({
-            // Web3Forms-compatible fields
-            subject: `RSVP from ${firstName} ${lastName} (${attending === 'yes' ? 'Attending' : 'Cannot attend'})`,
-            from_name: `${firstName} ${lastName}`,
-            replyto: email,
-            // also include rich payload
-            ...payload,
-          }),
-        });
-        if (!res.ok) throw new Error(`Submission failed (${res.status})`);
-      } else {
-        // No endpoint configured — store locally for now.
-        try {
-          const key = 'rsvp:submissions';
-          const prev = JSON.parse(localStorage.getItem(key) || '[]');
-          prev.push(payload);
-          localStorage.setItem(key, JSON.stringify(prev));
-        } catch {
-          /* ignore storage errors */
-        }
-        await new Promise((r) => setTimeout(r, 600));
+      const { error: submitError } = await supabase.from('rsvps').insert({
+        attending: payload.attending,
+        title: payload.title || null,
+        first_name: payload.firstName.trim(),
+        last_name: payload.lastName.trim(),
+        email: payload.email.trim().toLowerCase(),
+        phone: payload.phone,
+        allergies: payload.allergies || null,
+        companions: payload.companions,
+        song: payload.song || null,
+        message: payload.message || null,
+        notification_email: 'primebazeweb@gmail.com',
+        submitted_at: payload.submittedAt,
+      });
+
+      if (submitError) {
+        throw submitError;
       }
+
       setDone(true);
       if (attending === 'yes') fireConfetti();
     } catch (err) {
@@ -187,7 +176,7 @@ export default function RSVPForm() {
             : "We'll miss you — thank you for letting us know."}
         </p>
         <p className="mt-6 font-sans text-[10px] uppercase tracking-[0.36em] text-white/55">
-          A confirmation has been sent to {email}
+          Your RSVP has been recorded
         </p>
         <a
           href="/"
@@ -456,7 +445,7 @@ export default function RSVPForm() {
       </button>
 
       <p className="mt-5 text-center font-sans text-[10px] uppercase tracking-[0.32em] text-white/45">
-        A confirmation will be emailed to you
+        Your response will be saved securely
       </p>
     </form>
   );

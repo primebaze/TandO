@@ -1,0 +1,77 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AdminRSVPs from "../../components/react/AdminRSVPs";
+---
+
+<BaseLayout
+  title="Admin RSVP Dashboard — Tayo & Ope"
+  description="Admin dashboard for Tayo and Ope wedding RSVP responses."
+>
+  <main
+    class="relative min-h-[100svh] overflow-hidden bg-[#0c0a08] px-4 py-8 text-white md:px-6 md:py-12"
+  >
+    <div
+      class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_8%,rgba(230,199,135,0.14),transparent_30%),radial-gradient(circle_at_85%_0%,rgba(89,99,71,0.20),transparent_34%),linear-gradient(180deg,#16100c_0%,#0c0a08_52%,#070605_100%)]"
+      aria-hidden="true"
+    >
+    </div>
+    <div
+      class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#e6c787]/35 to-transparent"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="relative z-10 mx-auto max-w-6xl">
+      <nav class="flex items-center justify-between gap-4">
+        <a
+          href="/"
+          class="inline-flex min-h-10 items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 font-sans text-[10px] uppercase tracking-[0.32em] text-white/60 transition hover:bg-white/[0.08] hover:text-white"
+        >
+          <svg
+            class="h-3 w-3"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M13 8H3M7 4L3 8l4 4"></path>
+          </svg>
+          Back
+        </a>
+        <span
+          class="hidden rounded-full border border-[#e6c787]/20 bg-[#e6c787]/10 px-4 py-2 font-sans text-[10px] font-semibold uppercase tracking-[0.3em] text-[#e6c787] sm:inline-flex"
+        >
+          Private dashboard
+        </span>
+      </nav>
+
+      <header class="mt-12 grid gap-8 lg:grid-cols-[1fr_320px] lg:items-end">
+        <div class="max-w-3xl">
+          <p
+            class="font-sans text-[10px] font-semibold uppercase tracking-[0.42em] text-[#e6c787]"
+          >
+            Admin Mode
+          </p>
+          <h1
+            class="mt-4 font-serif text-5xl font-semibold leading-tight md:text-7xl"
+          >
+            RSVP Responses
+          </h1>
+          <p
+            class="mt-5 max-w-2xl font-serif text-lg italic leading-relaxed text-white/70"
+          >
+            Review guest responses, companions, dietary requirements, song
+            requests, and attendance totals for Tayo &amp; Ope.
+          </p>
+        </div>
+        {/* RSVP inbox card removed as requested */}
+      </header>
+
+      <div class="mt-10">
+        <AdminRSVPs client:load />
+      </div>
+    </div>
+  </main>
+</BaseLayout>
