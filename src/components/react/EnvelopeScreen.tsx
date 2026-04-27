@@ -664,28 +664,21 @@ export default function EnvelopeScreen() {
         </div>
       </div>
 
-      {/* === MOBILE FLAP — SVG-based to avoid iOS 3D clip-path artifacts === */}
+      {/* === MOBILE FLAP — CSS border triangle avoids iOS SVG/clip-path artifacts === */}
       <div
         ref={mobileFlapRef}
         className="pointer-events-none absolute inset-0 z-[25] md:hidden"
         aria-hidden
       >
-        <svg
-          className="absolute inset-0 block h-full w-full"
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-          role="presentation"
-        >
-          <polygon points="0,0 100,0 50,50" fill="#EFE1C6" />
-          <polygon points="0,0 100,0 50,50" fill="#5A321A" opacity="0.045" />
-          <path
-            d="M1.8 0.8 L50 49.2 L98.2 0.8"
-            fill="none"
-            stroke="rgba(255,252,238,0.42)"
-            strokeWidth="1.5"
-            vectorEffect="non-scaling-stroke"
-          />
-        </svg>
+        <div
+          className="absolute left-1/2 top-0 h-0 w-0 -translate-x-1/2"
+          style={{
+            borderLeft: '50vw solid transparent',
+            borderRight: '50vw solid transparent',
+            borderTop: '50svh solid #EAD9BD',
+            filter: 'drop-shadow(0 2px 0 rgba(255,252,238,0.28)) drop-shadow(0 10px 18px rgba(90,50,26,0.10))',
+          }}
+        />
         <div
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
           style={{
