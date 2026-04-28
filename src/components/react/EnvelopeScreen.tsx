@@ -690,15 +690,23 @@ export default function EnvelopeScreen() {
         aria-hidden
       >
         <div
-          className="absolute left-0 top-0 w-full"
+          className="absolute left-0 top-0 w-full overflow-hidden"
           style={{
             height: '50svh',
-            background: '#EAD9BD',
             WebkitClipPath: 'polygon(0% 0%, 100% 0%, 50% 100%)',
             clipPath: 'polygon(0% 0%, 100% 0%, 50% 100%)',
             boxShadow: '0 10px 18px rgba(90,50,26,0.10)',
           }}
-        />
+        >
+          <PaperSurface />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(180deg, rgba(255,248,235,0.10) 0%, transparent 42%, rgba(90,50,26,0.08) 100%)',
+            }}
+          />
+        </div>
         <div
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
           style={{
