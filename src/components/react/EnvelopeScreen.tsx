@@ -267,11 +267,18 @@ export default function EnvelopeScreen() {
           top: '8%',
           width: 'min(70vw, 440px)',
           height: 'calc(min(70vw, 440px) * 1.35)',
-          aspectRatio: '1 / 1.35',
           transformOrigin: '50% 50%',
-          willChange: 'transform, opacity',
+          // iOS-safe: opt out of the parent's 3D perspective context so the
+          // card paints as a flat 2D layer (otherwise iOS Safari composites
+          // it as a black/transparent surface when GSAP applies a transform).
+          transformStyle: 'flat',
+          WebkitTransformStyle: 'flat',
+          transform: 'translateZ(0)',
+          WebkitTransform: 'translateZ(0)',
+          backfaceVisibility: 'hidden',
+          WebkitBackfaceVisibility: 'hidden',
           // iOS-safe: guarantee the card itself is opaque white even if
-          // child layers (mix-blend-mode, background images) fail to render.
+          // child layers (background images, gradients) fail to render.
           backgroundColor: '#ffffff',
           borderRadius: '3px',
           isolation: 'isolate',
