@@ -266,9 +266,19 @@ export default function EnvelopeScreen() {
         style={{
           top: '8%',
           width: 'min(70vw, 440px)',
+          height: 'calc(min(70vw, 440px) * 1.35)',
           aspectRatio: '1 / 1.35',
           transformOrigin: '50% 50%',
           willChange: 'transform, opacity',
+          // iOS-safe: guarantee the card itself is opaque white even if
+          // child layers (mix-blend-mode, background images) fail to render.
+          backgroundColor: '#ffffff',
+          borderRadius: '3px',
+          isolation: 'isolate',
+          boxShadow:
+            '0 1px 2px rgba(0,0,0,0.20),' +
+            ' 0 8px 18px rgba(0,0,0,0.30),' +
+            ' 0 22px 44px rgba(0,0,0,0.32)',
         }}
         aria-hidden
       >
@@ -277,21 +287,17 @@ export default function EnvelopeScreen() {
           style={{
             background: 'linear-gradient(180deg, #ffffff 0%, #fbf7ee 100%)',
             borderRadius: '3px',
-            boxShadow:
-              '0 1px 2px rgba(0,0,0,0.20),' +
-              ' 0 8px 18px rgba(0,0,0,0.30),' +
-              ' 0 22px 44px rgba(0,0,0,0.32)',
           }}
         />
-        {/* subtle paper grain on the card */}
+        {/* subtle paper grain on the card (opacity-only, no mix-blend
+            so iOS Safari can't render it as a black overlay). */}
         <div
           className="absolute inset-0"
           style={{
             backgroundImage: 'url(/assets/paper-texture.jpg)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            opacity: 0.10,
-            mixBlendMode: 'multiply',
+            opacity: 0.08,
             borderRadius: '3px',
           }}
         />
