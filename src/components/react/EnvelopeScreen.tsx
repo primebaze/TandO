@@ -318,8 +318,14 @@ export default function EnvelopeScreen() {
             T &amp; O
           </span>
           <p
-            className="mt-3 max-w-[320px] font-serif text-[clamp(0.78rem,1.85vw,0.94rem)] italic leading-snug text-[#5d4634]"
-            style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+            className="mt-3 max-w-[320px] italic leading-snug"
+            style={{
+              fontFamily: "'Cormorant Garamond', Georgia, 'Times New Roman', serif",
+              fontSize: 'clamp(0.85rem, 3.2vw, 1rem)',
+              color: '#5d4634',
+              WebkitTextFillColor: '#5d4634',
+              WebkitFontSmoothing: 'antialiased',
+            }}
           >
             This space has been thoughtfully created to guide you through every
             detail as our wedding approaches. For now, please RSVP, and more
@@ -664,19 +670,20 @@ export default function EnvelopeScreen() {
         </div>
       </div>
 
-      {/* === MOBILE FLAP — CSS border triangle avoids iOS SVG/clip-path artifacts === */}
+      {/* === MOBILE FLAP — solid div + clip-path polygon (iOS-safe) === */}
       <div
         ref={mobileFlapRef}
         className="pointer-events-none absolute inset-0 z-[25] md:hidden"
         aria-hidden
       >
         <div
-          className="absolute left-1/2 top-0 h-0 w-0 -translate-x-1/2"
+          className="absolute left-0 top-0 w-full"
           style={{
-            borderLeft: '50vw solid transparent',
-            borderRight: '50vw solid transparent',
-            borderTop: '50svh solid #EAD9BD',
-            filter: 'drop-shadow(0 2px 0 rgba(255,252,238,0.28)) drop-shadow(0 10px 18px rgba(90,50,26,0.10))',
+            height: '50svh',
+            background: '#EAD9BD',
+            WebkitClipPath: 'polygon(0% 0%, 100% 0%, 50% 100%)',
+            clipPath: 'polygon(0% 0%, 100% 0%, 50% 100%)',
+            boxShadow: '0 10px 18px rgba(90,50,26,0.10)',
           }}
         />
         <div
