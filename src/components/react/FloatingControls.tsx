@@ -27,16 +27,12 @@ export default function FloatingControls() {
   }, []);
 
   useEffect(() => {
-    // Resume music if it was playing before navigation
     if (sessionStorage.getItem('musicPlaying') === 'true') {
       void play();
     }
 
-    const handleOpen = () => {
-      void play();
-    };
-    window.addEventListener('envelope-opened', handleOpen, { once: true });
-    return () => window.removeEventListener('envelope-opened', handleOpen);
+    window.addEventListener('envelope-opened', play, { once: true });
+    return () => window.removeEventListener('envelope-opened', play);
   }, [play]);
 
   return (

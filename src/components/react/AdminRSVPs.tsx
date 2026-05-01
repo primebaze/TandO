@@ -47,6 +47,10 @@ function companionsCount(row: RSVPRow) {
   return Array.isArray(row.companions) ? row.companions.length : 0;
 }
 
+function companionName(person: Companion) {
+  return [person.firstName, person.lastName].filter(Boolean).join(' ') || 'Unnamed';
+}
+
 function escapeHtml(value: unknown) {
   const text = String(value ?? '');
   return text
@@ -170,7 +174,7 @@ export default function AdminRSVPs() {
       const companions = (row.companions ?? []);
       const companionHtml = companions.length
         ? companions.map((person, i) => {
-            const name = [person.firstName, person.lastName].filter(Boolean).join(' ') || 'Unnamed guest';
+            const name = companionName(person);
             const type = person.type
               ? person.type.charAt(0).toUpperCase() + person.type.slice(1)
               : 'Guest';
@@ -410,8 +414,8 @@ export default function AdminRSVPs() {
       )}
 
       <div className="space-y-4">
-        {paginatedRows.map((row) => {
-          const submissionNum = rows.findIndex((r) => r.id === row.id) + 1;
+        {paginatedRows.map((row, rowIndex) => {
+          const submissionNum = pageStart + rowIndex + 1;
           const isDeleting = deletingId === row.id;
 
           return (
@@ -489,7 +493,7 @@ export default function AdminRSVPs() {
                           {person.type ?? 'Guest'} #{index + 1}
                         </p>
                         <p className="mt-1 font-serif text-xl text-white">
-                          {[person.firstName, person.lastName].filter(Boolean).join(' ') || 'Unnamed'}
+                          {companionName(person)}
                         </p>
                         <p className="mt-1 font-sans text-xs text-white/55">
                           {person.allergies || 'No allergies listed'}
