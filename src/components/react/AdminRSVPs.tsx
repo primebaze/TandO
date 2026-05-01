@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { ChevronLeft, ChevronRight, Download, LockKeyhole, RefreshCw, Search, UsersRound } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Download, LockKeyhole, RefreshCw, Search, Trash2, UsersRound } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 type Companion = {
@@ -70,6 +70,7 @@ export default function AdminRSVPs() {
   const [filter, setFilter] = useState<Filter>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const stats = useMemo(() => {
@@ -132,6 +133,24 @@ export default function AdminRSVPs() {
     setLoading(false);
   }
 
+  async function deleteRSVP(id: string) {
+    if (!confirm('Delete this RSVP? This cannot be undone.')) return;
+    setDeletingId(id);
+    setError(null);
+
+    const { error: deleteError } = await supabase.rpc('delete_rsvp_admin', {
+      p_rsvp_id: id,
+      p_access_code: accessCode.trim(),
+    });
+
+    if (deleteError) {
+      setError(deleteError.message || 'Could not delete RSVP.');
+    } else {
+      setRows((prev) => prev.filter((r) => r.id !== id));
+    }
+    setDeletingId(null);
+  }
+
   function changeFilter(nextFilter: Filter) {
     setFilter(nextFilter);
     setCurrentPage(1);
@@ -146,25 +165,35 @@ export default function AdminRSVPs() {
     }
 
     const generatedAt = formatDate(new Date().toISOString());
-    const responseRows = rows.map((row) => {
-      const companions = (row.companions ?? [])
-        .map((person) => {
-          const name = [person.firstName, person.lastName].filter(Boolean).join(' ') || 'Unnamed guest';
-          const allergies = person.allergies ? ` - ${person.allergies}` : '';
-          return escapeHtml(`${person.type ?? 'guest'}: ${name}${allergies}`);
-        })
-        .join('<br />');
+
+    const responseRows = rows.map((row, index) => {
+      const companions = (row.companions ?? []);
+      const companionHtml = companions.length
+        ? companions.map((person, i) => {
+            const name = [person.firstName, person.lastName].filter(Boolean).join(' ') || 'Unnamed guest';
+            const type = person.type
+              ? person.type.charAt(0).toUpperCase() + person.type.slice(1)
+              : 'Guest';
+            const allergies = person.allergies
+              ? `<div class="companion-allergy">Allergies: ${escapeHtml(person.allergies)}</div>`
+              : `<div class="companion-allergy">No allergies</div>`;
+            return `<div class="companion-entry"><span class="companion-num">${i + 1}.</span> <strong>${escapeHtml(type)}</strong> — ${escapeHtml(name)}${allergies}</div>`;
+          }).join('')
+        : '<span class="none">None</span>';
+
+      const rowNum = index + 1;
 
       return `
         <tr>
+          <td class="num">#${rowNum}</td>
           <td>${escapeHtml(formatDate(row.submitted_at))}</td>
-          <td>${escapeHtml(row.attending === 'yes' ? 'Attending' : 'Cannot attend')}</td>
-          <td>${escapeHtml(fullName(row))}</td>
-          <td>${escapeHtml(row.email)}<br />${escapeHtml(row.phone)}</td>
-          <td>${escapeHtml(row.allergies || 'None')}</td>
-          <td>${companions || 'None'}</td>
-          <td>${escapeHtml(row.song || 'None')}</td>
-          <td>${escapeHtml(row.message || '')}</td>
+          <td class="${row.attending === 'yes' ? 'attending' : 'declined'}">${escapeHtml(row.attending === 'yes' ? 'Attending' : 'Cannot attend')}</td>
+          <td><strong>${escapeHtml(fullName(row))}</strong></td>
+          <td>${escapeHtml(row.email)}<br /><span class="phone">${escapeHtml(row.phone)}</span></td>
+          <td>${escapeHtml(row.allergies || '—')}</td>
+          <td class="companions-cell">${companionHtml}</td>
+          <td>${escapeHtml(row.song || '—')}</td>
+          <td>${escapeHtml(row.message || '—')}</td>
         </tr>
       `;
     }).join('');
@@ -174,32 +203,58 @@ export default function AdminRSVPs() {
       <html>
         <head>
           <meta charset="utf-8" />
-          <title>Tayo & Ope RSVP Report</title>
+          <title>Tayo &amp; Ope RSVP Report</title>
           <style>
-            @page { margin: 18mm; }
+            @page { margin: 15mm; size: A4 landscape; }
             * { box-sizing: border-box; }
-            body { color: #241b16; font-family: Arial, sans-serif; margin: 0; }
-            h1 { font-family: Georgia, serif; font-size: 34px; margin: 0; }
-            .meta { color: #6f6258; font-size: 12px; margin-top: 8px; }
-            .stats { display: grid; gap: 10px; grid-template-columns: repeat(5, 1fr); margin: 24px 0; }
-            .stat { border: 1px solid #ddd5ca; border-radius: 8px; padding: 12px; }
-            .stat span { color: #6f6258; display: block; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; }
-            .stat strong { display: block; font-family: Georgia, serif; font-size: 26px; margin-top: 4px; }
-            table { border-collapse: collapse; font-size: 11px; width: 100%; }
-            th { background: #241b16; color: #fff; font-size: 9px; letter-spacing: 0.12em; text-align: left; text-transform: uppercase; }
-            th, td { border: 1px solid #ddd5ca; padding: 8px; vertical-align: top; }
+            body { color: #241b16; font-family: Arial, sans-serif; margin: 0; font-size: 11px; }
+            h1 { font-family: Georgia, serif; font-size: 30px; margin: 0; }
+            .meta { color: #6f6258; font-size: 11px; margin-top: 6px; }
+            .stats { display: grid; gap: 8px; grid-template-columns: repeat(5, 1fr); margin: 18px 0; }
+            .stat { border: 1px solid #ddd5ca; border-radius: 8px; padding: 10px 12px; }
+            .stat span { color: #6f6258; display: block; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; }
+            .stat strong { display: block; font-family: Georgia, serif; font-size: 24px; margin-top: 4px; }
+            table { border-collapse: collapse; width: 100%; table-layout: fixed; }
+            col.c-num { width: 4%; }
+            col.c-date { width: 10%; }
+            col.c-status { width: 8%; }
+            col.c-name { width: 13%; }
+            col.c-contact { width: 13%; }
+            col.c-allergy { width: 8%; }
+            col.c-companions { width: 22%; }
+            col.c-song { width: 10%; }
+            col.c-message { width: 12%; }
+            th { background: #241b16; color: #fff; font-size: 8px; letter-spacing: 0.12em; text-align: left; text-transform: uppercase; padding: 7px 8px; }
+            td { border: 1px solid #ddd5ca; padding: 7px 8px; vertical-align: top; word-wrap: break-word; }
             tr { break-inside: avoid; }
+            tr:nth-child(even) { background: #faf8f5; }
+            td.num { color: #9b8a7c; font-size: 10px; text-align: center; font-weight: bold; }
+            td.attending { color: #6a7c3a; font-weight: bold; }
+            td.declined { color: #8b3a3a; font-weight: bold; }
+            .phone { color: #6f6258; }
+            .companion-entry { margin-bottom: 5px; padding-bottom: 5px; border-bottom: 1px solid #ede8e2; }
+            .companion-entry:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+            .companion-num { color: #9b8a7c; }
+            .companion-allergy { color: #6f6258; font-size: 9px; margin-top: 2px; margin-left: 12px; }
+            .none { color: #b0a090; font-style: italic; }
+            .companions-cell { line-height: 1.4; }
           </style>
         </head>
         <body>
-          <h1>Tayo & Ope RSVP Report</h1>
+          <h1>Tayo &amp; Ope RSVP Report</h1>
           <p class="meta">Generated ${escapeHtml(generatedAt)}</p>
           <section class="stats">
-            ${statItems.map((item) => `<div class="stat"><span>${escapeHtml(item.label)}</span><strong>${escapeHtml(item.value)}</strong></div>`).join('')}
+            ${statItems.map((item) => `<div class="stat"><span>${escapeHtml(item.label)}</span><strong>${escapeHtml(String(item.value))}</strong></div>`).join('')}
           </section>
           <table>
+            <colgroup>
+              <col class="c-num" /><col class="c-date" /><col class="c-status" />
+              <col class="c-name" /><col class="c-contact" /><col class="c-allergy" />
+              <col class="c-companions" /><col class="c-song" /><col class="c-message" />
+            </colgroup>
             <thead>
               <tr>
+                <th>#</th>
                 <th>Submitted</th>
                 <th>Status</th>
                 <th>Name</th>
@@ -258,8 +313,6 @@ export default function AdminRSVPs() {
               </button>
             </div>
           </div>
-
-          
         </div>
         {error && <p className="mt-3 font-sans text-sm text-red-200">{error}</p>}
       </form>
@@ -309,7 +362,7 @@ export default function AdminRSVPs() {
       {!!filteredRows.length && (
         <div className="flex flex-col gap-3 rounded-[1.25rem] border border-white/10 bg-white/[0.025] px-4 py-3 md:flex-row md:items-center md:justify-between">
           <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-white/45">
-            Showing {showingStart}-{showingEnd} of {filteredRows.length}
+            Showing {showingStart}–{showingEnd} of {filteredRows.length}
           </p>
           <div className="flex items-center gap-2">
             <button
@@ -357,73 +410,98 @@ export default function AdminRSVPs() {
       )}
 
       <div className="space-y-4">
-        {paginatedRows.map((row) => (
-          <article key={row.id} className="overflow-hidden rounded-[1.75rem] border border-white/12 bg-white/[0.052] text-white shadow-[0_24px_70px_rgba(0,0,0,0.26)] backdrop-blur-xl">
-            <div className="grid gap-0 md:grid-cols-[1fr_auto]">
-              <div className="p-5 md:p-6">
-            <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-              <div>
-                <p className={`inline-flex rounded-full px-3 py-1 font-sans text-[10px] font-semibold uppercase tracking-[0.22em] ${row.attending === 'yes' ? 'bg-[#e6c787]/12 text-[#e6c787]' : 'bg-white/10 text-white/70'}`}>
-                  {row.attending === 'yes' ? 'Attending' : 'Cannot attend'}
-                </p>
-                <h2 className="mt-2 font-serif text-3xl text-white">{fullName(row)}</h2>
-                <div className="mt-2 flex flex-col gap-1 font-sans text-sm text-white/58 sm:flex-row sm:gap-4">
-                  <span>{row.email}</span>
-                  <span>{row.phone}</span>
-                </div>
-              </div>
-              <p className="font-sans text-xs text-white/45">{formatDate(row.submitted_at)}</p>
-            </div>
+        {paginatedRows.map((row) => {
+          const submissionNum = rows.findIndex((r) => r.id === row.id) + 1;
+          const isDeleting = deletingId === row.id;
 
-            <div className="mt-5 grid gap-4 md:grid-cols-2">
-              <div>
-                <p className="font-sans text-[10px] uppercase tracking-[0.28em] text-white/40">Allergies</p>
-                <p className="mt-1 font-serif text-lg text-white/80">{row.allergies || 'None listed'}</p>
-              </div>
-              <div>
-                <p className="font-sans text-[10px] uppercase tracking-[0.28em] text-white/40">Song</p>
-                <p className="mt-1 font-serif text-lg text-white/80">{row.song || 'None listed'}</p>
-              </div>
-            </div>
-
-            {!!row.message && (
-              <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-                <p className="font-serif text-lg italic leading-relaxed text-white/80">{row.message}</p>
-              </div>
-            )}
-              </div>
-
-              <aside className="border-t border-white/10 bg-black/10 p-5 md:border-l md:border-t-0 md:p-6 md:w-72">
-                <p className="font-sans text-[10px] uppercase tracking-[0.28em] text-white/40">Party size</p>
-                <p className="mt-2 font-serif text-4xl text-[#e6c787]">{1 + companionsCount(row)}</p>
-                <p className="mt-1 font-sans text-xs text-white/45">
-                  {companionsCount(row)} companion{companionsCount(row) === 1 ? '' : 's'}
-                </p>
-              </aside>
-            </div>
-
-            {!!companionsCount(row) && (
-              <div className="border-t border-white/10 bg-white/[0.025] p-5 md:p-6">
-                <p className="font-sans text-[10px] uppercase tracking-[0.28em] text-white/40">Companions</p>
-                <div className="mt-3 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-                  {(row.companions ?? []).map((person, index) => (
-                    <div key={`${row.id}-${index}`} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-                      <p className="font-sans text-[10px] uppercase tracking-[0.24em] text-[#e6c787]">
-                        {person.type ?? 'Guest'} #{index + 1}
-                      </p>
-                      <p className="mt-1 font-serif text-xl text-white">
-                        {[person.firstName, person.lastName].filter(Boolean).join(' ') || 'Unnamed'}
-                      </p>
-                      <p className="mt-1 font-sans text-xs text-white/55">
-                        {person.allergies || 'No allergies listed'}
-                      </p>
+          return (
+            <article key={row.id} className="overflow-hidden rounded-[1.75rem] border border-white/12 bg-white/[0.052] text-white shadow-[0_24px_70px_rgba(0,0,0,0.26)] backdrop-blur-xl">
+              <div className="grid gap-0 md:grid-cols-[1fr_auto]">
+                <div className="p-5 md:p-6">
+                  <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                    <div>
+                      <div className="flex items-center gap-3">
+                        <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.2em] text-white/30">
+                          #{submissionNum}
+                        </span>
+                        <span className={`inline-flex rounded-full px-3 py-1 font-sans text-[10px] font-semibold uppercase tracking-[0.22em] ${row.attending === 'yes' ? 'bg-[#e6c787]/12 text-[#e6c787]' : 'bg-white/10 text-white/70'}`}>
+                          {row.attending === 'yes' ? 'Attending' : 'Cannot attend'}
+                        </span>
+                      </div>
+                      <h2 className="mt-2 font-serif text-3xl text-white">{fullName(row)}</h2>
+                      <div className="mt-2 flex flex-col gap-1 font-sans text-sm text-white/58 sm:flex-row sm:gap-4">
+                        <span>{row.email}</span>
+                        <span>{row.phone}</span>
+                      </div>
                     </div>
-                  ))}
+                    <div className="flex items-start gap-3">
+                      <p className="font-sans text-xs text-white/45">{formatDate(row.submitted_at)}</p>
+                      <button
+                        type="button"
+                        onClick={() => deleteRSVP(row.id)}
+                        disabled={isDeleting}
+                        title="Delete RSVP"
+                        className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-red-400/20 bg-red-400/10 text-red-300 transition hover:bg-red-400/25 hover:text-red-200 disabled:cursor-not-allowed disabled:opacity-40"
+                      >
+                        {isDeleting
+                          ? <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                          : <Trash2 className="h-3.5 w-3.5" />
+                        }
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="mt-5 grid gap-4 md:grid-cols-2">
+                    <div>
+                      <p className="font-sans text-[10px] uppercase tracking-[0.28em] text-white/40">Allergies</p>
+                      <p className="mt-1 font-serif text-lg text-white/80">{row.allergies || 'None listed'}</p>
+                    </div>
+                    <div>
+                      <p className="font-sans text-[10px] uppercase tracking-[0.28em] text-white/40">Song</p>
+                      <p className="mt-1 font-serif text-lg text-white/80">{row.song || 'None listed'}</p>
+                    </div>
+                  </div>
+
+                  {!!row.message && (
+                    <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+                      <p className="font-sans text-[10px] uppercase tracking-[0.28em] text-white/40">Message</p>
+                      <p className="mt-2 font-serif text-lg italic leading-relaxed text-white/80">{row.message}</p>
+                    </div>
+                  )}
                 </div>
+
+                <aside className="border-t border-white/10 bg-black/10 p-5 md:border-l md:border-t-0 md:p-6 md:w-72">
+                  <p className="font-sans text-[10px] uppercase tracking-[0.28em] text-white/40">Party size</p>
+                  <p className="mt-2 font-serif text-4xl text-[#e6c787]">{1 + companionsCount(row)}</p>
+                  <p className="mt-1 font-sans text-xs text-white/45">
+                    {companionsCount(row)} companion{companionsCount(row) === 1 ? '' : 's'}
+                  </p>
+                </aside>
               </div>
-            )}
-          </article>
-        ))}
+
+              {!!companionsCount(row) && (
+                <div className="border-t border-white/10 bg-white/[0.025] p-5 md:p-6">
+                  <p className="font-sans text-[10px] uppercase tracking-[0.28em] text-white/40">Companions</p>
+                  <div className="mt-3 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+                    {(row.companions ?? []).map((person, index) => (
+                      <div key={`${row.id}-${index}`} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+                        <p className="font-sans text-[10px] uppercase tracking-[0.24em] text-[#e6c787]">
+                          {person.type ?? 'Guest'} #{index + 1}
+                        </p>
+                        <p className="mt-1 font-serif text-xl text-white">
+                          {[person.firstName, person.lastName].filter(Boolean).join(' ') || 'Unnamed'}
+                        </p>
+                        <p className="mt-1 font-sans text-xs text-white/55">
+                          {person.allergies || 'No allergies listed'}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </article>
+          );
+        })}
       </div>
 
       {totalPages > 1 && (
@@ -451,4 +529,3 @@ export default function AdminRSVPs() {
     </div>
   );
 }
-
