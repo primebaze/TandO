@@ -39,7 +39,7 @@ const newCompanion = (type: 'adult' | 'child'): Companion => ({
 
 // Tailwind utility groups for dark/glass form controls
 const inputCls =
-  'w-full rounded-xl border border-white/15 bg-white/[0.06] px-4 py-3 font-sans text-sm text-white placeholder-white/35 backdrop-blur-md transition focus:border-[#e6c787]/70 focus:bg-white/[0.09] focus:outline-none focus:ring-2 focus:ring-[#e6c787]/30';
+  'w-full rounded-xl border border-white/15 bg-white/[0.06] px-4 py-3 font-sans text-base md:text-sm text-white placeholder-white/35 backdrop-blur-md transition focus:border-[#e6c787]/70 focus:bg-white/[0.09] focus:outline-none focus:ring-2 focus:ring-[#e6c787]/30';
 
 const labelCls =
   'mb-2 block font-sans text-[10px] font-semibold uppercase tracking-[0.32em] text-white/70';
@@ -289,8 +289,8 @@ export default function RSVPForm() {
       </div>
 
       {/* Contact */}
-      <div className="mb-6 grid gap-4 md:grid-cols-[1fr_auto_1.4fr]">
-        <div className="md:col-span-3">
+      <div className="mb-6 space-y-4">
+        <div>
           <label className={labelCls}>Email *</label>
           <input
             type="email"
@@ -301,6 +301,7 @@ export default function RSVPForm() {
             required
           />
         </div>
+        <div className="grid grid-cols-[auto_1fr] gap-4">
         <div>
           <label className={labelCls}>Int. Code</label>
           <select
@@ -315,7 +316,7 @@ export default function RSVPForm() {
             ))}
           </select>
         </div>
-        <div className="md:col-span-2">
+        <div>
           <label className={labelCls}>Phone Number *</label>
           <input
             type="tel"
@@ -325,6 +326,7 @@ export default function RSVPForm() {
             className={inputCls}
             required
           />
+        </div>
         </div>
       </div>
 
