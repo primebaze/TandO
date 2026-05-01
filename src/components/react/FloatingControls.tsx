@@ -29,6 +29,10 @@ export default function FloatingControls() {
   useEffect(() => {
     if (sessionStorage.getItem('musicPlaying') === 'true') {
       void play();
+      // Fallback for browsers (esp. mobile Safari) that block autoplay on new page loads.
+      // On first user interaction, retry play so music resumes without needing the music button.
+      document.addEventListener('pointerdown', play, { once: true });
+      return () => document.removeEventListener('pointerdown', play);
     }
 
     window.addEventListener('envelope-opened', play, { once: true });
