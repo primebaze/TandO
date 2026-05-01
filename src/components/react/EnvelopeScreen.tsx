@@ -470,7 +470,7 @@ export default function EnvelopeScreen() {
           animation: 'envTap 2.4s ease-in-out infinite',
         }}
       >
-        Tap to Open
+        Tap to reveal
       </p>
 
       {/* Invitation script */}
