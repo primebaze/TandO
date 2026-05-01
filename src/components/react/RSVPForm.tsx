@@ -421,7 +421,7 @@ export default function RSVPForm() {
           type="text"
           value={song}
           onChange={(e) => setSong(e.target.value)}
-          placeholder="e.g. Viva la Vida — Coldplay"
+          placeholder="e.g. Calm Down — Rema"
           className={inputCls}
         />
       </div>
