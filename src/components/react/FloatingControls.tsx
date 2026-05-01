@@ -12,6 +12,7 @@ export default function FloatingControls() {
     try {
       await audio.play();
       setPlaying(true);
+      sessionStorage.setItem('musicPlaying', 'true');
     } catch {
       setPlaying(false);
     }
@@ -22,9 +23,15 @@ export default function FloatingControls() {
     if (!audio) return;
     audio.pause();
     setPlaying(false);
+    sessionStorage.setItem('musicPlaying', 'false');
   }, []);
 
   useEffect(() => {
+    // Resume music if it was playing before navigation
+    if (sessionStorage.getItem('musicPlaying') === 'true') {
+      void play();
+    }
+
     const handleOpen = () => {
       void play();
     };
