@@ -139,6 +139,18 @@ export default function RSVPForm() {
         throw submitError;
       }
 
+      // Fire-and-forget — email failure doesn't block the success state
+      void supabase.functions.invoke('send-confirmation', {
+        body: {
+          email: payload.email.trim().toLowerCase(),
+          title: payload.title,
+          firstName: payload.firstName.trim(),
+          lastName: payload.lastName.trim(),
+          attending: payload.attending,
+          companions: payload.companions,
+        },
+      });
+
       setDone(true);
       if (attending === 'yes') fireConfetti();
     } catch (err) {
