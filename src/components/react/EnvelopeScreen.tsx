@@ -294,16 +294,10 @@ export default function EnvelopeScreen() {
         }}
         aria-hidden
       >
-        {/* Paper texture background */}
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: 'url(/assets/paper.jpeg)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            borderRadius: '3px',
-          }}
-        />
+        {/* Paper texture — SVG image element is iOS-reliable inside fixed/overflow:hidden ancestor */}
+        <svg className="absolute inset-0 h-full w-full" aria-hidden="true" style={{ borderRadius: '3px' }}>
+          <image href="/assets/paper.jpeg" x="0" y="0" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" />
+        </svg>
         {/* Legibility overlay — lets border & lanterns show while keeping text readable */}
         <div
           className="absolute inset-0"
@@ -727,12 +721,12 @@ export default function EnvelopeScreen() {
           preserveAspectRatio="none"
         >
           <defs>
-            <linearGradient id="mobileFlapGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stopColor="rgba(252,244,230,0.92)" />
-              <stop offset="1" stopColor="rgba(238,220,190,0.88)" />
-            </linearGradient>
+            <clipPath id="envFlapTop"><polygon points="0,0 100,0 50,100" /></clipPath>
           </defs>
-          <polygon points="0,0 100,0 50,100" fill="url(#mobileFlapGrad)" />
+          {/* Same fill + texture as the pocket faces for visual consistency */}
+          <polygon points="0,0 100,0 50,100" fill="#EFE1C6" />
+          <image href="/assets/paper-texture.jpg" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice" opacity="0.16" clipPath="url(#envFlapTop)" />
+          <image href="/assets/damask-texture.png" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice" opacity="0.09" clipPath="url(#envFlapTop)" />
         </svg>
         <div
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
