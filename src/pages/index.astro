@@ -23,32 +23,42 @@ import DressCode from "../components/sections/DressCode.astro";
     <DressCode />
     <footer
       id="rsvp-panel"
-      class="relative overflow-hidden bg-[#efe7d7] px-6 py-28 text-center text-[#3d3026]"
+      class="relative overflow-hidden bg-[#efe7d7] py-16 text-center text-[#3d3026]"
       data-section-title="RSVP"
     >
-      <div class="footer-content relative z-10 mx-auto max-w-3xl opacity-0">
+      <div class="footer-content relative z-10 mx-auto max-w-lg px-6 opacity-0">
+        <!-- Ornament frame with content layered inside -->
+        <div class="relative mx-auto w-full max-w-sm md:max-w-md">
+          <img
+            src="/assets/footer-ornament.png"
+            alt=""
+            aria-hidden="true"
+            class="w-full"
+          />
+          <!-- Content centred inside the arch opening -->
+          <div class="absolute inset-0 flex flex-col items-center justify-center px-10 pt-[28%] pb-[12%]">
+            <p
+              class="font-sans text-[9px] font-semibold uppercase tracking-[0.42em] text-[var(--color-gold)]"
+            >
+              RSVP
+            </p>
+            <h2 class="mt-2 font-serif text-xl font-semibold leading-snug text-[#2d271f] md:text-2xl">
+              We hope you can make it
+            </h2>
+            <p class="mt-2 font-serif text-xs leading-relaxed text-[#5d574a] md:text-sm">
+              Join us in Marrakesh for a week of celebration, culture, and love.
+            </p>
+            <a
+              href="/rsvp"
+              class="mt-5 inline-flex min-h-10 items-center justify-center rounded-full border border-[var(--color-gold)] bg-white/70 px-8 font-serif text-[11px] uppercase tracking-[0.22em] text-[#4b3926] shadow-[0_8px_24px_rgba(90,50,26,0.12)] transition duration-300 hover:-translate-y-0.5 hover:bg-white"
+            >
+              Send RSVP
+            </a>
+          </div>
+        </div>
+
         <p
-          class="font-sans text-[10px] font-semibold uppercase tracking-[0.42em] text-[var(--color-gold)]"
-        >
-          RSVP
-        </p>
-        <h2 class="mt-4 font-serif text-4xl font-semibold md:text-6xl">
-          We hope you can make it
-        </h2>
-        <p
-          class="mx-auto mt-6 max-w-xl font-serif text-xl leading-relaxed text-[#5d574a]"
-        >
-          Your presence means everything to us as we gather in Marrakesh for a
-          week of celebration, culture, and love.
-        </p>
-        <a
-          href="/rsvp"
-          class="mt-10 inline-flex min-h-14 items-center justify-center rounded-full border border-[var(--color-gold)] bg-white/60 px-12 font-serif text-sm uppercase tracking-[0.22em] text-[#4b3926] shadow-[0_18px_50px_rgba(90,50,26,0.10)] transition duration-300 hover:-translate-y-0.5 hover:bg-white"
-        >
-          Send RSVP
-        </a>
-        <p
-          class="mt-16 font-[family-name:var(--font-family-script)] text-5xl text-[var(--color-gold)] md:text-6xl"
+          class="mt-6 font-[family-name:var(--font-family-script)] text-5xl text-[var(--color-gold)] md:text-6xl"
         >
           Tayo + Ope
         </p>
