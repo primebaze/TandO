@@ -402,7 +402,7 @@ export default function EnvelopeScreen() {
         <div className="absolute inset-0" style={GRAIN} />
       </div>
 
-      {/* === ENVELOPE POCKET FACES — SVG polygons avoid iOS clip-path black rendering === */}
+      {/* === ENVELOPE POCKET FACES — SVG clipPath is iOS-safe unlike CSS clip-path === */}
       <div ref={envelopeTopRef} className="pointer-events-none absolute inset-0 z-[20]" aria-hidden>
         <svg
           className="absolute inset-0 h-full w-full"
@@ -411,6 +411,9 @@ export default function EnvelopeScreen() {
           aria-hidden="true"
         >
           <defs>
+            <clipPath id="envFaceL"><polygon points="0,0 0,100 50,50" /></clipPath>
+            <clipPath id="envFaceR"><polygon points="100,0 100,100 50,50" /></clipPath>
+            <clipPath id="envFaceB"><polygon points="0,100 100,100 50,50" /></clipPath>
             <linearGradient id="envLeftGrad" x1="0" y1="0" x2="1" y2="0">
               <stop offset="0" stopColor="rgba(90,50,26,0.09)" />
               <stop offset="1" stopColor="rgba(90,50,26,0)" />
@@ -424,7 +427,18 @@ export default function EnvelopeScreen() {
               <stop offset="1" stopColor="rgba(90,50,26,0.04)" />
             </linearGradient>
           </defs>
-          {/* Transparent base — texture from z-10 shows through; gradient adds shading only */}
+          {/* Opaque base fills — covers the card (z-15) beneath each face */}
+          <polygon points="0,0 0,100 50,50" fill="#EFE1C6" />
+          <polygon points="100,0 100,100 50,50" fill="#EFE1C6" />
+          <polygon points="0,100 100,100 50,50" fill="#EFE1C6" />
+          {/* Paper + damask texture via SVG clipPath — iOS-safe (not CSS clip-path) */}
+          <image href="/assets/paper-texture.jpg" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice" opacity="0.16" clipPath="url(#envFaceL)" />
+          <image href="/assets/paper-texture.jpg" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice" opacity="0.16" clipPath="url(#envFaceR)" />
+          <image href="/assets/paper-texture.jpg" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice" opacity="0.16" clipPath="url(#envFaceB)" />
+          <image href="/assets/damask-texture.png" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice" opacity="0.09" clipPath="url(#envFaceL)" />
+          <image href="/assets/damask-texture.png" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice" opacity="0.09" clipPath="url(#envFaceR)" />
+          <image href="/assets/damask-texture.png" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice" opacity="0.09" clipPath="url(#envFaceB)" />
+          {/* Gradient shading for 3D face depth */}
           <polygon points="0,0 0,100 50,50" fill="url(#envLeftGrad)" />
           <polygon points="100,0 100,100 50,50" fill="url(#envRightGrad)" />
           <polygon points="0,100 100,100 50,50" fill="url(#envBottomGrad)" />
