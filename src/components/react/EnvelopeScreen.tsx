@@ -151,8 +151,9 @@ export default function EnvelopeScreen() {
       }, textStart);
     }
 
-    // Body text types in character by character, starting 2s after the monogram.
-    // Stagger tuned so all ~193 chars finish at ~7.5s.
+    // Body text types in immediately after monogram starts.
+    // 195 chars × 0.038 stagger = ~7.4s to finish.
+    const charDelay = 0.3;
     if (textEl) {
       const charEls = Array.from(textEl.querySelectorAll('.char-span'));
       if (charEls.length) {
@@ -161,12 +162,14 @@ export default function EnvelopeScreen() {
           duration: 0.001,
           stagger: 0.038,
           ease: 'none',
-        }, textStart + 1.4);
+        }, textStart + charDelay);
       }
     }
 
-    // Hold on the full card (~1.5s reading time after all text is visible), then fade.
-    const mainReveal = isMobileEnvelope ? 9.0 : 11.5;
+    // Wait 1s after typing finishes, then fade to homepage.
+    // typingEnd = textStart + charDelay + (195 * 0.038) ≈ textStart + 7.7
+    const typingEnd = textStart + charDelay + 7.7;
+    const mainReveal = typingEnd + 1.0;
     tl.set(main, { opacity: 1 }, mainReveal);
     tl.add(() => {
       document.body.dataset.heroPrimed = 'true';
@@ -178,7 +181,7 @@ export default function EnvelopeScreen() {
       opacity: 0,
       duration: 1.4,
       ease: 'power2.inOut',
-    }, isMobileEnvelope ? 9.2 : 11.7);
+    }, mainReveal + 0.2);
   }, []);
 
   useEffect(() => {
@@ -318,7 +321,7 @@ export default function EnvelopeScreen() {
                 fontSize: 'clamp(2.7rem, 8vw, 4.25rem)',
                 color: '#8a6337',
                 letterSpacing: '0.01em',
-                background: 'linear-gradient(180deg, #f1d18a 0%, #9b6a35 42%, #5f422c 100%)',
+                background: 'linear-gradient(180deg, #d4960a 0%, #a06010 50%, #6b3a0c 100%)',
                 WebkitBackgroundClip: 'text',
                 backgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
