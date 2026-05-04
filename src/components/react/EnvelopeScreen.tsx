@@ -223,7 +223,6 @@ export default function EnvelopeScreen() {
       ref={screenRef}
       className="fixed inset-0 z-50 overflow-hidden"
       style={{
-        perspective: '1600px',
         backgroundColor: '#EFE1C6',
       }}
       onClick={openEnvelope}
@@ -515,10 +514,14 @@ export default function EnvelopeScreen() {
         </span>
       </p>
 
-      {/* === FLAP + WAX SEAL — rotates as one piece in 3D === */}
+      {/* === FLAP + WAX SEAL — perspective wrapper isolates 3D context to desktop only === */}
+      <div
+        className="pointer-events-none absolute inset-0 z-[25] hidden md:block"
+        style={{ perspective: '1600px' }}
+      >
       <div
         ref={flapRef}
-        className="pointer-events-none absolute inset-0 z-[25] hidden md:block"
+        className="pointer-events-none absolute inset-0"
         style={{
           transformOrigin: '50% 0%',
           transformStyle: 'preserve-3d',
@@ -685,6 +688,7 @@ export default function EnvelopeScreen() {
             </div>
           </div>
         </div>
+      </div>
       </div>
 
       {/* === MOBILE FLAP === */}
