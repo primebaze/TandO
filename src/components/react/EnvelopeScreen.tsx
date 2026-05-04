@@ -298,11 +298,11 @@ export default function EnvelopeScreen() {
         <svg className="absolute inset-0 h-full w-full" aria-hidden="true" style={{ borderRadius: '3px' }}>
           <image href="/assets/paper.jpeg" x="0" y="0" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" />
         </svg>
-        {/* Legibility overlay — lets border & lanterns show while keeping text readable */}
+        {/* Legibility overlay — reduced to let paper borders & lanterns show */}
         <div
           className="absolute inset-0"
           style={{
-            background: 'rgba(255, 251, 243, 0.55)',
+            background: 'rgba(255, 251, 243, 0.32)',
             borderRadius: '3px',
           }}
         />
@@ -714,17 +714,17 @@ export default function EnvelopeScreen() {
         className="pointer-events-none absolute inset-0 z-[25] md:hidden"
         aria-hidden
       >
+        {/* Full-screen SVG so the V-point matches the envelope body and pocket faces exactly (no svh/vh gap) */}
         <svg
-          className="absolute left-0 top-0 w-full"
-          style={{ height: '50svh', filter: 'drop-shadow(0 6px 14px rgba(90,50,26,0.12))' }}
+          className="absolute inset-0 h-full w-full"
+          style={{ filter: 'drop-shadow(0 6px 14px rgba(90,50,26,0.12))' }}
           viewBox="0 0 100 100"
           preserveAspectRatio="none"
         >
           <defs>
-            <clipPath id="envFlapTop"><polygon points="0,0 100,0 50,100" /></clipPath>
+            <clipPath id="envFlapTop"><polygon points="0,0 100,0 50,50" /></clipPath>
           </defs>
-          {/* Same fill + texture as the pocket faces for visual consistency */}
-          <polygon points="0,0 100,0 50,100" fill="#EFE1C6" />
+          <polygon points="0,0 100,0 50,50" fill="#EFE1C6" />
           <image href="/assets/paper-texture.jpg" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice" opacity="0.16" clipPath="url(#envFlapTop)" />
           <image href="/assets/damask-texture.png" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice" opacity="0.09" clipPath="url(#envFlapTop)" />
         </svg>
