@@ -7,6 +7,9 @@ const GRAIN: React.CSSProperties = {
   opacity: 0.08,
 };
 
+const CARD_TEXT =
+  'This space has been thoughtfully created to guide you through every detail as our wedding approaches. For now, please RSVP, and more information about the wedding schedule will be shared shortly.';
+
 function SealFallback() {
   return (
     <div
@@ -64,6 +67,9 @@ export default function EnvelopeScreen() {
   const cardRef = useRef<HTMLDivElement>(null);
   const envelopeBodyRef = useRef<HTMLDivElement>(null);
   const envelopeTopRef = useRef<HTMLDivElement>(null);
+  const seamRef = useRef<SVGSVGElement>(null);
+  const monogramRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLParagraphElement>(null);
   const scriptRef = useRef<HTMLParagraphElement>(null);
   const tapRef = useRef<HTMLParagraphElement>(null);
   const openButtonRef = useRef<HTMLButtonElement>(null);
@@ -79,6 +85,9 @@ export default function EnvelopeScreen() {
     const card = cardRef.current;
     const body = envelopeBodyRef.current;
     const envTop = envelopeTopRef.current;
+    const seam = seamRef.current;
+    const monogram = monogramRef.current;
+    const textEl = textRef.current;
     const main = document.getElementById('main-content');
     if (!screen || !flap || !liner || !card || !body || !main) return;
 
@@ -104,71 +113,61 @@ export default function EnvelopeScreen() {
 
     const tl = gsap.timeline({ onComplete: finish });
 
-    // ════════════════════════════════════════════════════════════════════
-    //  ONE CONTINUOUS MOTION
-    //  As the flap opens, the white card emerges, lifts, and morphs into
-    //  the hero — all chained together so the flap opening "triggers" the
-    //  card's journey. No separate phases, no dead zones.
-    // ════════════════════════════════════════════════════════════════════
+    // 0.0-0.55s — invitation script fades out.
+    tl.to(scriptRef.current, { opacity: 0, duration: 0.55, ease: 'power2.out' }, 0);
 
-    // Card is already hidden via useEffect; no need to re-set here.
-
-    // 0.0-0.55s - Invitation script fades.
-    tl.to(scriptRef.current, {
-      opacity: 0,
-      duration: 0.55,
-      ease: 'power2.out',
-    }, 0);
-
+    // Flap opens — deliberately slow so the reveal feels ceremonial.
     if (isMobileEnvelope) {
-      tl.to(flap, {
-        yPercent: -16,
-        opacity: 0,
-        duration: 0.85,
-        ease: 'power2.inOut',
-      }, 0.15);
+      tl.to(flap, { yPercent: -16, opacity: 0, duration: 1.4, ease: 'power2.inOut' }, 0.15);
     } else {
-      // 0.15-2.65s - Flap opens in 3D, revealing the paper inside slowly.
-      tl.to(flap, {
-        rotateX: -160,
-        duration: 2.5,
-        ease: 'power3.inOut',
-      }, 0.15);
+      tl.to(flap, { rotateX: -160, duration: 3.5, ease: 'power3.inOut' }, 0.15);
     }
 
-    // Once the flap has lifted enough to reveal the paper, move it behind
-    // the card but keep the side flaps and bottom pocket above the paper.
-    // This prevents the rotating flap back face from covering the card again.
     if (!isMobileEnvelope) {
-      tl.set(flap, { zIndex: 14 }, 1.45);
+      tl.set(flap, { zIndex: 14 }, 2.0);
     }
 
-    // 0.65-2.15s - Cream interior brightens as the flap rises.
-    tl.to(liner, {
-      opacity: 1,
-      duration: 1.5,
-      ease: 'power2.out',
-    }, 0.65);
+    // Cream interior brightens as the flap rises.
+    tl.to(liner, { opacity: 1, duration: 2.5, ease: 'power2.out' }, 0.65);
 
-    // Card slides up out of the envelope pocket after the flap opens.
-    const cardStart = isMobileEnvelope ? 0.7 : 2.4;
-    tl.to(card, {
-      y: 0,
-      duration: 1.1,
-      ease: 'power3.out',
-    }, cardStart);
-
-    // Fade out the side/bottom pocket overlay so the full card is revealed.
-    if (envTop) {
-      tl.to(envTop, {
+    // Fade out pocket overlay + seam lines to reveal the full card cleanly.
+    const fadeTargets = [envTop, seam].filter(Boolean);
+    if (fadeTargets.length) {
+      tl.to(fadeTargets, {
         opacity: 0,
-        duration: 0.9,
+        duration: 1.1,
         ease: 'power2.out',
-      }, isMobileEnvelope ? 0.8 : 2.7);
+      }, isMobileEnvelope ? 1.6 : 3.8);
     }
 
-    // Reveal homepage once the card has fully risen and been readable for a beat.
-    const mainReveal = isMobileEnvelope ? 2.2 : 4.2;
+    // T&O monogram blooms in at ~1.5s while the flap is still opening.
+    const textStart = isMobileEnvelope ? 0.9 : 1.5;
+    if (monogram) {
+      tl.to(monogram, {
+        opacity: 1,
+        scale: 1,
+        filter: 'blur(0px)',
+        duration: 1.8,
+        ease: 'power3.out',
+      }, textStart);
+    }
+
+    // Body text types in character by character, starting 2s after the monogram.
+    // Stagger tuned so all ~193 chars finish at ~7.5s.
+    if (textEl) {
+      const charEls = Array.from(textEl.querySelectorAll('.char-span'));
+      if (charEls.length) {
+        tl.to(charEls, {
+          opacity: 1,
+          duration: 0.001,
+          stagger: 0.038,
+          ease: 'none',
+        }, textStart + 1.4);
+      }
+    }
+
+    // Hold on the full card (~1.5s reading time after all text is visible), then fade.
+    const mainReveal = isMobileEnvelope ? 9.0 : 11.5;
     tl.set(main, { opacity: 1 }, mainReveal);
     tl.add(() => {
       document.body.dataset.heroPrimed = 'true';
@@ -176,12 +175,11 @@ export default function EnvelopeScreen() {
       window.dispatchEvent(new CustomEvent('envelope-opened'));
     }, mainReveal);
 
-    // Dissolve the envelope screen to complete the transition.
     tl.to(screen, {
       opacity: 0,
-      duration: 1.05,
+      duration: 1.4,
       ease: 'power2.inOut',
-    }, isMobileEnvelope ? 2.4 : 4.4);
+    }, isMobileEnvelope ? 9.2 : 11.7);
   }, []);
 
   useEffect(() => {
@@ -207,8 +205,13 @@ export default function EnvelopeScreen() {
     gsap.set(envelopeBodyRef.current, { opacity: 1 });
 
     if (cardRef.current) {
-      // Start card tucked down behind the pocket; slides up on open.
-      gsap.set(cardRef.current, { xPercent: -50, y: '30vh' });
+      gsap.set(cardRef.current, { xPercent: -50 });
+    }
+    if (monogramRef.current) {
+      gsap.set(monogramRef.current, { opacity: 0, scale: 0.82, filter: 'blur(8px)' });
+    }
+    if (textRef.current) {
+      gsap.set(textRef.current.querySelectorAll('.char-span'), { opacity: 0 });
     }
     return () => {
       document.body.style.overflow = '';
@@ -247,11 +250,7 @@ export default function EnvelopeScreen() {
       >
         <div
           className="absolute inset-0"
-          style={{
-            // Full rectangle (no V-cut) so the interior reads as a flat
-            // cream surface, not as another envelope shape.
-            background: '#EFE1C6',
-          }}
+          style={{ background: '#EFE1C6' }}
         >
           <div
             className="absolute inset-0"
@@ -262,8 +261,6 @@ export default function EnvelopeScreen() {
               opacity: 0.12,
             }}
           />
-          {/* Soft natural shadow at the top (under the flap) — gentle,
-              no hard inset edges that would suggest a second envelope. */}
           <div
             className="absolute left-0 right-0 top-0 h-[28%]"
             style={{
@@ -274,9 +271,7 @@ export default function EnvelopeScreen() {
         </div>
       </div>
 
-      {/* === WHITE CARD INSIDE THE ENVELOPE ===
-          The card stays behind the envelope body so the full V pocket shape
-          remains intact and the paper looks tucked inside. */}
+      {/* === PAPER CARD INSIDE THE ENVELOPE === */}
       <div
         ref={cardRef}
         className="pointer-events-none absolute left-1/2 z-[15]"
@@ -285,18 +280,13 @@ export default function EnvelopeScreen() {
           width: 'min(70vw, 440px)',
           height: 'calc(min(70vw, 440px) * 1.35)',
           transformOrigin: '50% 50%',
-          // iOS-safe: opt out of the parent's 3D perspective context so the
-          // card paints as a flat 2D layer (otherwise iOS Safari composites
-          // it as a black/transparent surface when GSAP applies a transform).
           transformStyle: 'flat',
           WebkitTransformStyle: 'flat',
           transform: 'translateZ(0)',
           WebkitTransform: 'translateZ(0)',
           backfaceVisibility: 'hidden',
           WebkitBackfaceVisibility: 'hidden',
-          // iOS-safe: guarantee the card itself is opaque white even if
-          // child layers (background images, gradients) fail to render.
-          backgroundColor: '#ffffff',
+          backgroundColor: '#f5ede0',
           borderRadius: '3px',
           isolation: 'isolate',
           boxShadow:
@@ -306,72 +296,76 @@ export default function EnvelopeScreen() {
         }}
         aria-hidden
       >
+        {/* Real paper texture */}
         <div
           className="absolute inset-0"
           style={{
-            background: 'linear-gradient(180deg, #ffffff 0%, #fbf7ee 100%)',
-            borderRadius: '3px',
-          }}
-        />
-        {/* subtle paper grain on the card (opacity-only, no mix-blend
-            so iOS Safari can't render it as a black overlay). */}
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: 'url(/assets/paper-texture.jpg)',
+            backgroundImage: 'url(/assets/paper.jpeg)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            opacity: 0.08,
             borderRadius: '3px',
           }}
         />
+        {/* Legibility overlay — lets border & lanterns show while keeping text readable */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: 'rgba(255, 251, 243, 0.55)',
+            borderRadius: '3px',
+          }}
+        />
+
         {/* Monogram and note */}
         <div
           className="absolute inset-x-0 top-[8%] flex flex-col items-center px-8 text-center"
         >
-          <span
-            style={{
-              fontFamily: "'Great Vibes', cursive",
-              fontSize: 'clamp(2.7rem, 8vw, 4.25rem)',
-              color: '#8a6337',
-              letterSpacing: '0.01em',
-              background: 'linear-gradient(180deg, #f1d18a 0%, #9b6a35 42%, #5f422c 100%)',
-              WebkitBackgroundClip: 'text',
-              backgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              textShadow:
-                '0 1px 0 rgba(255,248,230,0.65),' +
-                '0 0 16px rgba(255,171,72,0.22),' +
-                '0 10px 24px rgba(75,43,18,0.18)',
-            }}
-          >
-            T &amp; O
-          </span>
+          <div ref={monogramRef}>
+            <span
+              style={{
+                fontFamily: "'Great Vibes', cursive",
+                fontSize: 'clamp(2.7rem, 8vw, 4.25rem)',
+                color: '#8a6337',
+                letterSpacing: '0.01em',
+                background: 'linear-gradient(180deg, #f1d18a 0%, #9b6a35 42%, #5f422c 100%)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                textShadow:
+                  '0 1px 0 rgba(255,248,230,0.65),' +
+                  '0 0 16px rgba(255,171,72,0.22),' +
+                  '0 10px 24px rgba(75,43,18,0.18)',
+              }}
+            >
+              T &amp; O
+            </span>
+          </div>
           <p
+            ref={textRef}
             className="mt-3 max-w-[320px] italic leading-snug"
             style={{
               fontFamily: "'Cormorant Garamond', Georgia, 'Times New Roman', serif",
-              fontSize: 'clamp(0.85rem, 3.2vw, 1rem)',
-              color: '#5d4634',
-              WebkitTextFillColor: '#5d4634',
+              fontSize: 'clamp(0.95rem, 3.4vw, 1.1rem)',
+              fontWeight: 700,
+              color: '#3a2210',
+              WebkitTextFillColor: '#3a2210',
               WebkitFontSmoothing: 'antialiased',
+              textShadow: '0 1px 3px rgba(255,248,235,0.9)',
             }}
           >
-            This space has been thoughtfully created to guide you through every
-            detail as our wedding approaches. For now, please RSVP, and more
-            information about the wedding schedule will be shared shortly.
+            {CARD_TEXT.split('').map((char, i) => (
+              <span key={i} className="char-span" style={{ display: 'inline' }}>
+                {char}
+              </span>
+            ))}
           </p>
         </div>
       </div>
 
-      {/* === ENVELOPE BODY (full backing — dark damask covering the
-              whole envelope shape when closed. Fades out once the flap
-              opens, leaving the cream liner + card + front pocket.) === */}
+      {/* === ENVELOPE BODY === */}
       <div
         ref={envelopeBodyRef}
         className="pointer-events-none absolute inset-0 z-[10]"
         style={{
-          // shape excludes the top triangle (flap area)
           clipPath: 'polygon(0% 0%, 50% 50%, 100% 0%, 100% 100%, 0% 100%)',
         }}
       >
@@ -384,17 +378,13 @@ export default function EnvelopeScreen() {
           }}
         />
         <div className="absolute inset-0" style={GRAIN} />
-
         <div
           className="absolute inset-0"
           style={{ boxShadow: 'inset 0 0 54px rgba(90,50,26,0.08)' }}
         />
       </div>
 
-      {/* === ENVELOPE TOP PIECES (side flaps + bottom V pocket) ===
-          These stay above the paper so it reads as tucked inside, while the
-          paper itself stays above the backing so it cannot disappear behind
-          the envelope body during the opening. */}
+      {/* === ENVELOPE TOP PIECES (side flaps + bottom V pocket) === */}
       <div ref={envelopeTopRef} className="pointer-events-none absolute inset-0 z-[20]" aria-hidden>
         <div
           className="absolute inset-0"
@@ -434,8 +424,9 @@ export default function EnvelopeScreen() {
         </div>
       </div>
 
-      {/* Soft seam shading — visual folds, not hard construction lines. */}
+      {/* Soft seam shading — fades out when card is revealed. */}
       <svg
+        ref={seamRef}
         className="pointer-events-none absolute inset-0 z-[21] h-full w-full"
         viewBox="0 0 100 100"
         preserveAspectRatio="none"
@@ -538,7 +529,7 @@ export default function EnvelopeScreen() {
           willChange: 'transform',
         }}
       >
-        {/* FLAP FRONT (cream paper — visible when closed) */}
+        {/* FLAP FRONT */}
         <div
           className="absolute inset-0"
           style={{
@@ -608,7 +599,7 @@ export default function EnvelopeScreen() {
           </svg>
         </div>
 
-        {/* FLAP BACK (cream — visible while opening) */}
+        {/* FLAP BACK */}
         <div
           className="absolute inset-0"
           style={{
@@ -621,10 +612,7 @@ export default function EnvelopeScreen() {
             WebkitTransform: 'rotateX(180deg)',
           }}
         >
-          <div
-            className="absolute inset-0"
-            style={{ background: '#EFE1C6' }}
-          />
+          <div className="absolute inset-0" style={{ background: '#EFE1C6' }} />
           <div
             className="absolute inset-0"
             style={{
@@ -643,7 +631,7 @@ export default function EnvelopeScreen() {
           />
         </div>
 
-        {/* === WAX SEAL — at the V-tip of the flap === */}
+        {/* === WAX SEAL === */}
         <div
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
           style={{ backfaceVisibility: 'hidden' }}
@@ -700,7 +688,7 @@ export default function EnvelopeScreen() {
         </div>
       </div>
 
-      {/* === MOBILE FLAP — solid div + clip-path polygon (iOS-safe) === */}
+      {/* === MOBILE FLAP === */}
       <div
         ref={mobileFlapRef}
         className="pointer-events-none absolute inset-0 z-[25] md:hidden"
