@@ -63,6 +63,7 @@ export default function EnvelopeScreen() {
   const linerRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const envelopeBodyRef = useRef<HTMLDivElement>(null);
+  const envelopeTopRef = useRef<HTMLDivElement>(null);
   const scriptRef = useRef<HTMLParagraphElement>(null);
   const tapRef = useRef<HTMLParagraphElement>(null);
   const openButtonRef = useRef<HTMLButtonElement>(null);
@@ -77,6 +78,7 @@ export default function EnvelopeScreen() {
     const liner = linerRef.current;
     const card = cardRef.current;
     const body = envelopeBodyRef.current;
+    const envTop = envelopeTopRef.current;
     const main = document.getElementById('main-content');
     if (!screen || !flap || !liner || !card || !body || !main) return;
 
@@ -148,22 +150,38 @@ export default function EnvelopeScreen() {
       ease: 'power2.out',
     }, 0.65);
 
-    // 2.85s - Reveal homepage underneath once the flap finishes opening.
-    //        The bridge uses the same photo as the hero, so the handoff feels
-    //        like the envelope is opening into Marrakesh instead of cutting away.
-    tl.set(main, { opacity: 1 }, 2.85);
+    // Card slides up out of the envelope pocket after the flap opens.
+    const cardStart = isMobileEnvelope ? 0.7 : 2.4;
+    tl.to(card, {
+      y: 0,
+      duration: 1.1,
+      ease: 'power3.out',
+    }, cardStart);
+
+    // Fade out the side/bottom pocket overlay so the full card is revealed.
+    if (envTop) {
+      tl.to(envTop, {
+        opacity: 0,
+        duration: 0.9,
+        ease: 'power2.out',
+      }, isMobileEnvelope ? 0.8 : 2.7);
+    }
+
+    // Reveal homepage once the card has fully risen and been readable for a beat.
+    const mainReveal = isMobileEnvelope ? 2.2 : 4.2;
+    tl.set(main, { opacity: 1 }, mainReveal);
     tl.add(() => {
       document.body.dataset.heroPrimed = 'true';
       main.setAttribute('aria-hidden', 'false');
       window.dispatchEvent(new CustomEvent('envelope-opened'));
-    }, 2.85);
+    }, mainReveal);
 
-    // 3.1-4.15s - Once T & O is visible on the paper, dissolve gently.
+    // Dissolve the envelope screen to complete the transition.
     tl.to(screen, {
       opacity: 0,
       duration: 1.05,
       ease: 'power2.inOut',
-    }, 3.1);
+    }, isMobileEnvelope ? 2.4 : 4.4);
   }, []);
 
   useEffect(() => {
@@ -189,9 +207,8 @@ export default function EnvelopeScreen() {
     gsap.set(envelopeBodyRef.current, { opacity: 1 });
 
     if (cardRef.current) {
-      // The paper is present from the first frame. The closed flap and body
-      // hide it naturally, then reveal it as the envelope opens.
-      gsap.set(cardRef.current, { xPercent: -50 });
+      // Start card tucked down behind the pocket; slides up on open.
+      gsap.set(cardRef.current, { xPercent: -50, y: '30vh' });
     }
     return () => {
       document.body.style.overflow = '';
@@ -378,7 +395,7 @@ export default function EnvelopeScreen() {
           These stay above the paper so it reads as tucked inside, while the
           paper itself stays above the backing so it cannot disappear behind
           the envelope body during the opening. */}
-      <div className="pointer-events-none absolute inset-0 z-[20]" aria-hidden>
+      <div ref={envelopeTopRef} className="pointer-events-none absolute inset-0 z-[20]" aria-hidden>
         <div
           className="absolute inset-0"
           style={{ clipPath: 'polygon(0% 0%, 0% 100%, 50% 50%)' }}
