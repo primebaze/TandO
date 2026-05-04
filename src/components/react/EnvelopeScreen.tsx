@@ -294,13 +294,15 @@ export default function EnvelopeScreen() {
         }}
         aria-hidden
       >
-        {/* Real paper texture — img tag is more reliable than background-image on iOS */}
-        <img
-          src="/assets/paper.jpeg"
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover"
-          style={{ borderRadius: '3px', display: 'block' }}
+        {/* Paper texture background */}
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: 'url(/assets/paper.jpeg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            borderRadius: '3px',
+          }}
         />
         {/* Legibility overlay — lets border & lanterns show while keeping text readable */}
         <div
@@ -357,67 +359,59 @@ export default function EnvelopeScreen() {
         </div>
       </div>
 
-      {/* === ENVELOPE BODY === */}
+      {/* === ENVELOPE BODY — SVG polygon avoids iOS clip-path black rendering === */}
       <div
         ref={envelopeBodyRef}
         className="pointer-events-none absolute inset-0 z-[10]"
-        style={{
-          clipPath: 'polygon(0% 0%, 50% 50%, 100% 0%, 100% 100%, 0% 100%)',
-        }}
+        aria-hidden
       >
-        <PaperSurface />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              'radial-gradient(ellipse 95% 80% at 50% 50%, transparent 58%, rgba(90,50,26,0.08) 100%)',
-          }}
-        />
+        <svg
+          className="absolute inset-0 h-full w-full"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <defs>
+            <radialGradient id="envBodyVig" cx="50%" cy="50%" r="70%">
+              <stop offset="55%" stopColor="rgba(255,255,255,0)" />
+              <stop offset="100%" stopColor="rgba(90,50,26,0.09)" />
+            </radialGradient>
+          </defs>
+          <polygon points="0,0 50,50 100,0 100,100 0,100" fill="#EFE1C6" />
+          <polygon points="0,0 50,50 100,0 100,100 0,100" fill="url(#envBodyVig)" />
+        </svg>
         <div className="absolute inset-0" style={GRAIN} />
-        <div
-          className="absolute inset-0"
-          style={{ boxShadow: 'inset 0 0 54px rgba(90,50,26,0.08)' }}
-        />
       </div>
 
-      {/* === ENVELOPE TOP PIECES (side flaps + bottom V pocket) === */}
+      {/* === ENVELOPE POCKET FACES — SVG polygons avoid iOS clip-path black rendering === */}
       <div ref={envelopeTopRef} className="pointer-events-none absolute inset-0 z-[20]" aria-hidden>
-        <div
-          className="absolute inset-0"
-          style={{ clipPath: 'polygon(0% 0%, 0% 100%, 50% 50%)' }}
+        <svg
+          className="absolute inset-0 h-full w-full"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          aria-hidden="true"
         >
-          <PaperSurface />
-          <div
-            className="absolute inset-0"
-            style={{
-              background: 'linear-gradient(90deg, rgba(90,50,26,0.05) 0%, rgba(90,50,26,0) 100%)',
-            }}
-          />
-        </div>
-        <div
-          className="absolute inset-0"
-          style={{ clipPath: 'polygon(100% 0%, 100% 100%, 50% 50%)' }}
-        >
-          <PaperSurface />
-          <div
-            className="absolute inset-0"
-            style={{
-              background: 'linear-gradient(270deg, rgba(90,50,26,0.05) 0%, rgba(90,50,26,0) 100%)',
-            }}
-          />
-        </div>
-        <div
-          className="absolute inset-0"
-          style={{ clipPath: 'polygon(0% 100%, 100% 100%, 50% 50%)' }}
-        >
-          <PaperSurface />
-          <div
-            className="absolute inset-0"
-            style={{
-              background: 'linear-gradient(180deg, rgba(90,50,26,0.03) 0%, rgba(90,50,26,0.08) 100%)',
-            }}
-          />
-        </div>
+          <defs>
+            <linearGradient id="envLeftGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stopColor="rgba(90,50,26,0.05)" />
+              <stop offset="1" stopColor="rgba(90,50,26,0)" />
+            </linearGradient>
+            <linearGradient id="envRightGrad" x1="1" y1="0" x2="0" y2="0">
+              <stop offset="0" stopColor="rgba(90,50,26,0.05)" />
+              <stop offset="1" stopColor="rgba(90,50,26,0)" />
+            </linearGradient>
+            <linearGradient id="envBottomGrad" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0" stopColor="rgba(90,50,26,0.08)" />
+              <stop offset="1" stopColor="rgba(90,50,26,0.03)" />
+            </linearGradient>
+          </defs>
+          <polygon points="0,0 0,100 50,50" fill="#EFE1C6" />
+          <polygon points="0,0 0,100 50,50" fill="url(#envLeftGrad)" />
+          <polygon points="100,0 100,100 50,50" fill="#EFE1C6" />
+          <polygon points="100,0 100,100 50,50" fill="url(#envRightGrad)" />
+          <polygon points="0,100 100,100 50,50" fill="#EFE1C6" />
+          <polygon points="0,100 100,100 50,50" fill="url(#envBottomGrad)" />
+        </svg>
       </div>
 
       {/* Soft seam shading — fades out when card is revealed. */}
@@ -698,10 +692,16 @@ export default function EnvelopeScreen() {
         <svg
           className="absolute left-0 top-0 w-full"
           style={{ height: '50svh', filter: 'drop-shadow(0 6px 14px rgba(90,50,26,0.12))' }}
-          viewBox="0 0 1 1"
+          viewBox="0 0 100 100"
           preserveAspectRatio="none"
         >
-          <polygon points="0,0 1,0 0.5,1" fill="#EFE1C6" />
+          <defs>
+            <linearGradient id="mobileFlapGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor="#F8F0E0" />
+              <stop offset="1" stopColor="#E5D4B5" />
+            </linearGradient>
+          </defs>
+          <polygon points="0,0 100,0 50,100" fill="url(#mobileFlapGrad)" />
         </svg>
         <div
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
