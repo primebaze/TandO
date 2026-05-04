@@ -9,6 +9,12 @@ import DressCode from "../components/sections/DressCode.astro";
 ---
 
 <BaseLayout>
+  <img
+    src="/assets/cherub.png"
+    alt=""
+    aria-hidden="true"
+    class="cherub-float pointer-events-none fixed bottom-28 left-4 z-40 w-20 mix-blend-multiply md:bottom-32 md:left-8 md:w-28"
+  />
   <div id="main-content" class="opacity-0" aria-hidden="true">
     <Hero />
     <DateReveal client:load />
@@ -55,6 +61,16 @@ import DressCode from "../components/sections/DressCode.astro";
     </footer>
   </div>
   <EnvelopeScreen client:load />
+  <style>
+    .cherub-float {
+      animation: cherub-bob 4s ease-in-out infinite;
+      transform-origin: center bottom;
+    }
+    @keyframes cherub-bob {
+      0%, 100% { transform: translateY(0px) rotate(-4deg); }
+      50%       { transform: translateY(-14px) rotate(2deg); }
+    }
+  </style>
   <script>
     import { playHeroIntro, initScrollAnimations } from "../scripts/animations";
 
