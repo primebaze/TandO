@@ -146,7 +146,6 @@ export default function EnvelopeScreen() {
       tl.to(monogram, {
         opacity: 1,
         scale: 1,
-        filter: 'blur(0px)',
         duration: 1.8,
         ease: 'power3.out',
       }, textStart);
@@ -208,7 +207,7 @@ export default function EnvelopeScreen() {
       gsap.set(cardRef.current, { xPercent: -50 });
     }
     if (monogramRef.current) {
-      gsap.set(monogramRef.current, { opacity: 0, scale: 0.82, filter: 'blur(8px)' });
+      gsap.set(monogramRef.current, { opacity: 0, scale: 0.82 });
     }
     if (textRef.current) {
       gsap.set(textRef.current.querySelectorAll('.char-span'), { opacity: 0 });
