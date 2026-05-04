@@ -380,6 +380,25 @@ export default function EnvelopeScreen() {
           <polygon points="0,0 50,50 100,0 100,100 0,100" fill="#EFE1C6" />
           <polygon points="0,0 50,50 100,0 100,100 0,100" fill="url(#envBodyVig)" />
         </svg>
+        {/* Full-screen texture overlays — CSS background-image is iOS-safe (no clip-path) */}
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: 'url(/assets/paper-texture.jpg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: 0.18,
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: 'url(/assets/damask-texture.png)',
+            backgroundSize: '480px',
+            backgroundRepeat: 'repeat',
+            opacity: 0.09,
+          }}
+        />
         <div className="absolute inset-0" style={GRAIN} />
       </div>
 
@@ -393,23 +412,21 @@ export default function EnvelopeScreen() {
         >
           <defs>
             <linearGradient id="envLeftGrad" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stopColor="rgba(90,50,26,0.05)" />
+              <stop offset="0" stopColor="rgba(90,50,26,0.09)" />
               <stop offset="1" stopColor="rgba(90,50,26,0)" />
             </linearGradient>
             <linearGradient id="envRightGrad" x1="1" y1="0" x2="0" y2="0">
-              <stop offset="0" stopColor="rgba(90,50,26,0.05)" />
+              <stop offset="0" stopColor="rgba(90,50,26,0.09)" />
               <stop offset="1" stopColor="rgba(90,50,26,0)" />
             </linearGradient>
             <linearGradient id="envBottomGrad" x1="0" y1="1" x2="0" y2="0">
-              <stop offset="0" stopColor="rgba(90,50,26,0.08)" />
-              <stop offset="1" stopColor="rgba(90,50,26,0.03)" />
+              <stop offset="0" stopColor="rgba(90,50,26,0.13)" />
+              <stop offset="1" stopColor="rgba(90,50,26,0.04)" />
             </linearGradient>
           </defs>
-          <polygon points="0,0 0,100 50,50" fill="#EFE1C6" />
+          {/* Transparent base — texture from z-10 shows through; gradient adds shading only */}
           <polygon points="0,0 0,100 50,50" fill="url(#envLeftGrad)" />
-          <polygon points="100,0 100,100 50,50" fill="#EFE1C6" />
           <polygon points="100,0 100,100 50,50" fill="url(#envRightGrad)" />
-          <polygon points="0,100 100,100 50,50" fill="#EFE1C6" />
           <polygon points="0,100 100,100 50,50" fill="url(#envBottomGrad)" />
         </svg>
       </div>
@@ -697,8 +714,8 @@ export default function EnvelopeScreen() {
         >
           <defs>
             <linearGradient id="mobileFlapGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stopColor="#F8F0E0" />
-              <stop offset="1" stopColor="#E5D4B5" />
+              <stop offset="0" stopColor="rgba(252,244,230,0.92)" />
+              <stop offset="1" stopColor="rgba(238,220,190,0.88)" />
             </linearGradient>
           </defs>
           <polygon points="0,0 100,0 50,100" fill="url(#mobileFlapGrad)" />
