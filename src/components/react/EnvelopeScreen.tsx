@@ -294,15 +294,13 @@ export default function EnvelopeScreen() {
         }}
         aria-hidden
       >
-        {/* Real paper texture */}
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: 'url(/assets/paper.jpeg)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            borderRadius: '3px',
-          }}
+        {/* Real paper texture — img tag is more reliable than background-image on iOS */}
+        <img
+          src="/assets/paper.jpeg"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{ borderRadius: '3px', display: 'block' }}
         />
         {/* Legibility overlay — lets border & lanterns show while keeping text readable */}
         <div
@@ -691,30 +689,20 @@ export default function EnvelopeScreen() {
       </div>
       </div>
 
-      {/* === MOBILE FLAP === */}
+      {/* === MOBILE FLAP — SVG triangle avoids iOS clip-path black rendering bug === */}
       <div
         ref={mobileFlapRef}
         className="pointer-events-none absolute inset-0 z-[25] md:hidden"
         aria-hidden
       >
-        <div
-          className="absolute left-0 top-0 w-full overflow-hidden"
-          style={{
-            height: '50svh',
-            WebkitClipPath: 'polygon(0% 0%, 100% 0%, 50% 100%)',
-            clipPath: 'polygon(0% 0%, 100% 0%, 50% 100%)',
-            boxShadow: '0 10px 18px rgba(90,50,26,0.10)',
-          }}
+        <svg
+          className="absolute left-0 top-0 w-full"
+          style={{ height: '50svh', filter: 'drop-shadow(0 6px 14px rgba(90,50,26,0.12))' }}
+          viewBox="0 0 1 1"
+          preserveAspectRatio="none"
         >
-          <PaperSurface />
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                'linear-gradient(180deg, rgba(255,248,235,0.10) 0%, transparent 42%, rgba(90,50,26,0.08) 100%)',
-            }}
-          />
-        </div>
+          <polygon points="0,0 1,0 0.5,1" fill="#EFE1C6" />
+        </svg>
         <div
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
           style={{
