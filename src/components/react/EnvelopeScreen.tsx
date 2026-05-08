@@ -310,7 +310,7 @@ export default function EnvelopeScreen() {
           }}
         />
 
-        {/* Monogram and note */}
+        {/* Monogram */}
         <div
           className="absolute inset-x-0 top-[8%] flex flex-col items-center px-8 text-center"
         >
@@ -334,9 +334,16 @@ export default function EnvelopeScreen() {
               T &amp; O
             </span>
           </div>
+        </div>
+
+        {/* Body text — starts below the lanterns */}
+        <div
+          className="absolute inset-x-0 flex flex-col items-center px-8 text-center"
+          style={{ top: '48%' }}
+        >
           <p
             ref={textRef}
-            className="mt-3 max-w-[320px] italic leading-snug"
+            className="max-w-[320px] italic leading-snug"
             style={{
               fontFamily: "'Cormorant Garamond', Georgia, 'Times New Roman', serif",
               fontSize: 'clamp(0.95rem, 3.4vw, 1.1rem)',
