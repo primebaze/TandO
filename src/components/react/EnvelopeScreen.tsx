@@ -124,7 +124,7 @@ export default function EnvelopeScreen() {
     }
 
     if (!isMobileEnvelope) {
-      tl.set(flap, { zIndex: 14 }, 2.0);
+      tl.set(flap, { zIndex: 14 }, 4.2);
     }
 
     // Card rises out of envelope as flap opens.
