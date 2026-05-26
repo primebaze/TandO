@@ -127,6 +127,13 @@ export default function EnvelopeScreen() {
       tl.set(flap, { zIndex: 14 }, 2.0);
     }
 
+    // Card rises out of envelope as flap opens.
+    tl.to(card, {
+      yPercent: 0,
+      duration: isMobileEnvelope ? 1.6 : 2.4,
+      ease: 'power3.out',
+    }, isMobileEnvelope ? 0.8 : 1.4);
+
     // Cream interior brightens as the flap rises.
     tl.to(liner, { opacity: 1, duration: 2.5, ease: 'power2.out' }, 0.65);
 
@@ -207,7 +214,7 @@ export default function EnvelopeScreen() {
     gsap.set(envelopeBodyRef.current, { opacity: 1 });
 
     if (cardRef.current) {
-      gsap.set(cardRef.current, { xPercent: -50 });
+      gsap.set(cardRef.current, { xPercent: -50, yPercent: 60 });
     }
     if (monogramRef.current) {
       gsap.set(monogramRef.current, { opacity: 0, scale: 0.82 });
