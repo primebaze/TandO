@@ -518,11 +518,8 @@ export default function EnvelopeScreen() {
           fontWeight: 700,
           letterSpacing: '0.02em',
           color: '#3f2414',
-          WebkitTextStroke: '0.2px rgba(63,36,20,0.26)',
-          textShadow:
-            '0 1px 0 rgba(255,250,238,0.86),' +
-            '0 2px 5px rgba(90,50,26,0.28),' +
-            '0 8px 22px rgba(90,50,26,0.20)',
+          WebkitTextStroke: '0.2px rgba(63,36,20,0.15)',
+          textShadow: '0 1px 2px rgba(255,250,238,0.6)',
         }}
       >
         Together with our families, we invite you to celebrate

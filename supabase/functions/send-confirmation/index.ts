@@ -1,5 +1,6 @@
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY')!;
 const FROM_ADDRESS = Deno.env.get('FROM_ADDRESS') ?? 'Tayo & Ope <hello@tothetaros.com>';
+const ADMIN_EMAIL = 'omotayo_adesakin@hotmail.com';
 
 const cors = {
   'Access-Control-Allow-Origin': '*',
@@ -52,6 +53,42 @@ Deno.serve(async (req) => {
         headers: { ...cors, 'Content-Type': 'application/json' },
       });
     }
+
+    // Admin notification
+    const adults = companions.filter((c: Companion) => c.type === 'adult').length;
+    const children = companions.filter((c: Companion) => c.type === 'child').length;
+    const partySummary = [
+      `1 primary guest`,
+      adults > 0 ? `${adults} adult${adults > 1 ? 's' : ''}` : '',
+      children > 0 ? `${children} child${children > 1 ? 'ren' : ''}` : '',
+    ].filter(Boolean).join(' · ');
+
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${RESEND_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: FROM_ADDRESS,
+        to: ADMIN_EMAIL,
+        subject: `New RSVP: ${[title, firstName, lastName].filter(Boolean).join(' ')} — ${attending === 'yes' ? 'Attending ✓' : 'Not Attending ✗'}`,
+        html: `
+          <div style="font-family:Georgia,serif;background:#0f0d0b;color:#f5f0de;padding:40px;border-radius:12px;max-width:500px;">
+            <h2 style="color:#e6c787;margin:0 0 24px;">New RSVP Received</h2>
+            <p><strong>Name:</strong> ${[title, firstName, lastName].filter(Boolean).join(' ')}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Attending:</strong> ${attending === 'yes' ? '✅ Yes' : '❌ No'}</p>
+            <p><strong>Party:</strong> ${partySummary}</p>
+            ${companions.length > 0 ? `
+            <p><strong>Guests:</strong></p>
+            <ul>
+              ${companions.map((c: Companion) => `<li>${c.firstName} ${c.lastName} (${c.type})${c.allergies ? ` — allergies: ${c.allergies}` : ''}</li>`).join('')}
+            </ul>` : ''}
+          </div>
+        `,
+      }),
+    });
 
     return new Response(JSON.stringify({ ok: true }), {
       headers: { ...cors, 'Content-Type': 'application/json' },
