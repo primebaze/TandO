@@ -306,68 +306,8 @@ export default function EnvelopeScreen() {
       >
         {/* Paper texture — SVG image element is iOS-reliable inside fixed/overflow:hidden ancestor */}
         <svg className="absolute inset-0 h-full w-full" aria-hidden="true" style={{ borderRadius: '3px' }}>
-          <image href="/assets/paper.jpeg" x="0" y="0" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" />
+          <image href="/assets/card-paper.png" x="0" y="0" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" />
         </svg>
-        {/* Legibility overlay — reduced to let paper borders & lanterns show */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background: 'rgba(255, 251, 243, 0.32)',
-            borderRadius: '3px',
-          }}
-        />
-
-        {/* Monogram */}
-        <div
-          className="absolute inset-x-0 top-[8%] flex flex-col items-center px-8 text-center"
-        >
-          <div ref={monogramRef}>
-            <span
-              style={{
-                fontFamily: "'Great Vibes', cursive",
-                fontSize: 'clamp(2.7rem, 8vw, 4.25rem)',
-                color: '#8a6337',
-                letterSpacing: '0.01em',
-                background: 'linear-gradient(180deg, #d4960a 0%, #a06010 50%, #6b3a0c 100%)',
-                WebkitBackgroundClip: 'text',
-                backgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                textShadow:
-                  '0 1px 0 rgba(255,248,230,0.65),' +
-                  '0 0 16px rgba(255,171,72,0.22),' +
-                  '0 10px 24px rgba(75,43,18,0.18)',
-              }}
-            >
-              T &amp; O
-            </span>
-          </div>
-        </div>
-
-        {/* Body text — starts below the lanterns */}
-        <div
-          className="absolute inset-x-0 flex flex-col items-center px-8 text-center"
-          style={{ top: '48%' }}
-        >
-          <p
-            ref={textRef}
-            className="max-w-[320px] italic leading-snug"
-            style={{
-              fontFamily: "'Cormorant Garamond', Georgia, 'Times New Roman', serif",
-              fontSize: 'clamp(0.95rem, 3.4vw, 1.1rem)',
-              fontWeight: 700,
-              color: '#3a2210',
-              WebkitTextFillColor: '#3a2210',
-              WebkitFontSmoothing: 'antialiased',
-              textShadow: '0 1px 3px rgba(255,248,235,0.9)',
-            }}
-          >
-            {CARD_TEXT.split('').map((char, i) => (
-              <span key={i} className="char-span" style={{ display: 'inline' }}>
-                {char}
-              </span>
-            ))}
-          </p>
-        </div>
       </div>
 
       {/* === ENVELOPE BODY — SVG polygon avoids iOS clip-path black rendering === */}
