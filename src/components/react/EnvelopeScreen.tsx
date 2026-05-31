@@ -312,7 +312,7 @@ export default function EnvelopeScreen() {
         {/* Body text — writing animation, sits in the open space of the new image */}
         <div
           className="absolute inset-x-0 flex flex-col items-center px-8 text-center"
-          style={{ top: '48%' }}
+          style={{ top: '34%' }}
         >
           <p
             ref={textRef}
@@ -632,8 +632,11 @@ export default function EnvelopeScreen() {
 
         {/* === WAX SEAL === */}
         <div
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-          style={{ backfaceVisibility: 'hidden' }}
+          className="absolute left-1/2 top-1/2"
+          style={{
+            backfaceVisibility: 'hidden',
+            transform: 'translate(-50%, -50%) translateZ(4px)',
+          }}
         >
           <div
             className="pointer-events-auto relative cursor-pointer rounded-full"
