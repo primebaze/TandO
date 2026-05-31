@@ -308,6 +308,32 @@ export default function EnvelopeScreen() {
         <svg className="absolute inset-0 h-full w-full" aria-hidden="true" style={{ borderRadius: '3px' }}>
           <image href="/assets/card-paper.png" x="0" y="0" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" />
         </svg>
+
+        {/* Body text — writing animation, sits in the open space of the new image */}
+        <div
+          className="absolute inset-x-0 flex flex-col items-center px-8 text-center"
+          style={{ top: '48%' }}
+        >
+          <p
+            ref={textRef}
+            className="max-w-[320px] italic leading-snug"
+            style={{
+              fontFamily: "'Cormorant Garamond', Georgia, 'Times New Roman', serif",
+              fontSize: 'clamp(0.95rem, 3.4vw, 1.1rem)',
+              fontWeight: 700,
+              color: '#3a2210',
+              WebkitTextFillColor: '#3a2210',
+              WebkitFontSmoothing: 'antialiased',
+              textShadow: '0 1px 3px rgba(255,248,235,0.9)',
+            }}
+          >
+            {CARD_TEXT.split('').map((char, i) => (
+              <span key={i} className="char-span" style={{ display: 'inline' }}>
+                {char}
+              </span>
+            ))}
+          </p>
+        </div>
       </div>
 
       {/* === ENVELOPE BODY — SVG polygon avoids iOS clip-path black rendering === */}
