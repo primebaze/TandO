@@ -323,7 +323,6 @@ export default function AdminRSVPs() {
       'Companions',
       'Song',
       'Message',
-      'Notification Email',
     ];
 
     const lines = rows.map((row, index) =>
@@ -341,7 +340,6 @@ export default function AdminRSVPs() {
         companionsSummary(row),
         row.song ?? '',
         row.message ?? '',
-        row.notification_email,
       ]
         .map(escapeCsv)
         .join(','),
