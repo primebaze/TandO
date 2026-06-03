@@ -68,6 +68,29 @@ function formatDate(value: string) {
   }).format(new Date(value));
 }
 
+function escapeCsv(value: unknown) {
+  const text = String(value ?? '');
+  // Wrap in quotes and double any embedded quotes so commas, quotes and
+  // newlines are preserved. Prefix a leading =/+/-/@ with a single quote to
+  // neutralise spreadsheet formula injection.
+  const guarded = /^[=+\-@]/.test(text) ? `'${text}` : text;
+  return `"${guarded.replace(/"/g, '""')}"`;
+}
+
+function companionsSummary(row: RSVPRow) {
+  const companions = Array.isArray(row.companions) ? row.companions : [];
+  if (!companions.length) return '';
+  return companions
+    .map((person) => {
+      const type = person.type
+        ? person.type.charAt(0).toUpperCase() + person.type.slice(1)
+        : 'Guest';
+      const allergies = person.allergies ? ` (allergies: ${person.allergies})` : '';
+      return `${type}: ${companionName(person)}${allergies}`;
+    })
+    .join('; ');
+}
+
 export default function AdminRSVPs() {
   const [accessCode, setAccessCode] = useState('');
   const [rows, setRows] = useState<RSVPRow[]>([]);
@@ -283,6 +306,62 @@ export default function AdminRSVPs() {
     reportWindow.document.close();
   }
 
+  function exportCsv() {
+    if (!rows.length) return;
+
+    const headers = [
+      '#',
+      'Submitted',
+      'Status',
+      'Title',
+      'First Name',
+      'Last Name',
+      'Email',
+      'Phone',
+      'Allergies',
+      'Party Size',
+      'Companions',
+      'Song',
+      'Message',
+      'Notification Email',
+    ];
+
+    const lines = rows.map((row, index) =>
+      [
+        index + 1,
+        formatDate(row.submitted_at),
+        row.attending === 'yes' ? 'Attending' : 'Cannot attend',
+        row.title ?? '',
+        row.first_name,
+        row.last_name,
+        row.email,
+        row.phone,
+        row.allergies ?? '',
+        1 + companionsCount(row),
+        companionsSummary(row),
+        row.song ?? '',
+        row.message ?? '',
+        row.notification_email,
+      ]
+        .map(escapeCsv)
+        .join(','),
+    );
+
+    // Prepend a BOM so Excel reads UTF-8 correctly.
+    const csv = '﻿' + [headers.map(escapeCsv).join(','), ...lines].join('\r\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const stamp = new Date().toISOString().slice(0, 10);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `rsvp-export-${stamp}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
   return (
     <div className="space-y-8">
       <form onSubmit={loadRSVPs} className="rounded-[1.75rem] border border-white/12 bg-white/[0.055] p-5 shadow-[0_28px_90px_rgba(0,0,0,0.28)] backdrop-blur-xl md:p-6">
@@ -352,15 +431,26 @@ export default function AdminRSVPs() {
             </button>
           ))}
         </div>
-        <button
-          type="button"
-          onClick={exportPdf}
-          disabled={!rows.length}
-          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/20 bg-white/[0.05] px-6 font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-white transition hover:bg-white/10 disabled:opacity-40"
-        >
-          <Download className="h-3.5 w-3.5" />
-          Export PDF
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={exportCsv}
+            disabled={!rows.length}
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/20 bg-white/[0.05] px-6 font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-white transition hover:bg-white/10 disabled:opacity-40"
+          >
+            <Download className="h-3.5 w-3.5" />
+            Export CSV
+          </button>
+          <button
+            type="button"
+            onClick={exportPdf}
+            disabled={!rows.length}
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/20 bg-white/[0.05] px-6 font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-white transition hover:bg-white/10 disabled:opacity-40"
+          >
+            <Download className="h-3.5 w-3.5" />
+            Export PDF
+          </button>
+        </div>
       </div>
 
       {!!filteredRows.length && (
