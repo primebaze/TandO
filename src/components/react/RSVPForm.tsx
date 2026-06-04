@@ -194,7 +194,7 @@ export default function RSVPForm() {
           href="/"
           className="mt-8 inline-flex min-h-11 items-center justify-center rounded-full border border-white/25 bg-white/5 px-7 font-sans text-[10px] font-semibold uppercase tracking-[0.32em] text-white transition hover:bg-white/10"
         >
-          Back to invitation
+          Homepage
         </a>
       </div>
     );
