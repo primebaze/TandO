@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { ChevronLeft, ChevronRight, Download, LockKeyhole, RefreshCw, Search, Trash2, UsersRound } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Download, LockKeyhole, Mail, RefreshCw, Search, Send, Trash2, UsersRound } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 type Companion = {
@@ -102,6 +102,11 @@ export default function AdminRSVPs() {
   const [newSitePassword, setNewSitePassword] = useState('');
   const [pwSaving, setPwSaving] = useState(false);
   const [pwMessage, setPwMessage] = useState<{ ok: boolean; text: string } | null>(null);
+  const [bulkSubject, setBulkSubject] = useState('');
+  const [bulkMessage, setBulkMessage] = useState('');
+  const [bulkAudience, setBulkAudience] = useState<'all' | 'attending' | 'declined'>('all');
+  const [bulkSending, setBulkSending] = useState(false);
+  const [bulkResult, setBulkResult] = useState<{ ok: boolean; text: string } | null>(null);
 
   const stats = useMemo(() => {
     const attending = rows.filter((row) => row.attending === 'yes');
@@ -192,6 +197,70 @@ export default function AdminRSVPs() {
       });
       setNewSitePassword('');
     }
+  }
+
+  async function sendBulkEmail(event: React.FormEvent) {
+    event.preventDefault();
+    setBulkResult(null);
+
+    if (!accessCode.trim()) {
+      setBulkResult({ ok: false, text: 'Enter the admin access code above first.' });
+      return;
+    }
+    if (!bulkSubject.trim() || !bulkMessage.trim()) {
+      setBulkResult({ ok: false, text: 'Add a subject and a message.' });
+      return;
+    }
+
+    const who =
+      bulkAudience === 'all'
+        ? "everyone who has RSVP'd"
+        : bulkAudience === 'attending'
+          ? 'guests who are attending'
+          : 'guests who declined';
+    if (
+      !confirm(
+        `Send this email to ${who}? Each person receives their own individual copy — this cannot be undone.`,
+      )
+    )
+      return;
+
+    setBulkSending(true);
+    const { data, error: fnError } = await supabase.functions.invoke('send-bulk-email', {
+      body: {
+        access_code: accessCode.trim(),
+        subject: bulkSubject.trim(),
+        message: bulkMessage.trim(),
+        audience: bulkAudience,
+      },
+    });
+    setBulkSending(false);
+
+    if (fnError) {
+      let text = fnError.message || 'Could not send the emails.';
+      try {
+        const ctx = await (fnError as { context?: Response }).context?.json();
+        if (ctx?.error) text = ctx.error;
+      } catch {
+        /* ignore */
+      }
+      setBulkResult({ ok: false, text });
+      return;
+    }
+
+    if (data?.error) {
+      setBulkResult({ ok: false, text: data.error });
+      return;
+    }
+
+    setBulkResult({
+      ok: true,
+      text: `Sent to ${data.sent} of ${data.total} guest${data.total === 1 ? '' : 's'}${
+        data.failed ? ` · ${data.failed} failed` : ''
+      }.`,
+    });
+    setBulkSubject('');
+    setBulkMessage('');
   }
 
   async function deleteRSVP(id: string) {
@@ -470,6 +539,81 @@ export default function AdminRSVPs() {
         {pwMessage && (
           <p className={`mt-3 font-sans text-sm ${pwMessage.ok ? 'text-emerald-200' : 'text-red-200'}`}>
             {pwMessage.text}
+          </p>
+        )}
+      </form>
+
+      {/* Email all RSVPs */}
+      <form
+        onSubmit={sendBulkEmail}
+        className="rounded-[1.75rem] border border-white/12 bg-white/[0.04] p-5 shadow-[0_28px_90px_rgba(0,0,0,0.22)] backdrop-blur-xl md:p-6"
+      >
+        <div className="flex items-center gap-3">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#e6c787]/25 bg-[#e6c787]/10 text-[#e6c787]">
+            <Mail className="h-4 w-4" />
+          </span>
+          <div>
+            <label className="block font-sans text-[10px] font-semibold uppercase tracking-[0.34em] text-white/55">
+              Email guests
+            </label>
+            <p className="mt-1 font-sans text-xs text-white/40">
+              Sends an individual branded email to everyone who RSVP'd. Uses the admin password above.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-5 flex flex-wrap gap-2">
+          {[
+            { label: 'All RSVPs', value: 'all' as const },
+            { label: 'Attending', value: 'attending' as const },
+            { label: 'Declined', value: 'declined' as const },
+          ].map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => setBulkAudience(option.value)}
+              className={`${filterButton} ${
+                bulkAudience === option.value
+                  ? 'bg-[#e6c787] text-[#1a1410]'
+                  : 'border border-white/12 bg-white/[0.04] text-white/62 hover:bg-white/[0.08] hover:text-white'
+              }`}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+
+        <input
+          value={bulkSubject}
+          onChange={(event) => setBulkSubject(event.target.value)}
+          type="text"
+          placeholder="Subject"
+          className={`${inputCls} mt-4`}
+        />
+        <textarea
+          value={bulkMessage}
+          onChange={(event) => setBulkMessage(event.target.value)}
+          rows={6}
+          placeholder="Write your message to guests… (e.g. travel updates, schedule reminders)"
+          className={`${inputCls} mt-3 resize-y`}
+        />
+
+        <div className="mt-4 flex items-center justify-between gap-3">
+          <p className="font-sans text-xs text-white/40">
+            Each guest gets their own copy — never a group/BCC email.
+          </p>
+          <button
+            type="submit"
+            disabled={bulkSending}
+            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#e6c787] px-6 font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-[#1a1410] transition hover:bg-white disabled:opacity-60"
+          >
+            {bulkSending ? <RefreshCw className="h-3.5 w-3.5 animate-spin" /> : <Send className="h-3.5 w-3.5" />}
+            {bulkSending ? 'Sending' : 'Send Email'}
+          </button>
+        </div>
+        {bulkResult && (
+          <p className={`mt-3 font-sans text-sm ${bulkResult.ok ? 'text-emerald-200' : 'text-red-200'}`}>
+            {bulkResult.text}
           </p>
         )}
       </form>
