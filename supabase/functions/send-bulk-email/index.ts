@@ -53,7 +53,7 @@ function buildHtml(name: string, subject: string, message: string) {
           <p style="margin:0;font-family:Arial,sans-serif;font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:rgba(245,240,222,0.35);">Marrakech, Morocco</p>
         </td></tr>
         <tr><td style="padding:0 48px 44px;">
-          <p style="margin:0;font-family:Arial,sans-serif;font-size:11px;color:rgba(245,240,222,0.28);line-height:1.7;">You're receiving this because you RSVP'd at tothetaros.com. Reply to this email to reach us directly.</p>
+          <p style="margin:0;font-family:Arial,sans-serif;font-size:11px;color:rgba(245,240,222,0.28);line-height:1.7;">You're receiving this because you RSVP'd at tothetaros.com. Please do not reply to this email.</p>
         </td></tr>
       </table>
     </td></tr>
@@ -63,7 +63,7 @@ function buildHtml(name: string, subject: string, message: string) {
 
 function buildText(name: string, message: string) {
   const greeting = name ? `Dear ${name},` : 'Dear guest,';
-  return `${greeting}\n\n${message}\n\nWith love,\nTayo & Ope\nMarrakech, Morocco\n\nYou're receiving this because you RSVP'd at tothetaros.com.`;
+  return `${greeting}\n\n${message}\n\nWith love,\nTayo & Ope\nMarrakech, Morocco\n\nYou're receiving this because you RSVP'd at tothetaros.com. Please do not reply to this email.`;
 }
 
 Deno.serve(async (req) => {
