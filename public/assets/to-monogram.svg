@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 500" width="480" height="500">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@1,300&family=Cormorant+Garamond:ital,wght@0,300;1,300&display=swap');
+    </style>
+  </defs>
+
+  <!-- T: large, top-left -->
+  <text
+    font-family="'Cormorant Garamond', Georgia, serif"
+    font-size="340"
+    fill="#333333"
+    x="10"
+    y="300"
+    font-style="normal"
+    font-weight="300"
+  >T</text>
+
+  <!-- & using Cormorant italic light — taller, more diagonal form -->
+  <text
+    font-family="'Cormorant', Georgia, serif"
+    font-size="300"
+    fill="#333333"
+    x="155"
+    y="390"
+    font-style="italic"
+    font-weight="300"
+  >&amp;</text>
+
+  <!-- O: large, bottom-right -->
+  <text
+    font-family="'Cormorant Garamond', Georgia, serif"
+    font-size="305"
+    fill="#333333"
+    x="235"
+    y="495"
+    font-style="normal"
+    font-weight="300"
+  >O</text>
+</svg>

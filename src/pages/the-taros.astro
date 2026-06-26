@@ -1,0 +1,234 @@
+---
+import GatedLayout from "../layouts/GatedLayout.astro";
+import SplitHero from "../components/sections/SplitHero.astro";
+
+const B = "/pagesphotos/bridal";
+
+// Wedding party — photos named per person in /pagesphotos/bridal.
+const matron = {
+  name: "Tife Adeworan",
+  role: "Matron of Honour",
+  img: "Tife Adeworan - Matron of honour.jpeg",
+};
+const bridesmaids = [
+  { name: "Labake Adesakin", role: "Sister of the Bride", img: "Labake Adesakin - Sister of the bride.jpeg" },
+  { name: "Doyinsola Adesakin", role: "Sister of the Bride", img: "Doyinsola Adesakin - Sister of the bride.jpeg" },
+  { name: "Grace Makinde", role: "Bridesmaid", img: "Grace Makinde - Bridesmaid.jpeg" },
+  { name: "Yatta Jamina Ackom", role: "Bridesmaid", img: "Yatta Jamina - Ackom - Bridesmaid.jpeg" },
+  { name: "Tolani Onabiyi", role: "Bridesmaid", img: "Tolani Onabiyi - Bridesmaid.jpeg" },
+  { name: "Jessica Ngene", role: "Bridesmaid", img: "Jessica Ngene - Bridesmaid.jpeg" },
+  { name: "Barbara Akpata", role: "Bridesmaid", img: "Barbara Akpata - Bridesmaid.jpeg" },
+  { name: "Jaiye Osho", role: "Bridesmaid", img: "Jaiye Osho - Bridesmaid.jpeg" },
+  { name: "Rachel Awode", role: "Bridesmaid", img: "Rachel Awode - Bridesmaid.jpeg" },
+  { name: "Dunke Jafojo", role: "Bridesmaid", img: "Dunke Jafojo - Bridesmaid.jpeg" },
+  { name: "Alaere Fumudoh", role: "Bridesmaid", img: "Alaere Fumudoh - Bridesmaid.jpeg" },
+];
+---
+
+<GatedLayout
+  title="Meet the Taros — Tayo & Ope"
+  description="The love story of Tayo & Ope, and the family and friends celebrating with us."
+>
+  <SplitHero
+    image="/images/hero.jpeg"
+    imageAlt="Marrakech"
+    inset="/reference/venue-photo.jpeg"
+    insetAlt="Marrakech"
+    eyebrow="Our Story"
+    title="Meet the<br/>Taros"
+    tagline="Every great love story is supported by an incredible community."
+  />
+
+  <main
+    class="relative z-10 overflow-hidden bg-[#fffdf0] text-[#76353a] shadow-[0_-40px_80px_rgba(0,0,0,0.25)]"
+  >
+    <!-- ===== From One Message to a Lifetime (overlapping card) ===== -->
+    <section class="relative">
+      <!-- full-width image band -->
+      <div class="relative h-[42svh] min-h-[300px] overflow-hidden md:h-[52svh]">
+        <img
+          src="/pagesphotos/hotel/5b758b55.avif"
+          alt="Marrakech"
+          class="h-full w-full object-cover"
+          loading="lazy"
+        />
+      </div>
+
+      <!-- overlapping cream card -->
+      <div
+        class="relative z-10 mx-auto -mt-20 max-w-5xl bg-[#fffdf0] px-6 pb-24 pt-8 md:-mt-28 md:px-14 md:pb-28"
+      >
+        <!-- inset photo, upper-right, overlapping up into the image -->
+        <img
+          src="/reference/venue-photo.jpeg"
+          alt="Marrakech"
+          class="absolute -top-12 right-6 h-36 w-52 object-cover shadow-[0_18px_50px_rgba(0,0,0,0.3)] md:-top-24 md:right-14 md:h-48 md:w-72"
+          loading="lazy"
+        />
+
+        <div class="max-w-xl pt-24 md:pt-44">
+          <h2 class="font-serif text-4xl font-semibold leading-[1.1] md:text-5xl">
+            From One Message<br />to a Lifetime
+          </h2>
+          <div
+            class="mt-8 space-y-5 font-sans text-lg font-semibold leading-relaxed text-[#76353a]/90 md:text-xl"
+          >
+            <p>
+              Ope came into Tayo's life with full force. From their very first
+              date, he was already sharing his dreams and aspirations for their
+              future together.
+            </p>
+            <p>
+              On day one, he told her: "I'm not here to date you — I'm here to
+              make you my wife." And lo and behold, here we are.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Pinned love-story (cinematic beats) ===== -->
+    <section
+      class="story-pin relative flex h-[100svh] items-center justify-center overflow-hidden bg-[#0c0a08] text-[#fffdf0]"
+    >
+      {/* Cross-fading backgrounds */}
+      <img data-story-bg src="/images/hero.jpeg" alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover" />
+      <img data-story-bg src="/pagesphotos/hotel/5b758b55.avif" alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover" />
+      <img data-story-bg src="/reference/venue-photo.jpeg" alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover" />
+      <img data-story-bg src="/pagesphotos/hotel/1b9d5be8.avif" alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover" />
+      <div class="absolute inset-0 bg-[#0c0a08]/68"></div>
+      <div
+        class="absolute inset-0"
+        style="background: radial-gradient(ellipse at center, transparent 30%, rgba(12,10,8,0.75) 95%);"
+      >
+      </div>
+
+      {/* Static label */}
+      <p
+        class="absolute top-[14%] left-1/2 -translate-x-1/2 font-sans text-[10px] font-semibold uppercase tracking-[0.5em] text-[#e6c787]/80"
+      >
+        Our Story
+      </p>
+
+      {/* Beats */}
+      <div data-beat class="absolute inset-0 flex items-center justify-center px-6">
+        <p class="max-w-3xl text-center font-serif text-[clamp(1.8rem,4vw,3rem)] font-light italic leading-snug">
+          Ope came into my life with full force — from our very first date, he
+          was already sharing his dreams for our future together.
+        </p>
+      </div>
+      <div data-beat class="absolute inset-0 flex items-center justify-center px-6">
+        <p class="max-w-3xl text-center font-serif text-[clamp(1.9rem,4.4vw,3.4rem)] leading-snug text-[#e6c787]">
+          “I'm not here to date you,” he told me. “I'm here to make you my wife.”
+        </p>
+      </div>
+      <div data-beat class="absolute inset-0 flex items-center justify-center px-6">
+        <p class="max-w-3xl text-center font-serif text-[clamp(1.8rem,4vw,3rem)] font-light italic leading-snug">
+          He treats me like a princess and never lets my flower vase stay empty.
+          Truly, my answered prayer.
+        </p>
+      </div>
+      <div data-beat class="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
+        <p class="max-w-3xl font-serif text-[clamp(1.8rem,4vw,3rem)] font-light italic leading-snug">
+          Out of all the people in the world, God chose us for each other — and
+          here we are.
+        </p>
+        <p class="mt-7 font-[family-name:var(--font-family-script)] text-4xl text-[#e6c787] md:text-5xl">
+          Tayo &amp; Ope
+        </p>
+      </div>
+
+      {/* Scroll hint */}
+      <p
+        class="absolute bottom-[8%] left-1/2 -translate-x-1/2 font-sans text-[9px] uppercase tracking-[0.4em] text-[#fffdf0]/45"
+      >
+        Scroll
+      </p>
+    </section>
+
+    <!-- ===== Wedding Party ===== -->
+    <section class="bg-[#fffdf0] px-6 py-24 md:py-32">
+      <div class="mx-auto max-w-6xl">
+        <div class="reveal text-center">
+          <p class="font-sans text-[10px] font-semibold uppercase tracking-[0.34em] text-[#76353a]/70">
+            Our Wedding Party
+          </p>
+          <h2 class="mt-4 font-serif text-4xl font-semibold text-[#76353a] md:text-5xl">
+            The ones beside us
+          </h2>
+          <div class="mx-auto mt-6 h-px w-20 bg-[#76353a]/30"></div>
+        </div>
+
+        <!-- Matron of Honour -->
+        <div class="reveal mx-auto mt-16 w-full max-w-sm">
+          <div class="group relative aspect-[4/5] overflow-hidden rounded-[1.75rem] shadow-[0_24px_60px_rgba(118,53,58,0.22)]">
+            <img
+              src={`${B}/${matron.img}`}
+              alt={matron.name}
+              class="h-full w-full object-cover object-top transition duration-700 group-hover:scale-[1.05]"
+              loading="lazy"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-[#5a2a2e] via-[#5a2a2e]/20 to-transparent"></div>
+            <div class="absolute inset-x-0 bottom-0 p-6 text-center text-[#fffdf0]">
+              <p class="font-sans text-[10px] font-semibold uppercase tracking-[0.32em] text-[#fffdf0]/75">
+                Matron of Honour
+              </p>
+              <p class="mt-1.5 font-serif text-3xl">{matron.name}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bridesmaids -->
+        <p class="reveal mt-20 text-center font-sans text-[10px] font-semibold uppercase tracking-[0.3em] text-[#76353a]/60">
+          Bridesmaids
+        </p>
+        <div class="mt-10 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
+          {
+            bridesmaids.map((b) => (
+              <div class="reveal group relative aspect-[3/4] overflow-hidden rounded-2xl shadow-[0_16px_40px_rgba(118,53,58,0.14)]">
+                <img
+                  src={`${B}/${b.img}`}
+                  alt={b.name}
+                  class="h-full w-full object-cover object-top transition duration-700 group-hover:scale-[1.06]"
+                  loading="lazy"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-[#5a2a2e]/95 via-[#5a2a2e]/15 to-transparent"></div>
+                <div class="absolute inset-x-0 bottom-0 p-4 text-center text-[#fffdf0]">
+                  <p class="font-serif text-lg leading-tight">{b.name}</p>
+                  <p class="mt-1 font-sans text-[8px] font-semibold uppercase tracking-[0.22em] text-[#fffdf0]/70">
+                    {b.role}
+                  </p>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+
+        <!-- Best Man / Groomsmen -->
+        <div class="reveal mt-20 grid gap-8 text-center md:grid-cols-2">
+          <div>
+            <p class="font-sans text-[10px] font-semibold uppercase tracking-[0.3em] text-[#76353a]/60">
+              Best Man
+            </p>
+            <p class="mt-2 font-serif text-2xl italic text-[#76353a]/50">
+              To be announced
+            </p>
+          </div>
+          <div>
+            <p class="font-sans text-[10px] font-semibold uppercase tracking-[0.3em] text-[#76353a]/60">
+              Groomsmen
+            </p>
+            <p class="mt-2 font-serif text-2xl italic text-[#76353a]/50">
+              To be announced
+            </p>
+          </div>
+        </div>
+
+        <p class="reveal mx-auto mt-20 max-w-xl text-center font-serif text-lg italic leading-relaxed text-[#76353a]/80">
+          To everyone who has prayed and played a meaningful role in our story —
+          thank you.
+        </p>
+      </div>
+    </section>
+  </main>
+</GatedLayout>

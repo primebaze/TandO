@@ -1,0 +1,102 @@
+---
+import GatedLayout from "../layouts/GatedLayout.astro";
+import SplitHero from "../components/sections/SplitHero.astro";
+import Marquee from "../components/sections/Marquee.astro";
+
+const B = "/pagesphotos/bridal";
+---
+
+<GatedLayout
+  title="Registry — Tayo & Ope"
+  description="Your presence is the greatest gift. For those who have asked, our gift details are here."
+>
+  <SplitHero
+    image="/images/hero.jpeg"
+    imageAlt="Marrakech at sunset"
+    inset="/pagesphotos/hotel/56b41503.avif"
+    insetAlt="Le Méridien N'Fis"
+    eyebrow="With Gratitude"
+    title="Gifts<br/>&amp; Wishes"
+    tagline="Celebrating with you is more than enough."
+  />
+
+  <main
+    class="relative z-10 overflow-hidden bg-[#fffdf0] text-[#76353a] shadow-[0_-40px_80px_rgba(0,0,0,0.25)]"
+  >
+    <!-- Intro -->
+    <section class="reveal mx-auto max-w-2xl px-6 pt-24 text-center md:pt-32">
+      <p
+        class="font-[family-name:var(--font-family-script)] text-4xl text-[#76353a] md:text-5xl"
+      >
+        Your presence is the greatest gift
+      </p>
+      <p class="mx-auto mt-6 max-w-xl font-serif text-lg leading-relaxed text-[#76353a]/85">
+        For those who have kindly asked about gifts, we would gratefully welcome
+        a contribution toward our new home and life together. Thank you for your
+        generosity and for being part of this special chapter.
+      </p>
+    </section>
+
+    <!-- Marquee -->
+    <div class="reveal mt-16">
+      <Marquee text="Gifts &amp; Wishes" />
+    </div>
+
+    <!-- Account cards -->
+    <section class="mx-auto mt-16 max-w-4xl px-6 pb-28">
+      <div class="grid gap-6 md:grid-cols-2">
+        <div
+          class="reveal rounded-[1.75rem] border border-[#76353a]/15 bg-white/60 p-9 text-center"
+        >
+          <p class="font-sans text-[10px] font-semibold uppercase tracking-[0.34em] text-[#76353a]/70">
+            United Kingdom
+          </p>
+          <h3 class="mt-4 font-serif text-3xl font-semibold">Omotayo Adesakin</h3>
+          <div class="mx-auto mt-5 h-px w-12 bg-[#76353a]/30"></div>
+          <dl class="mt-5 space-y-2 font-serif text-lg">
+            <div>
+              <dt class="text-sm uppercase tracking-wide text-[#76353a]/55">
+                Account Number
+              </dt>
+              <dd class="text-2xl">22725483</dd>
+            </div>
+            <div>
+              <dt class="text-sm uppercase tracking-wide text-[#76353a]/55">
+                Sort Code
+              </dt>
+              <dd class="text-2xl">23-05-80</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div
+          class="reveal rounded-[1.75rem] border border-[#76353a]/15 bg-white/60 p-9 text-center"
+        >
+          <p class="font-sans text-[10px] font-semibold uppercase tracking-[0.34em] text-[#76353a]/70">
+            Nigeria
+          </p>
+          <h3 class="mt-4 font-serif text-3xl font-semibold">Opeyemi Akintaro</h3>
+          <div class="mx-auto mt-5 h-px w-12 bg-[#76353a]/30"></div>
+          <dl class="mt-5 space-y-2 font-serif text-lg">
+            <div>
+              <dt class="text-sm uppercase tracking-wide text-[#76353a]/55">
+                Account Number
+              </dt>
+              <dd class="text-2xl">0037385465</dd>
+            </div>
+            <div>
+              <dt class="text-sm uppercase tracking-wide text-[#76353a]/55">
+                Bank
+              </dt>
+              <dd class="text-2xl">GTBank</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      <p class="reveal mt-12 text-center font-serif text-lg italic text-[#76353a]/80">
+        With all our love and deepest gratitude — Tayo &amp; Ope.
+      </p>
+    </section>
+  </main>
+</GatedLayout>

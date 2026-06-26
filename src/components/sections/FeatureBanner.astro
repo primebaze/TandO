@@ -1,0 +1,95 @@
+---
+/**
+ * Editorial feature band — oversized wordmark across the top, then a row of
+ * [photo | centred message + CTA | photo]. (Asphalt-Bloom-style layout.)
+ */
+interface Props {
+  header: string;
+  eyebrow?: string;
+  title: string;
+  text: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+  leftImage: string;
+  rightImage: string;
+}
+const {
+  header,
+  eyebrow,
+  title,
+  text,
+  ctaLabel,
+  ctaHref = "/rsvp",
+  leftImage,
+  rightImage,
+} = Astro.props;
+---
+
+<section class="relative overflow-hidden bg-[#2a1813] text-[#fffdf0]">
+  <!-- Oversized wordmark -->
+  <div class="px-4 pb-4 pt-12 text-center md:pt-16">
+    <h2
+      class="font-semibold uppercase leading-[0.86] tracking-[-0.01em] text-[#f0e6cf]"
+      style="font-family: 'Cormorant', 'Cormorant Garamond', serif; font-size: clamp(2.8rem, 13vw, 11rem);"
+    >
+      {header}
+    </h2>
+  </div>
+
+  <!-- Photo | message | photo -->
+  <div class="grid md:grid-cols-[1fr_1.15fr_1fr]">
+    <div class="relative min-h-[300px] overflow-hidden md:min-h-[560px]">
+      <img
+        src={leftImage}
+        alt=""
+        aria-hidden="true"
+        class="h-full w-full object-cover"
+        loading="lazy"
+      />
+    </div>
+
+    <div class="relative flex flex-col items-center justify-center px-8 py-16 text-center md:py-20">
+      <div
+        class="pointer-events-none absolute inset-0 opacity-60"
+        style="background: radial-gradient(80% 70% at 50% 40%, rgba(160,120,30,0.16), transparent 60%);"
+        aria-hidden="true"
+      >
+      </div>
+      <div class="relative">
+        {
+          eyebrow && (
+            <p class="font-sans text-[10px] font-semibold uppercase tracking-[0.4em] text-[#e6c787]/80">
+              {eyebrow}
+            </p>
+          )
+        }
+        <h3 class="mt-4 font-serif text-3xl font-semibold leading-tight md:text-4xl">
+          {title}
+        </h3>
+        <p class="mx-auto mt-5 max-w-sm font-serif text-lg leading-relaxed text-[#fffdf0]/80">
+          {text}
+        </p>
+        {
+          ctaLabel && (
+            <a
+              href={ctaHref}
+              class="mt-8 inline-flex items-center justify-center border border-[#e6c787]/60 px-9 py-3 font-sans text-[11px] font-semibold uppercase tracking-[0.28em] text-[#e6c787] transition hover:bg-[#e6c787] hover:text-[#2a1813]"
+            >
+              {ctaLabel}
+            </a>
+          )
+        }
+      </div>
+    </div>
+
+    <div class="relative min-h-[300px] overflow-hidden md:min-h-[560px]">
+      <img
+        src={rightImage}
+        alt=""
+        aria-hidden="true"
+        class="h-full w-full object-cover"
+        loading="lazy"
+      />
+    </div>
+  </div>
+</section>

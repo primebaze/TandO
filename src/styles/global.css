@@ -35,6 +35,47 @@
   text-wrap: balance;
 }
 
+/* Password gate — hide gated content until the visitor unlocks */
+html.is-locked .gated-content {
+  display: none;
+}
+
+/* Scroll reveal — GSAP drives the motion; this just hides until JS runs */
+.reveal {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+}
+
+/* Ken Burns — slow continuous drift + zoom on editorial images */
+.kenburns {
+  animation: kenburns 20s ease-in-out infinite alternate;
+  transform-origin: center center;
+  will-change: transform;
+}
+@keyframes kenburns {
+  from {
+    transform: scale(1.02) translate(0, 0);
+  }
+  to {
+    transform: scale(1.13) translate(-1.5%, -1.2%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kenburns {
+    animation: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 .envelope-scene {
   perspective: 1200px;
 }

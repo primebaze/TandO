@@ -1,0 +1,106 @@
+---
+/**
+ * Editorial split-screen hero — matched to reference (img1).
+ * Left: full-bleed photo. Right: near-black panel with a bold serif headline
+ * anchored to the TOP, a sans-serif tagline lower-left, and an inset photo
+ * flush to the bottom-right. Sticky so the next section reveals over it.
+ */
+interface Props {
+  image: string;
+  imageAlt?: string;
+  inset?: string;
+  insetAlt?: string;
+  eyebrow?: string;
+  title: string;
+  tagline?: string;
+}
+
+const {
+  image,
+  imageAlt = "",
+  inset,
+  insetAlt = "",
+  eyebrow,
+  title,
+  tagline,
+} = Astro.props;
+---
+
+<section
+  class="split-hero sticky top-0 z-0 grid h-[100svh] grid-cols-1 overflow-hidden md:grid-cols-2"
+>
+  {/* Photo side */}
+  <div class="relative h-[40svh] overflow-hidden md:h-full">
+    <img src={image} alt={imageAlt} class="h-full w-full object-cover" />
+  </div>
+
+  {/* Near-black panel */}
+  <div class="relative flex h-[60svh] flex-col bg-[#0a0908] md:h-full">
+    {/* Headline — anchored to the top */}
+    <div class="px-8 pt-20 md:px-14 md:pt-28 lg:px-20 lg:pt-32">
+      {
+        eyebrow && (
+          <p class="split-rise split-rise--1 mb-5 font-sans text-[10px] font-semibold uppercase tracking-[0.4em] text-[#e3cf72]/70">
+            {eyebrow}
+          </p>
+        )
+      }
+      <h1
+        class="split-rise split-rise--2 text-[clamp(3rem,6vw,5.4rem)] font-[600] leading-[1.0] text-[#e3cf72]"
+        style="font-family: 'Cormorant', 'Cormorant Garamond', Georgia, serif;"
+        set:html={title}
+      />
+    </div>
+
+    {/* Bottom band: tagline (left) + inset photo (flush bottom-right) */}
+    <div class="relative mt-auto h-[44%] min-h-[220px]">
+      {
+        tagline && (
+          <p class="split-rise split-rise--3 absolute left-8 top-6 z-10 max-w-[15rem] font-sans text-base font-medium leading-snug text-[#e3cf72] md:left-14 md:max-w-xs md:text-lg lg:left-20">
+            {tagline}
+          </p>
+        )
+      }
+      {
+        inset && (
+          <img
+            src={inset}
+            alt={insetAlt}
+            class="split-rise split-rise--3 absolute bottom-0 right-0 h-[78%] w-[62%] object-cover md:h-[72%] md:w-[58%]"
+            loading="lazy"
+          />
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .split-rise {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: splitRise 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  .split-rise--1 {
+    animation-delay: 0.15s;
+  }
+  .split-rise--2 {
+    animation-delay: 0.32s;
+  }
+  .split-rise--3 {
+    animation-delay: 0.55s;
+  }
+  @keyframes splitRise {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .split-rise {
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
+  }
+</style>

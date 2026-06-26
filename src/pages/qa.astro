@@ -1,0 +1,147 @@
+---
+import GatedLayout from "../layouts/GatedLayout.astro";
+import SplitHero from "../components/sections/SplitHero.astro";
+
+const B = "/pagesphotos/bridal";
+
+const groups = [
+  {
+    title: "The Celebration",
+    faqs: [
+      {
+        q: "Is the wedding indoors or outdoors?",
+        a: "The ceremony will be held outdoors, followed by an indoor reception.",
+      },
+      {
+        q: "Can I bring a guest?",
+        a: "Please refer to your invitation for guest details.",
+      },
+      {
+        q: "Are children invited?",
+        a: "We kindly request an adults-only ceremony; however, we will try our best to make provisions for children.",
+      },
+      {
+        q: "Will food be provided for dietary requirements?",
+        a: "Absolutely — please include any dietary requirements when you RSVP.",
+      },
+      {
+        q: "What happens if I can no longer attend?",
+        a: "Please let us know as soon as possible so we can make alternate arrangements.",
+      },
+    ],
+  },
+  {
+    title: "Travel & Visa",
+    faqs: [
+      {
+        q: "When should I arrive in Morocco?",
+        a: "We recommend arriving on or before 16th December 2026 — we have an itinerary planned for our guests.",
+      },
+      {
+        q: "Do I need a visa to travel to Morocco?",
+        a: "Visa requirements vary by nationality. For support, we've partnered with Bi-Adroit Tours & Travel (+234 803 470 6057).",
+      },
+      {
+        q: "Which airport should I fly into?",
+        a: "Marrakesh Menara Airport (RAK).",
+      },
+      {
+        q: "How do I get to the hotel from the airport?",
+        a: "We recommend downloading the Bolt app before you land. For airport transfers, contact Bi-Adroit Tours (+234 803 470 6057) or a local taxi (+212 602-349040).",
+      },
+      {
+        q: "Where should we stay?",
+        a: "We recommend Le Méridien N'Fis — full details are on our Travel page.",
+      },
+    ],
+  },
+  {
+    title: "Details & Essentials",
+    faqs: [
+      {
+        q: "What is the dress code?",
+        a: "Traditional Welcome Party: Refined Afro–Moroccan Fusion. White Wedding: monochrome elegance with your own stylish twist. See the Schedule page for inspiration.",
+      },
+      {
+        q: "What currency is used in Morocco?",
+        a: "The local currency is the Moroccan Dirham (MAD).",
+      },
+      {
+        q: "What weather should I expect?",
+        a: "Warm, sunny days and cooler evenings. We recommend a light layer for the evening.",
+      },
+      {
+        q: "What language do they speak in Morocco?",
+        a: "Arabic is official; French is widely spoken in Marrakech, and many in tourism speak English — so getting around is easy.",
+      },
+      {
+        q: "Who should I contact if I have questions?",
+        a: "Please contact Trendy Bee Events (+234 901 942 2229).",
+      },
+    ],
+  },
+];
+---
+
+<GatedLayout
+  title="Q&A — Tayo & Ope"
+  description="Frequently asked questions about our wedding in Marrakech, Morocco."
+>
+  <SplitHero
+    image="/pagesphotos/hotel/1b9d5be8.avif"
+    imageAlt="Le Méridien N'Fis, Marrakech"
+    inset="/reference/venue-photo.jpeg"
+    insetAlt="Marrakech"
+    eyebrow="Good to Know"
+    title="Questions<br/>&amp; Answers"
+    tagline="Everything you might be wondering, gathered in one place."
+  />
+
+  <main
+    class="relative z-10 overflow-hidden bg-[#fffdf0] text-[#76353a] shadow-[0_-40px_80px_rgba(0,0,0,0.25)]"
+  >
+    <div class="mx-auto max-w-3xl px-6 py-24 md:py-32">
+      {
+        groups.map((group) => (
+          <section class="reveal mb-16">
+            <h2 class="font-serif text-3xl font-semibold md:text-4xl">
+              {group.title}
+            </h2>
+            <div class="mx-auto mt-3 h-px w-14 bg-[#76353a]/30" />
+            <div class="mt-6 divide-y divide-[#76353a]/12 border-y border-[#76353a]/12">
+              {group.faqs.map((faq) => (
+                <details class="qa group py-2">
+                  <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 font-serif text-xl">
+                    <span>{faq.q}</span>
+                    <span class="qa-icon shrink-0 text-2xl font-light leading-none transition-transform">
+                      +
+                    </span>
+                  </summary>
+                  <p class="pb-5 font-serif text-lg leading-relaxed text-[#76353a]/80">
+                    {faq.a}
+                  </p>
+                </details>
+              ))}
+            </div>
+          </section>
+        ))
+      }
+
+      <p class="reveal text-center font-serif text-lg italic text-[#76353a]/80">
+        Still have a question? Reach Trendy Bee Events on
+        <a href="tel:+2349019422229" class="underline-offset-4 hover:underline">
+          +234 901 942 2229</a
+        >.
+      </p>
+    </div>
+  </main>
+
+  <style>
+    .qa[open] .qa-icon {
+      transform: rotate(45deg);
+    }
+    .qa summary::-webkit-details-marker {
+      display: none;
+    }
+  </style>
+</GatedLayout>

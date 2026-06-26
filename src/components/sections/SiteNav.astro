@@ -1,0 +1,320 @@
+---
+const links = [
+  { label: "Home", href: "/" },
+  { label: "RSVP", href: "/rsvp" },
+  { label: "Travel", href: "/travel" },
+  { label: "Schedule", href: "/schedule" },
+  { label: "The Taros", href: "/the-taros" },
+  { label: "Q&A", href: "/qa" },
+  { label: "Registry", href: "/registry" },
+  { label: "Explore", href: "/explore" },
+];
+
+const current = Astro.url.pathname.replace(/\/$/, "") || "/";
+
+interface Props {
+  heroTheme?: "dark" | "light";
+}
+// "light" → the hero behind the nav is light, so use dark text at the top.
+const { heroTheme = "dark" } = Astro.props;
+---
+
+<header
+  id="site-nav"
+  class={`site-nav fixed inset-x-0 top-0 z-[90] transition-all duration-500 ${
+    heroTheme === "light" ? "nav-on-light" : ""
+  }`}
+>
+  <nav class="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 md:px-10">
+    <!-- Wordmark -->
+    <a href="/" class="group flex items-center gap-3">
+      <span
+        class="nav-mono flex h-9 w-9 items-center justify-center rounded-full border text-[13px] tracking-wide transition-colors duration-500"
+        style="font-family: var(--font-family-script), cursive;"
+      >
+        T&amp;O
+      </span>
+      <span
+        class="nav-brand hidden font-[family-name:var(--font-family-script)] text-[26px] leading-none transition-colors duration-500 sm:block"
+      >
+        Tayo &amp; Ope
+      </span>
+    </a>
+
+    <!-- Desktop links -->
+    <ul class="hidden items-center gap-9 lg:flex">
+      {
+        links.map((link) => {
+          const active = current === link.href.replace(/\/$/, "");
+          return (
+            <li>
+              <a
+                href={link.href}
+                class={`nav-link group relative font-serif text-[13px] uppercase tracking-[0.28em] transition-colors duration-300 ${
+                  active ? "is-active" : ""
+                }`}
+              >
+                {link.label}
+                <span class="nav-underline" />
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+
+    <!-- Mobile toggle -->
+    <button
+      id="nav-open"
+      type="button"
+      aria-label="Open menu"
+      class="nav-toggle flex items-center gap-2 lg:hidden"
+    >
+      <span class="nav-toggle-label font-serif text-[11px] uppercase tracking-[0.3em] transition-colors duration-500">Menu</span>
+      <span class="flex flex-col gap-[5px]">
+        <span class="nav-bar h-[1.5px] w-6 transition-colors duration-500"></span>
+        <span class="nav-bar h-[1.5px] w-6 transition-colors duration-500"></span>
+      </span>
+    </button>
+  </nav>
+</header>
+
+<!-- Full-screen mobile menu -->
+<div
+  id="nav-overlay"
+  class="nav-overlay fixed inset-0 z-[95] flex flex-col items-center justify-center"
+  aria-hidden="true"
+>
+  <button
+    id="nav-close"
+    type="button"
+    aria-label="Close menu"
+    class="absolute right-6 top-6 flex h-11 w-11 items-center justify-center rounded-full border border-[#e6c787]/40 text-[#e6c787]"
+  >
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+    </svg>
+  </button>
+
+  <p
+    class="nav-overlay-eyebrow font-sans text-[10px] font-semibold uppercase tracking-[0.5em] text-[#e6c787]/70"
+  >
+    #ToTheTaros
+  </p>
+  <span
+    class="nav-overlay-brand mt-3 font-[family-name:var(--font-family-script)] text-5xl text-[#e6c787]"
+  >
+    Tayo &amp; Ope
+  </span>
+
+  <ul class="mt-10 flex flex-col items-center gap-1">
+    {
+      links.map((link, i) => {
+        const active = current === link.href.replace(/\/$/, "");
+        return (
+          <li class="nav-overlay-item" style={`--i:${i}`}>
+            <a
+              href={link.href}
+              class={`block py-2 font-serif text-3xl tracking-wide transition-colors duration-300 ${
+                active ? "text-[#e6c787]" : "text-[#f5f0de]/85 hover:text-[#e6c787]"
+              }`}
+            >
+              {link.label}
+            </a>
+          </li>
+        );
+      })
+    }
+  </ul>
+</div>
+
+<style>
+  /* ===== Default: floating over hero — light ===== */
+  .nav-brand,
+  .nav-mono {
+    color: #fff;
+  }
+  .nav-mono {
+    border-color: rgba(255, 255, 255, 0.4);
+  }
+  .nav-brand {
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.4);
+  }
+  .nav-link {
+    color: rgba(255, 255, 255, 0.85);
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.35);
+  }
+  .nav-underline {
+    position: absolute;
+    left: 0;
+    bottom: -7px;
+    height: 1px;
+    width: 0;
+    background: #e6c787;
+    transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .nav-link:hover .nav-underline,
+  .nav-link.is-active .nav-underline {
+    width: 100%;
+  }
+  .nav-link.is-active {
+    color: #fff;
+  }
+  .nav-toggle-label {
+    color: #fff;
+  }
+  .nav-bar {
+    background: #fff;
+  }
+
+  /* ===== Over a LIGHT hero (not yet scrolled): dark/gold text ===== */
+  .nav-on-light:not(.is-scrolled) .nav-brand,
+  .nav-on-light:not(.is-scrolled) .nav-mono {
+    color: var(--color-gold);
+    text-shadow: none;
+  }
+  .nav-on-light:not(.is-scrolled) .nav-mono {
+    border-color: rgba(139, 105, 20, 0.3);
+  }
+  .nav-on-light:not(.is-scrolled) .nav-link {
+    color: rgba(61, 48, 38, 0.72);
+    text-shadow: none;
+  }
+  .nav-on-light:not(.is-scrolled) .nav-link.is-active {
+    color: var(--color-gold);
+  }
+  .nav-on-light:not(.is-scrolled) .nav-toggle-label {
+    color: var(--color-gold);
+  }
+  .nav-on-light:not(.is-scrolled) .nav-bar {
+    background: var(--color-gold);
+  }
+
+  /* ===== Scrolled: solid cream bar — dark/gold ===== */
+  .site-nav.is-scrolled {
+    background-color: rgba(245, 237, 221, 0.86);
+    backdrop-filter: blur(14px) saturate(1.1);
+    border-bottom: 1px solid rgba(139, 105, 20, 0.14);
+    box-shadow: 0 12px 44px rgba(90, 50, 26, 0.08);
+  }
+  .site-nav.is-scrolled .nav-brand,
+  .site-nav.is-scrolled .nav-mono {
+    color: var(--color-gold);
+    text-shadow: none;
+  }
+  .site-nav.is-scrolled .nav-mono {
+    border-color: rgba(139, 105, 20, 0.3);
+  }
+  .site-nav.is-scrolled .nav-link {
+    color: rgba(61, 48, 38, 0.72);
+    text-shadow: none;
+  }
+  .site-nav.is-scrolled .nav-link:hover,
+  .site-nav.is-scrolled .nav-link.is-active {
+    color: var(--color-gold);
+  }
+  .site-nav.is-scrolled .nav-toggle-label {
+    color: var(--color-gold);
+  }
+  .site-nav.is-scrolled .nav-bar {
+    background: var(--color-gold);
+  }
+
+  /* ===== Full-screen mobile overlay ===== */
+  .nav-overlay {
+    background:
+      radial-gradient(110% 70% at 50% 12%, rgba(160, 120, 30, 0.22), transparent 55%),
+      linear-gradient(165deg, #20170d 0%, #140e09 45%, #0d0906 100%);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-12px);
+    transition:
+      opacity 0.5s ease,
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 0s linear 0.5s;
+  }
+  .nav-overlay.is-open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition:
+      opacity 0.5s ease,
+      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  /* Soft gold hairline frame for a refined finish */
+  .nav-overlay::after {
+    content: "";
+    position: absolute;
+    inset: 18px;
+    border: 1px solid rgba(230, 199, 135, 0.14);
+    border-radius: 14px;
+    pointer-events: none;
+  }
+  .nav-overlay-eyebrow,
+  .nav-overlay-brand,
+  .nav-overlay-item {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  .nav-overlay.is-open .nav-overlay-eyebrow,
+  .nav-overlay.is-open .nav-overlay-brand,
+  .nav-overlay.is-open .nav-overlay-item {
+    animation: navItemIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  .nav-overlay.is-open .nav-overlay-brand {
+    animation-delay: 0.08s;
+  }
+  .nav-overlay.is-open .nav-overlay-item {
+    animation-delay: calc(0.16s + var(--i) * 0.06s);
+  }
+  @keyframes navItemIn {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav-overlay,
+    .nav-overlay-eyebrow,
+    .nav-overlay-brand,
+    .nav-overlay-item,
+    .nav-underline {
+      transition: none;
+      animation: none;
+    }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    const nav = document.getElementById("site-nav");
+    const openBtn = document.getElementById("nav-open");
+    const closeBtn = document.getElementById("nav-close");
+    const overlay = document.getElementById("nav-overlay");
+
+    function open() {
+      overlay && overlay.classList.add("is-open");
+      document.body.style.overflow = "hidden";
+    }
+    function close() {
+      overlay && overlay.classList.remove("is-open");
+      document.body.style.overflow = "";
+    }
+    openBtn && openBtn.addEventListener("click", open);
+    closeBtn && closeBtn.addEventListener("click", close);
+    overlay &&
+      overlay.querySelectorAll("a").forEach((a) => a.addEventListener("click", close));
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") close();
+    });
+
+    function onScroll() {
+      if (!nav) return;
+      nav.classList.toggle("is-scrolled", window.scrollY > 60);
+    }
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+  })();
+</script>

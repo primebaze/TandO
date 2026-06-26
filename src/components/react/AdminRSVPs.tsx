@@ -99,6 +99,9 @@ export default function AdminRSVPs() {
   const [loading, setLoading] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [newSitePassword, setNewSitePassword] = useState('');
+  const [pwSaving, setPwSaving] = useState(false);
+  const [pwMessage, setPwMessage] = useState<{ ok: boolean; text: string } | null>(null);
 
   const stats = useMemo(() => {
     const attending = rows.filter((row) => row.attending === 'yes');
@@ -158,6 +161,37 @@ export default function AdminRSVPs() {
       setCurrentPage(1);
     }
     setLoading(false);
+  }
+
+  async function changeSitePassword(event: React.FormEvent) {
+    event.preventDefault();
+    setPwMessage(null);
+
+    if (!accessCode.trim()) {
+      setPwMessage({ ok: false, text: 'Enter the admin access code above first.' });
+      return;
+    }
+    if (newSitePassword.trim().length < 4) {
+      setPwMessage({ ok: false, text: 'New password must be at least 4 characters.' });
+      return;
+    }
+
+    setPwSaving(true);
+    const { error: pwError } = await supabase.rpc('set_site_password', {
+      p_access_code: accessCode.trim(),
+      p_new_password: newSitePassword.trim(),
+    });
+    setPwSaving(false);
+
+    if (pwError) {
+      setPwMessage({ ok: false, text: pwError.message || 'Could not update the password.' });
+    } else {
+      setPwMessage({
+        ok: true,
+        text: 'Site password updated. Guests will use the new password from now on.',
+      });
+      setNewSitePassword('');
+    }
   }
 
   async function deleteRSVP(id: string) {
@@ -396,6 +430,48 @@ export default function AdminRSVPs() {
           </div>
         </div>
         {error && <p className="mt-3 font-sans text-sm text-red-200">{error}</p>}
+      </form>
+
+      {/* Site password management */}
+      <form
+        onSubmit={changeSitePassword}
+        className="rounded-[1.75rem] border border-white/12 bg-white/[0.04] p-5 shadow-[0_28px_90px_rgba(0,0,0,0.22)] backdrop-blur-xl md:p-6"
+      >
+        <div className="flex items-center gap-3">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#e6c787]/25 bg-[#e6c787]/10 text-[#e6c787]">
+            <LockKeyhole className="h-4 w-4" />
+          </span>
+          <div>
+            <label className="block font-sans text-[10px] font-semibold uppercase tracking-[0.34em] text-white/55">
+              Guest site password
+            </label>
+            <p className="mt-1 font-sans text-xs text-white/40">
+              The password guests enter to view the site. Uses the admin password above.
+            </p>
+          </div>
+        </div>
+        <div className="mt-4 flex flex-col gap-3 md:flex-row">
+          <input
+            value={newSitePassword}
+            onChange={(event) => setNewSitePassword(event.target.value)}
+            type="text"
+            placeholder="New guest password"
+            className={inputCls}
+          />
+          <button
+            type="submit"
+            disabled={pwSaving}
+            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[#e6c787]/40 bg-[#e6c787]/10 px-6 font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-[#e6c787] transition hover:bg-[#e6c787]/20 disabled:opacity-60"
+          >
+            {pwSaving ? <RefreshCw className="h-3.5 w-3.5 animate-spin" /> : <LockKeyhole className="h-3.5 w-3.5" />}
+            {pwSaving ? 'Saving' : 'Update Password'}
+          </button>
+        </div>
+        {pwMessage && (
+          <p className={`mt-3 font-sans text-sm ${pwMessage.ok ? 'text-emerald-200' : 'text-red-200'}`}>
+            {pwMessage.text}
+          </p>
+        )}
       </form>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">

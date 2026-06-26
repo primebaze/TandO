@@ -6,6 +6,17 @@ import Hero from "../components/sections/Hero.astro";
 import Countdown from "../components/sections/Countdown.astro";
 import Details from "../components/sections/Details.astro";
 import DressCode from "../components/sections/DressCode.astro";
+import SiteNav from "../components/sections/SiteNav.astro";
+import FeatureBanner from "../components/sections/FeatureBanner.astro";
+
+const pages = [
+  { label: "Travel & Accommodation", href: "/travel", note: "Getting there & where to stay", img: "/pagesphotos/airport/marrakech-airport-morocco.jpg" },
+  { label: "Schedule of Events", href: "/schedule", note: "Our wedding weekend, day by day", img: "/images/hero.jpeg" },
+  { label: "Meet the Taros", href: "/the-taros", note: "Our story & wedding party", img: "/pagesphotos/hotel/1b9d5be8.avif" },
+  { label: "Q&A", href: "/qa", note: "Everything you might be wondering", img: "/pagesphotos/hotel/5b758b55.avif" },
+  { label: "Registry", href: "/registry", note: "Gifts & wishes", img: "/pagesphotos/hotel/56b41503.avif" },
+  { label: "Explore Morocco", href: "/explore", note: "Our favourite places & tips", img: "/reference/venue-photo.jpeg" },
+];
 ---
 
 <BaseLayout>
@@ -16,11 +27,74 @@ import DressCode from "../components/sections/DressCode.astro";
     class="cherub-float pointer-events-none fixed left-1/2 top-0 z-[55] w-28 md:w-36"
   />
   <div id="main-content" class="opacity-0" aria-hidden="true">
+    <SiteNav heroTheme="light" />
     <Hero />
     <DateReveal client:load />
     <Countdown />
     <Details />
     <DressCode />
+
+    <FeatureBanner
+      header="Tayo & Ope"
+      eyebrow="Marrakech · December 2026"
+      title="Join us in Marrakech"
+      text="Three days of culture, colour, and celebration in the Red City. Your presence is the greatest gift of all."
+      ctaLabel="View the Schedule"
+      ctaHref="/schedule"
+      leftImage="/images/hero.jpeg"
+      rightImage="/pagesphotos/hotel/5b758b55.avif"
+    />
+
+    <!-- Explore the website · links to every page -->
+    <section class="relative overflow-hidden bg-[#fffaf0] px-6 py-28">
+      <div class="mx-auto max-w-5xl text-center">
+        <p
+          class="font-[family-name:var(--font-family-script)] text-4xl text-[var(--color-gold)] md:text-5xl"
+        >
+          Explore our website
+        </p>
+        <p
+          class="mx-auto mt-6 max-w-2xl font-serif text-xl leading-relaxed text-[#5d574a]"
+        >
+          Here you'll find everything you need to plan your trip and enjoy the
+          celebrations — travel and accommodation, the schedule of events, our
+          story, and a few of our favourite things to experience while you're
+          here.
+        </p>
+
+        <div class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {
+            pages.map((page) => (
+              <a
+                href={page.href}
+                class="group relative block aspect-[4/5] overflow-hidden rounded-[1.5rem] shadow-[0_18px_50px_rgba(90,50,26,0.12)]"
+              >
+                <img
+                  src={page.img}
+                  alt={page.label}
+                  class="absolute inset-0 h-full w-full object-cover transition duration-[1.2s] ease-out group-hover:scale-110"
+                  loading="lazy"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-[#2a1813]/92 via-[#2a1813]/25 to-transparent transition duration-500 group-hover:from-[#2a1813]/95" />
+                <div class="absolute inset-x-0 bottom-0 p-7 text-left text-[#fffdf0]">
+                  <h3 class="font-serif text-2xl font-semibold leading-tight">
+                    {page.label}
+                  </h3>
+                  <p class="mt-1.5 font-sans text-sm text-[#fffdf0]/75">
+                    {page.note}
+                  </p>
+                  <span class="mt-4 inline-flex items-center gap-2 font-sans text-[10px] font-semibold uppercase tracking-[0.28em] text-[#e6c787]">
+                    View
+                    <span class="transition-transform duration-300 group-hover:translate-x-1">→</span>
+                  </span>
+                </div>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
     <footer
       id="rsvp-panel"
       class="relative overflow-hidden bg-[#efe7d7] px-6 py-28 text-center text-[#3d3026]"

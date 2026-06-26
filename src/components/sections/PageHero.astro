@@ -1,0 +1,237 @@
+---
+/**
+ * Reusable cinematic page hero.
+ * - Video OR image background (image gets a slow Ken-Burns zoom)
+ * - Layered dark gradient + vignette for legibility
+ * - Hanging Moroccan lanterns that sway gently
+ * - Eyebrow, oversized script/serif title, subtitle — all rise + fade in
+ * - Animated scroll cue
+ */
+interface Props {
+  media?: "video" | "image";
+  src: string;
+  poster?: string;
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  height?: "full" | "tall" | "short";
+}
+
+const {
+  media = "image",
+  src,
+  poster,
+  eyebrow,
+  title,
+  subtitle,
+  height = "full",
+} = Astro.props;
+
+const heightCls =
+  height === "tall"
+    ? "min-h-[82svh]"
+    : height === "short"
+      ? "min-h-[60svh]"
+      : "min-h-[100svh] h-[100svh]";
+---
+
+<section
+  class={`page-hero sticky top-0 z-0 isolate flex ${heightCls} items-center justify-center overflow-hidden bg-[#0c0a08] text-white`}
+>
+  {/* Background media */}
+  {
+    media === "video" ? (
+      <video
+        data-hero-media
+        class="absolute inset-0 -z-10 h-full w-full object-cover"
+        src={src}
+        poster={poster}
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        aria-hidden="true"
+      />
+    ) : (
+      <img
+        data-hero-media
+        src={src}
+        alt=""
+        aria-hidden="true"
+        class="absolute inset-0 -z-10 h-full w-full object-cover"
+      />
+    )
+  }
+
+  {/* Legibility overlays */}
+  <div
+    class="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-black/55 via-black/40 to-black/80"
+    aria-hidden="true"
+  >
+  </div>
+  <div
+    class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.7)_92%)]"
+    aria-hidden="true"
+  >
+  </div>
+
+  {/* Content */}
+  <div data-hero-content class="relative mx-auto max-w-3xl px-6 text-center">
+    {
+      eyebrow && (
+        <p class="hero-rise hero-rise--1 inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/[0.06] px-5 py-1.5 font-sans text-[10px] font-semibold uppercase tracking-[0.42em] text-white/85 backdrop-blur-md">
+          <span class="h-1 w-1 rounded-full bg-[#e6c787]" />
+          {eyebrow}
+          <span class="h-1 w-1 rounded-full bg-[#e6c787]" />
+        </p>
+      )
+    }
+    <h1
+      data-hero-title
+      class="hero-rise hero-rise--2 mt-7 text-[clamp(3rem,9vw,6rem)] font-normal leading-[0.9] drop-shadow-[0_4px_30px_rgba(0,0,0,0.6)]"
+      style="font-family: var(--font-family-script), 'Great Vibes', cursive;"
+      set:html={title}
+    />
+    {
+      subtitle && (
+        <p class="hero-rise hero-rise--3 mx-auto mt-6 max-w-xl font-serif text-[clamp(1.05rem,2.4vw,1.35rem)] font-light italic leading-relaxed text-white/85">
+          {subtitle}
+        </p>
+      )
+    }
+  </div>
+
+  {/* Scroll cue */}
+  <div
+    class="hero-rise hero-rise--3 pointer-events-none absolute bottom-7 left-1/2 -translate-x-1/2"
+    aria-hidden="true"
+  >
+    <span
+      class="flex h-9 w-5 items-start justify-center rounded-full border border-white/35 p-1"
+    >
+      <span class="hero-scroll-dot h-1.5 w-1.5 rounded-full bg-white/75"></span>
+    </span>
+  </div>
+</section>
+
+<style>
+  /* Entrance — rise + fade */
+  .hero-rise {
+    opacity: 0;
+    transform: translateY(22px);
+    animation: heroRise 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  .hero-rise--1 {
+    animation-delay: 0.15s;
+  }
+  .hero-rise--2 {
+    animation-delay: 0.4s;
+  }
+  .hero-rise--3 {
+    animation-delay: 0.75s;
+  }
+  @keyframes heroRise {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Scroll cue dot */
+  .hero-scroll-dot {
+    animation: heroScroll 1.8s ease-in-out infinite;
+  }
+  @keyframes heroScroll {
+    0% {
+      opacity: 0;
+      transform: translateY(0);
+    }
+    35% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-rise,
+    .hero-scroll-dot {
+      animation: none;
+    }
+    .hero-rise {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Word reveal — GSAP splits the title into these */
+  .hero-word {
+    display: inline-block;
+  }
+</style>
+
+<script>
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  document.querySelectorAll<HTMLElement>(".page-hero").forEach((hero) => {
+    const media = hero.querySelector<HTMLElement>("[data-hero-media]");
+    const content = hero.querySelector<HTMLElement>("[data-hero-content]");
+    const title = hero.querySelector<HTMLElement>("[data-hero-title]");
+
+    // Word-by-word title reveal (GTA-VI-style staggered reveal)
+    if (title && !reduce) {
+      const html = title.innerHTML;
+      // Split on spaces but keep inline tags (e.g. <br>) intact as separators
+      const words = html.split(/(\s+|<br\s*\/?>)/i);
+      title.innerHTML = words
+        .map((w) => {
+          if (/^\s+$/.test(w)) return " ";
+          if (/<br/i.test(w)) return "<br/>";
+          return `<span class="hero-word">${w}</span>`;
+        })
+        .join("");
+      title.classList.remove("hero-rise", "hero-rise--2");
+      gsap.set(title, { opacity: 1 });
+      gsap.from(title.querySelectorAll(".hero-word"), {
+        yPercent: 120,
+        opacity: 0,
+        duration: 1,
+        ease: "power3.out",
+        stagger: 0.08,
+        delay: 0.35,
+      });
+    }
+
+    if (reduce) return;
+
+    // Sticky reveal (GTA-VI-style): the hero is pinned via CSS `position:
+    // sticky`, and the next section (z-10, opaque) scrolls up over it. As that
+    // happens we fade the hero text and gently push the background in, so the
+    // hero appears to recede behind the incoming content.
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: hero,
+        start: "top top",
+        end: "+=85%",
+        scrub: true,
+      },
+    });
+
+    if (content) {
+      tl.to(content, { opacity: 0, yPercent: -12, ease: "none" }, 0);
+    }
+    if (media) {
+      tl.to(media, { scale: 1.08, ease: "none" }, 0);
+    }
+  });
+
+  window.addEventListener("load", () => ScrollTrigger.refresh());
+</script>

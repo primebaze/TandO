@@ -1,0 +1,40 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import SiteNav from "../components/sections/SiteNav.astro";
+import SiteFooter from "../components/sections/SiteFooter.astro";
+import PasswordGate from "../components/react/PasswordGate";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  {/* Blocking check — hides content before paint if the visitor is locked out */}
+  <script is:inline>
+    (function () {
+      try {
+        if (localStorage.getItem("tothetaros_unlocked") !== "yes") {
+          document.documentElement.classList.add("is-locked");
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <PasswordGate client:load />
+
+  <div class="gated-content">
+    <SiteNav />
+    <slot />
+    <SiteFooter />
+  </div>
+
+  {/* Smooth (Lenis) scrolling + GSAP scroll-triggered reveals */}
+  <script>
+    import { bootSmooth } from "../scripts/smooth";
+    bootSmooth();
+  </script>
+</BaseLayout>
