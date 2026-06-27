@@ -22,47 +22,47 @@ function escapeHtml(value: string) {
   return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-// Floral, image-resilient template (Art Nouveau bands + text design fallback).
+// img1-style: ornate floral vault arch, blush panel, mirrored arch footer.
 function buildHtml(name: string, subject: string, message: string) {
   const greeting = name ? `Dear ${escapeHtml(name)},` : 'Dear guest,';
   const body = escapeHtml(message)
     .split(/\n{2,}/)
     .map(
       (p) =>
-        `<p style="margin:0 0 16px;font-family:Georgia,serif;font-size:15px;color:#5a4a44;line-height:1.9;">${p.replace(/\n/g, '<br />')}</p>`,
+        `<p style="margin:0 0 16px;font-family:Georgia,serif;font-size:15px;color:#5c3b30;line-height:1.9;">${p.replace(/\n/g, '<br />')}</p>`,
     )
     .join('');
 
   return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1.0" /><title>${escapeHtml(subject)}</title></head>
-<body style="margin:0;padding:0;background-color:#efdfd0;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#efdfd0;">
-    <tr><td align="center" style="padding:44px 16px;">
-      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:564px;background-color:#fdf6ee;border:1px solid rgba(187,77,44,0.35);border-radius:16px;overflow:hidden;">
-        <tr><td bgcolor="#bb4d2c" style="line-height:0;font-size:0;background-color:#bb4d2c;">
+<body style="margin:0;padding:0;background-color:#3b211d;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#3b211d;">
+    <tr><td align="center" style="padding:40px 16px;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:564px;background-color:#ecd7cb;border-radius:18px;overflow:hidden;border:1px solid rgba(110,60,40,0.28);">
+        <tr><td style="line-height:0;font-size:0;">
           <img src="${SITE}/email/floral-band.jpg" width="564" alt="Tayo &amp; Ope" style="display:block;width:100%;height:auto;border:0;" />
         </td></tr>
-        <tr><td align="center" style="padding:38px 48px 0;">
-          <p style="margin:0 0 12px;font-family:Arial,sans-serif;font-size:10px;font-weight:600;letter-spacing:0.42em;text-transform:uppercase;color:#bb4d2c;">Wedding Celebration</p>
-          <p style="margin:0;font-family:Georgia,serif;font-size:42px;color:#6b2f28;line-height:1;">Tayo &amp; Ope</p>
-          <table cellpadding="0" cellspacing="0" style="margin:20px auto 0;"><tr>
-            <td style="width:58px;height:11px;border-bottom:1px solid rgba(187,77,44,0.45);font-size:0;line-height:0;">&nbsp;</td>
-            <td style="padding:0 14px;font-family:Georgia,serif;font-size:17px;color:#bb4d2c;vertical-align:middle;">&#10086;</td>
-            <td style="width:58px;height:11px;border-bottom:1px solid rgba(187,77,44,0.45);font-size:0;line-height:0;">&nbsp;</td>
+        <tr><td align="center" style="padding:34px 48px 0;">
+          <p style="margin:0 0 14px;font-family:Arial,sans-serif;font-size:10px;font-weight:600;letter-spacing:0.42em;text-transform:uppercase;color:#a8472f;">For the Wedding of</p>
+          <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:50px;color:#6b2f28;line-height:1.04;">Tayo &amp; Ope</p>
+          <table cellpadding="0" cellspacing="0" style="margin:22px auto 2px;"><tr>
+            <td style="width:54px;height:11px;border-bottom:1px solid rgba(110,60,40,0.4);font-size:0;line-height:0;">&nbsp;</td>
+            <td style="padding:0 14px;font-family:Georgia,serif;font-size:16px;color:#a8472f;vertical-align:middle;">&#10086;</td>
+            <td style="width:54px;height:11px;border-bottom:1px solid rgba(110,60,40,0.4);font-size:0;line-height:0;">&nbsp;</td>
           </tr></table>
         </td></tr>
-        <tr><td style="padding:28px 48px 6px;">
+        <tr><td style="padding:22px 48px 6px;">
           <p style="margin:0 0 18px;font-family:Georgia,serif;font-size:20px;font-style:italic;color:#6b2f28;">${greeting}</p>
           ${body}
         </td></tr>
-        <tr><td style="padding:14px 48px 34px;">
-          <p style="margin:0;font-family:Georgia,serif;font-size:26px;color:#6b2f28;line-height:1;">Tayo &amp; Ope</p>
-          <p style="margin:7px 0 0;font-family:Arial,sans-serif;font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:#bb4d2c;">Marrakech, Morocco &middot; 16&ndash;20 December 2026</p>
+        <tr><td style="padding:12px 48px 30px;">
+          <p style="margin:0;font-family:Georgia,serif;font-size:25px;color:#6b2f28;line-height:1;">Tayo &amp; Ope</p>
+          <p style="margin:8px 0 0;font-family:Arial,sans-serif;font-size:10px;letter-spacing:0.26em;text-transform:uppercase;color:#a8472f;">Marrakech, Morocco &middot; 16&ndash;20 December 2026</p>
         </td></tr>
-        <tr><td bgcolor="#bb4d2c" style="line-height:0;font-size:0;background-color:#bb4d2c;">
+        <tr><td style="line-height:0;font-size:0;">
           <img src="${SITE}/email/floral-band-flip.jpg" width="564" alt="" style="display:block;width:100%;height:auto;border:0;" />
         </td></tr>
-        <tr><td align="center" style="padding:28px 48px 36px;">
-          <p style="margin:0;font-family:Arial,sans-serif;font-size:11px;color:rgba(90,74,68,0.62);line-height:1.7;">You're receiving this because you RSVP'd at tothetaros.com. If this wasn't you, please disregard this email.</p>
+        <tr><td align="center" style="padding:24px 48px 30px;">
+          <p style="margin:0;font-family:Arial,sans-serif;font-size:11px;color:rgba(92,59,48,0.62);line-height:1.7;">You're receiving this because you RSVP'd at tothetaros.com. If this wasn't you, please disregard this email.</p>
         </td></tr>
       </table>
     </td></tr>
