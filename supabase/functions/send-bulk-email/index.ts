@@ -62,7 +62,7 @@ function buildHtml(name: string, subject: string, message: string) {
           <img src="${SITE}/email/floral-band-flip.jpg" width="564" alt="" style="display:block;width:100%;height:auto;border:0;" />
         </td></tr>
         <tr><td align="center" style="padding:28px 48px 36px;">
-          <p style="margin:0;font-family:Arial,sans-serif;font-size:11px;color:rgba(90,74,68,0.62);line-height:1.7;">You're receiving this because you RSVP'd at tothetaros.com. If this wasn't you, please disregard this email.<br />For any questions, contact Trendy Bee Events &middot; +234 901 942 2229</p>
+          <p style="margin:0;font-family:Arial,sans-serif;font-size:11px;color:rgba(90,74,68,0.62);line-height:1.7;">You're receiving this because you RSVP'd at tothetaros.com. If this wasn't you, please disregard this email.</p>
         </td></tr>
       </table>
     </td></tr>
@@ -72,7 +72,7 @@ function buildHtml(name: string, subject: string, message: string) {
 
 function buildText(name: string, message: string) {
   const greeting = name ? `Dear ${name},` : 'Dear guest,';
-  return `${greeting}\n\n${message}\n\nWith love,\nTayo & Ope\nMarrakech, Morocco · 16–20 December 2026\n\nYou're receiving this because you RSVP'd at tothetaros.com. If this wasn't you, please disregard this email.\nFor any questions, contact Trendy Bee Events · +234 901 942 2229`;
+  return `${greeting}\n\n${message}\n\nWith love,\nTayo & Ope\nMarrakech, Morocco · 16–20 December 2026\n\nYou're receiving this because you RSVP'd at tothetaros.com. If this wasn't you, please disregard this email.`;
 }
 
 Deno.serve(async (req) => {
