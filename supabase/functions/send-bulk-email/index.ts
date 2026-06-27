@@ -37,7 +37,7 @@ function buildHtml(name: string, subject: string, message: string) {
 <body style="margin:0;padding:0;background-color:#3b211d;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#3b211d;">
     <tr><td align="center" style="padding:40px 16px;">
-      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:564px;background-color:#ecd7cb;border-radius:18px;overflow:hidden;border:1px solid rgba(110,60,40,0.28);">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:564px;background-color:#e9d3c5;border-radius:18px;overflow:hidden;border:1px solid rgba(110,60,40,0.28);">
         <tr><td style="line-height:0;font-size:0;">
           <img src="${SITE}/email/floral-band.jpg" width="564" alt="Tayo &amp; Ope" style="display:block;width:100%;height:auto;border:0;" />
         </td></tr>
