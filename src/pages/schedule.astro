@@ -32,16 +32,25 @@ const days = [
 
 const dressCode = [
   {
-    event: "Traditional Welcome Party",
-    style: "Refined Afro–Moroccan Fusion",
-    body: "An elegant celebration of Nigerian and Moroccan culture through sophisticated traditional and contemporary attire.",
-    img: "/pagesphotos/dresscode/WhatsApp Image 2026-06-17 at 11.26.41.jpeg",
+    event: "Traditional Wedding · 17 December",
+    style: "Laced in Love",
+    accent: "Shades of Blue 💙",
+    body: [
+      "We are delighted to invite you to celebrate our traditional wedding with us — a beautiful celebration of love dressed in elegance, unity, and grace.",
+      "We kindly ask that guests come dressed in any shade of blue lace attire. Let's create a stunning ocean of blues as we come together to celebrate love, family, and new beginnings.",
+    ],
+    img: "/pagesphotos/traditional/MEN & WOMEN REV.png",
+    contain: true,
   },
   {
-    event: "White Wedding",
+    event: "White Wedding · 19 December",
     style: "All Things Monochrome",
-    body: "Timeless elegance with a playful edge — guests are invited to dress in monochrome and bring their own stylish spin to classic formalwear.",
+    accent: null,
+    body: [
+      "Timeless elegance with a playful edge — guests are invited to dress in monochrome and bring their own stylish spin to classic formalwear.",
+    ],
     img: "/pagesphotos/dresscode/WhatsApp Image 2026-06-17 at 09.25.14.jpeg",
+    contain: true,
   },
 ];
 ---
@@ -124,10 +133,17 @@ const dressCode = [
                 <h3 class="mt-4 font-[family-name:var(--font-family-script)] text-5xl text-[var(--color-charcoal)] md:text-6xl">
                   {dc.style}
                 </h3>
+                {dc.accent && (
+                  <p class="mt-2 font-serif text-2xl italic text-[#3f6ea5] md:text-3xl">
+                    {dc.accent}
+                  </p>
+                )}
                 <div class="mx-auto mt-5 h-px w-16 bg-[var(--color-gold)]/40" />
-                <p class="mx-auto mt-5 max-w-lg font-serif text-lg leading-relaxed text-[#5d574a]">
-                  {dc.body}
-                </p>
+                {dc.body.map((para) => (
+                  <p class="mx-auto mt-5 max-w-xl font-serif text-lg leading-relaxed text-[#5d574a]">
+                    {para}
+                  </p>
+                ))}
               </div>
               <div class="mt-10 overflow-hidden rounded-[1.5rem] bg-white shadow-[0_24px_70px_rgba(90,50,26,0.1)] ring-1 ring-[var(--color-gold)]/10">
                 <img

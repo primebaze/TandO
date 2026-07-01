@@ -4,6 +4,23 @@ import SplitHero from "../components/sections/SplitHero.astro";
 
 const B = "/pagesphotos/bridal";
 
+// Couple, bride & groom photos.
+const embrace = "/pagesphotos/couple/WhatsApp Image 2026-06-30 at 20.04.31.jpeg";
+const champagne = "/pagesphotos/couple/WhatsApp Image 2026-06-30 at 20.04.32.jpeg";
+const proposal = "/pagesphotos/couple/WhatsApp Image 2026-06-30 at 20.04.32(1).jpeg";
+const brideImg = "/pagesphotos/bride/WhatsApp Image 2026-06-28 at 18.50.55.jpeg";
+const groomImg = "/pagesphotos/groom/WhatsApp Image 2026-06-28 at 19.05.01.jpeg";
+
+// Best man & groomsmen photos.
+const bestMan = "/pagesphotos/bestman/bestman.jpg";
+const groomsmen = [
+  "/pagesphotos/groomsmen/WhatsApp Image 2026-06-28 at 14.42.00.jpeg",
+  "/pagesphotos/groomsmen/WhatsApp Image 2026-06-28 at 14.49.30.jpeg",
+  "/pagesphotos/groomsmen/WhatsApp Image 2026-06-28 at 15.03.34.jpeg",
+  "/pagesphotos/groomsmen/WhatsApp Image 2026-06-28 at 16.53.39.jpeg",
+  "/pagesphotos/groomsmen/WhatsApp Image 2026-06-28 at 18.53.30.jpeg",
+];
+
 // Wedding party — photos named per person in /pagesphotos/bridal.
 const matron = {
   name: "Tife Adeworan",
@@ -30,10 +47,10 @@ const bridesmaids = [
   description="The love story of Tayo & Ope, and the family and friends celebrating with us."
 >
   <SplitHero
-    image="/images/hero.jpeg"
-    imageAlt="Marrakech"
-    inset="/reference/venue-photo.jpeg"
-    insetAlt="Marrakech"
+    image={embrace}
+    imageAlt="Tayo & Ope"
+    inset={champagne}
+    insetAlt="Tayo & Ope celebrating"
     eyebrow="Our Story"
     title="Meet the<br/>Taros"
     tagline="Every great love story is supported by an incredible community."
@@ -47,9 +64,9 @@ const bridesmaids = [
       <!-- full-width image band -->
       <div class="relative h-[42svh] min-h-[300px] overflow-hidden md:h-[52svh]">
         <img
-          src="/pagesphotos/hotel/5b758b55.avif"
-          alt="Marrakech"
-          class="h-full w-full object-cover"
+          src={champagne}
+          alt="Tayo & Ope"
+          class="h-full w-full object-cover object-[center_28%]"
           loading="lazy"
         />
       </div>
@@ -60,9 +77,9 @@ const bridesmaids = [
       >
         <!-- inset photo, upper-right, overlapping up into the image -->
         <img
-          src="/reference/venue-photo.jpeg"
-          alt="Marrakech"
-          class="absolute -top-12 right-6 h-36 w-52 object-cover shadow-[0_18px_50px_rgba(0,0,0,0.3)] md:-top-24 md:right-14 md:h-48 md:w-72"
+          src={proposal}
+          alt="Tayo & Ope — the proposal"
+          class="absolute -top-12 right-6 h-36 w-52 object-cover object-top shadow-[0_18px_50px_rgba(0,0,0,0.3)] md:-top-24 md:right-14 md:h-48 md:w-72"
           loading="lazy"
         />
 
@@ -92,10 +109,10 @@ const bridesmaids = [
       class="story-pin relative flex h-[100svh] items-center justify-center overflow-hidden bg-[#0c0a08] text-[#fffdf0]"
     >
       {/* Cross-fading backgrounds */}
+      <img data-story-bg src={proposal} alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover object-[center_30%]" />
+      <img data-story-bg src={embrace} alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover" />
+      <img data-story-bg src={champagne} alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover object-[center_30%]" />
       <img data-story-bg src="/images/hero.jpeg" alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover" />
-      <img data-story-bg src="/pagesphotos/hotel/5b758b55.avif" alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover" />
-      <img data-story-bg src="/reference/venue-photo.jpeg" alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover" />
-      <img data-story-bg src="/pagesphotos/hotel/1b9d5be8.avif" alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover" />
       <div class="absolute inset-0 bg-[#0c0a08]/68"></div>
       <div
         class="absolute inset-0"
@@ -144,6 +161,57 @@ const bridesmaids = [
       >
         Scroll
       </p>
+    </section>
+
+    <!-- ===== The Bride & Groom ===== -->
+    <section class="bg-[#fffdf0] px-6 pt-24 md:pt-32">
+      <div class="mx-auto max-w-5xl">
+        <div class="reveal text-center">
+          <p class="font-sans text-[10px] font-semibold uppercase tracking-[0.34em] text-[#76353a]/70">
+            The Bride &amp; Groom
+          </p>
+          <h2 class="mt-4 font-[family-name:var(--font-family-script)] text-6xl text-[#76353a] md:text-7xl">
+            Tayo &amp; Ope
+          </h2>
+          <div class="mx-auto mt-6 h-px w-20 bg-[#76353a]/30"></div>
+        </div>
+
+        <div class="mx-auto mt-16 grid max-w-3xl gap-8 sm:grid-cols-2">
+          <!-- Bride -->
+          <div class="reveal group relative aspect-[4/5] overflow-hidden rounded-[1.75rem] shadow-[0_24px_60px_rgba(118,53,58,0.22)]">
+            <img
+              src={brideImg}
+              alt="Tayo, the bride"
+              class="h-full w-full object-cover object-top transition duration-700 group-hover:scale-[1.05]"
+              loading="lazy"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-[#5a2a2e] via-[#5a2a2e]/15 to-transparent"></div>
+            <div class="absolute inset-x-0 bottom-0 p-6 text-center text-[#fffdf0]">
+              <p class="font-sans text-[10px] font-semibold uppercase tracking-[0.32em] text-[#fffdf0]/75">
+                The Bride
+              </p>
+              <p class="mt-1.5 font-serif text-3xl">Tayo</p>
+            </div>
+          </div>
+
+          <!-- Groom -->
+          <div class="reveal group relative aspect-[4/5] overflow-hidden rounded-[1.75rem] shadow-[0_24px_60px_rgba(118,53,58,0.22)]">
+            <img
+              src={groomImg}
+              alt="Ope, the groom"
+              class="h-full w-full object-cover object-top transition duration-700 group-hover:scale-[1.05]"
+              loading="lazy"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-[#5a2a2e] via-[#5a2a2e]/15 to-transparent"></div>
+            <div class="absolute inset-x-0 bottom-0 p-6 text-center text-[#fffdf0]">
+              <p class="font-sans text-[10px] font-semibold uppercase tracking-[0.32em] text-[#fffdf0]/75">
+                The Groom
+              </p>
+              <p class="mt-1.5 font-serif text-3xl">Ope</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- ===== Wedding Party ===== -->
@@ -204,24 +272,42 @@ const bridesmaids = [
           }
         </div>
 
-        <!-- Best Man / Groomsmen -->
-        <div class="reveal mt-20 grid gap-8 text-center md:grid-cols-2">
-          <div>
-            <p class="font-sans text-[10px] font-semibold uppercase tracking-[0.3em] text-[#76353a]/60">
-              Best Man
-            </p>
-            <p class="mt-2 font-serif text-2xl italic text-[#76353a]/50">
-              To be announced
-            </p>
+        <!-- Best Man -->
+        <div class="reveal mx-auto mt-24 w-full max-w-sm">
+          <div class="group relative aspect-[4/5] overflow-hidden rounded-[1.75rem] shadow-[0_24px_60px_rgba(118,53,58,0.22)]">
+            <img
+              src={bestMan}
+              alt="Best Man"
+              class="h-full w-full object-cover object-top transition duration-700 group-hover:scale-[1.05]"
+              loading="lazy"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-[#5a2a2e] via-[#5a2a2e]/20 to-transparent"></div>
+            <div class="absolute inset-x-0 bottom-0 p-6 text-center text-[#fffdf0]">
+              <p class="font-sans text-[10px] font-semibold uppercase tracking-[0.32em] text-[#fffdf0]/75">
+                Best Man
+              </p>
+            </div>
           </div>
-          <div>
-            <p class="font-sans text-[10px] font-semibold uppercase tracking-[0.3em] text-[#76353a]/60">
-              Groomsmen
-            </p>
-            <p class="mt-2 font-serif text-2xl italic text-[#76353a]/50">
-              To be announced
-            </p>
-          </div>
+        </div>
+
+        <!-- Groomsmen -->
+        <p class="reveal mt-20 text-center font-sans text-[10px] font-semibold uppercase tracking-[0.3em] text-[#76353a]/60">
+          Groomsmen
+        </p>
+        <div class="mt-10 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">
+          {
+            groomsmen.map((src) => (
+              <div class="reveal group relative aspect-[3/4] overflow-hidden rounded-2xl shadow-[0_16px_40px_rgba(118,53,58,0.14)]">
+                <img
+                  src={src}
+                  alt="Groomsman"
+                  class="h-full w-full object-cover object-top transition duration-700 group-hover:scale-[1.06]"
+                  loading="lazy"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-[#5a2a2e]/70 via-transparent to-transparent"></div>
+              </div>
+            ))
+          }
         </div>
 
         <p class="reveal mx-auto mt-20 max-w-xl text-center font-serif text-lg italic leading-relaxed text-[#76353a]/80">
