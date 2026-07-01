@@ -10,6 +10,7 @@ interface Props {
   imageAlt?: string;
   inset?: string;
   insetAlt?: string;
+  insetPosition?: string;
   eyebrow?: string;
   title: string;
   tagline?: string;
@@ -20,6 +21,7 @@ const {
   imageAlt = "",
   inset,
   insetAlt = "",
+  insetPosition = "center",
   eyebrow,
   title,
   tagline,
@@ -67,6 +69,7 @@ const {
             src={inset}
             alt={insetAlt}
             class="split-rise split-rise--3 absolute bottom-0 right-0 h-[78%] w-[62%] object-cover md:h-[72%] md:w-[58%]"
+            style={`object-position:${insetPosition};`}
             loading="lazy"
           />
         )
