@@ -34,20 +34,26 @@ const dressCode = [
   {
     event: "Traditional Wedding · 17 December",
     style: "Laced in Love",
-    accent: "Shades of Blue 💙",
+    accent: "Shades of Pink 🎀",
+    accentColor: "#c85f88",
     body: [
-      "We are delighted to invite you to celebrate our traditional wedding with us — a beautiful celebration of love dressed in elegance, unity, and grace.",
-      "We kindly ask that guests come dressed in any shade of blue lace attire. Let's create a stunning ocean of blues as we come together to celebrate love, family, and new beginnings.",
+      "A beautiful celebration of love dressed in elegance, unity, and grace.",
+      "For our special day, we kindly ask that guests come dressed in any shade of pink lace attire.",
+      "Aso Ebi is also available for friends and family who would like to wear the same fabric as the parents of the couple. If you're interested in purchasing the Aso Ebi, please reach out directly to either of the couple's parents for more information.",
+      "Let's create a stunning sea of pink as we come together to celebrate love, family, and new beginnings.",
     ],
     img: "/pagesphotos/traditional/MEN & WOMEN REV.png",
     contain: true,
   },
   {
     event: "White Wedding · 19 December",
-    style: "All Things Monochrome",
+    style: "Monochrome Magic",
     accent: null,
+    accentColor: null,
     body: [
-      "Timeless elegance with a playful edge — guests are invited to dress in monochrome and bring their own stylish spin to classic formalwear.",
+      "For our white wedding, we kindly invite all guests to celebrate with us with a Monochrome Magic dress code.",
+      "Monochrome is all about wearing one colour from head to toe. Choose your favourite colour and style your entire outfit in that single shade for a chic, elegant, and coordinated look.",
+      "We can't wait to celebrate this unforgettable day with you! 💍🤍",
     ],
     img: "/pagesphotos/dresscode/WhatsApp Image 2026-06-17 at 09.25.14.jpeg",
     contain: true,
@@ -132,7 +138,10 @@ const dressCode = [
                   {dc.style}
                 </h3>
                 {dc.accent && (
-                  <p class="mt-2 font-serif text-2xl italic text-[#3f6ea5] md:text-3xl">
+                  <p
+                    class="mt-2 font-serif text-2xl italic md:text-3xl"
+                    style={`color:${dc.accentColor};`}
+                  >
                     {dc.accent}
                   </p>
                 )}

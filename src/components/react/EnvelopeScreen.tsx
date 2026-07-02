@@ -7,8 +7,28 @@ const GRAIN: React.CSSProperties = {
   opacity: 0.08,
 };
 
-const CARD_TEXT =
-  'This space has been thoughtfully created to guide you through every detail as our wedding approaches. For now, please RSVP, and more information about the wedding schedule will be shared shortly.';
+const CARD_HEADING = 'Welcome to Our Wedding Website';
+const CARD_BODY = [
+  "On this website, you'll find everything you need to plan your trip and enjoy the celebrations including travel information, accommodation recommendations, event details, RSVP information, and a few of our favourite things to experience while you're there.",
+  'Thank you for being part of our journey. We cannot wait to welcome you and celebrate together.',
+];
+const CARD_SIGN = 'With love, Tayo & Ope';
+const CARD_TAG = '#ToTheTaros (Morocco Edition)';
+const CARD_STAGGER = 0.014;
+const CARD_CHAR_COUNT =
+  CARD_HEADING.length +
+  CARD_BODY.reduce((n, p) => n + p.length, 0) +
+  CARD_SIGN.length +
+  CARD_TAG.length;
+
+/** Render a string as individually-animatable character spans. */
+function renderChars(str: string) {
+  return str.split('').map((char, i) => (
+    <span key={i} className="char-span" style={{ display: 'inline' }}>
+      {char}
+    </span>
+  ));
+}
 
 function SealFallback() {
   return (
@@ -159,7 +179,6 @@ export default function EnvelopeScreen() {
     }
 
     // Body text types in immediately after monogram starts.
-    // 195 chars × 0.038 stagger = ~7.4s to finish.
     const charDelay = 0.3;
     if (textEl) {
       const charEls = Array.from(textEl.querySelectorAll('.char-span'));
@@ -167,15 +186,14 @@ export default function EnvelopeScreen() {
         tl.to(charEls, {
           opacity: 1,
           duration: 0.001,
-          stagger: 0.038,
+          stagger: CARD_STAGGER,
           ease: 'none',
         }, textStart + charDelay);
       }
     }
 
     // Wait 1s after typing finishes, then fade to homepage.
-    // typingEnd = textStart + charDelay + (195 * 0.038) ≈ textStart + 7.7
-    const typingEnd = textStart + charDelay + 7.7;
+    const typingEnd = textStart + charDelay + CARD_CHAR_COUNT * CARD_STAGGER;
     const mainReveal = typingEnd + 1.0;
     tl.set(main, { opacity: 1 }, mainReveal);
     tl.add(() => {
@@ -309,30 +327,58 @@ export default function EnvelopeScreen() {
           <image href="/assets/card-paper.png" x="0" y="0" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" />
         </svg>
 
-        {/* Body text — writing animation, sits in the open space of the new image */}
+        {/* Welcome message — writing animation, sits in the open space of the card */}
         <div
-          className="absolute inset-x-0 flex flex-col items-center px-8 text-center"
-          style={{ top: '34%' }}
+          className="absolute inset-x-0 flex flex-col items-center px-7 text-center"
+          style={{ top: '27%' }}
         >
-          <p
+          <div
             ref={textRef}
-            className="max-w-[320px] italic leading-snug"
+            className="flex max-w-[330px] flex-col items-center gap-2"
             style={{
               fontFamily: "'Cormorant Garamond', Georgia, 'Times New Roman', serif",
-              fontSize: 'clamp(0.95rem, 3.4vw, 1.1rem)',
-              fontWeight: 700,
               color: '#3a2210',
               WebkitTextFillColor: '#3a2210',
               WebkitFontSmoothing: 'antialiased',
               textShadow: '0 1px 3px rgba(255,248,235,0.9)',
             }}
           >
-            {CARD_TEXT.split('').map((char, i) => (
-              <span key={i} className="char-span" style={{ display: 'inline' }}>
-                {char}
-              </span>
+            <p
+              className="leading-tight"
+              style={{ fontSize: 'clamp(1.02rem, 3.7vw, 1.24rem)', fontWeight: 700 }}
+            >
+              {renderChars(CARD_HEADING)}
+            </p>
+            {CARD_BODY.map((para, pi) => (
+              <p
+                key={pi}
+                className="italic leading-snug"
+                style={{ fontSize: 'clamp(0.72rem, 2.7vw, 0.86rem)', fontWeight: 600 }}
+              >
+                {renderChars(para)}
+              </p>
             ))}
-          </p>
+            <p
+              className="mt-0.5 italic leading-snug"
+              style={{ fontSize: 'clamp(0.82rem, 3vw, 0.98rem)', fontWeight: 700 }}
+            >
+              {renderChars(CARD_SIGN)}
+            </p>
+            <p
+              className="uppercase not-italic"
+              style={{
+                fontFamily: 'Arial, sans-serif',
+                fontSize: 'clamp(0.5rem, 2vw, 0.6rem)',
+                fontWeight: 700,
+                letterSpacing: '0.22em',
+                color: '#9a6b2f',
+                WebkitTextFillColor: '#9a6b2f',
+                textShadow: 'none',
+              }}
+            >
+              {renderChars(CARD_TAG)}
+            </p>
+          </div>
         </div>
       </div>
 
