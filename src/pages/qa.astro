@@ -1,6 +1,6 @@
 ---
 import GatedLayout from "../layouts/GatedLayout.astro";
-import SplitHero from "../components/sections/SplitHero.astro";
+import PageHero from "../components/sections/PageHero.astro";
 
 const B = "/pagesphotos/bridal";
 
@@ -87,14 +87,12 @@ const groups = [
   title="Q&A — Tayo & Ope"
   description="Frequently asked questions about our wedding in Marrakech, Morocco."
 >
-  <SplitHero
-    image="/pagesphotos/hotel/1b9d5be8.avif"
-    imageAlt="Le Méridien N'Fis, Marrakech"
-    inset="/reference/venue-photo.jpeg"
-    insetAlt="Marrakech"
+  <PageHero
+    media="image"
+    src="/images/balloon-marrakech.jpg"
     eyebrow="Good to Know"
-    title="Questions<br/>&amp; Answers"
-    tagline="Everything you might be wondering, gathered in one place."
+    title="Questions &amp; Answers"
+    subtitle="Everything you might be wondering, gathered in one place."
   />
 
   <main

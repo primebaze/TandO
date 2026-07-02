@@ -1,6 +1,6 @@
 ---
 import GatedLayout from "../layouts/GatedLayout.astro";
-import SplitHero from "../components/sections/SplitHero.astro";
+import PageHero from "../components/sections/PageHero.astro";
 import Marquee from "../components/sections/Marquee.astro";
 
 const B = "/pagesphotos/bridal";
@@ -10,14 +10,12 @@ const B = "/pagesphotos/bridal";
   title="Registry — Tayo & Ope"
   description="Your presence is the greatest gift. For those who have asked, our gift details are here."
 >
-  <SplitHero
-    image="/pagesphotos/couple/WhatsApp Image 2026-06-30 at 20.04.31.jpeg"
-    imageAlt="Tayo & Ope"
-    inset="/pagesphotos/hotel/56b41503.avif"
-    insetAlt="Le Méridien N'Fis"
+  <PageHero
+    media="image"
+    src="/images/balloon-marrakech.jpg"
     eyebrow="With Gratitude"
-    title="Gifts<br/>&amp; Wishes"
-    tagline="Celebrating with you is more than enough."
+    title="Gifts &amp; Wishes"
+    subtitle="Celebrating with you is more than enough."
   />
 
   <main
