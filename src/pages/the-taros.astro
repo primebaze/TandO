@@ -1,6 +1,6 @@
 ---
 import GatedLayout from "../layouts/GatedLayout.astro";
-import SplitHero from "../components/sections/SplitHero.astro";
+import PageHero from "../components/sections/PageHero.astro";
 
 const B = "/pagesphotos/bridal";
 
@@ -46,15 +46,12 @@ const bridesmaids = [
   title="Meet the Taros — Tayo & Ope"
   description="The love story of Tayo & Ope, and the family and friends celebrating with us."
 >
-  <SplitHero
-    image={champagne}
-    imageAlt="Tayo & Ope celebrating"
-    inset={brideImg}
-    insetAlt="Tayo, the bride"
-    insetPosition="center 18%"
+  <PageHero
+    media="image"
+    src={champagne}
     eyebrow="Our Story"
-    title="Meet the<br/>Taros"
-    tagline="Every great love story is supported by an incredible community."
+    title="Meet the Taros"
+    subtitle="Every great love story is supported by an incredible community."
   />
 
   <main
