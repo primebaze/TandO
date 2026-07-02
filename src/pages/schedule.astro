@@ -1,6 +1,6 @@
 ---
 import GatedLayout from "../layouts/GatedLayout.astro";
-import SplitHero from "../components/sections/SplitHero.astro";
+import PageHero from "../components/sections/PageHero.astro";
 
 const days = [
   {
@@ -59,14 +59,12 @@ const dressCode = [
   title="Schedule of Events — Tayo & Ope"
   description="The full schedule for our wedding weekend in Marrakech, 16–20 December 2026."
 >
-  <SplitHero
-    image="/pagesphotos/hotel/1b9d5be8.avif"
-    imageAlt="Le Méridien N'Fis, Marrakech"
-    inset="/pagesphotos/hotel/511c9adc.avif"
-    insetAlt="Le Méridien N'Fis"
+  <PageHero
+    media="image"
+    src="/pagesphotos/hotel/1b9d5be8.avif"
     eyebrow="16 – 20 December 2026"
-    title="Our Wedding<br/>Weekend"
-    tagline="Five days of culture, celebration, and love in the heart of Marrakech."
+    title="Our Wedding Weekend"
+    subtitle="Five days of culture, celebration, and love in the heart of Marrakech."
   />
 
   <main class="relative z-10 overflow-hidden bg-[#fffaf0] pb-28 shadow-[0_-40px_80px_rgba(0,0,0,0.25)]">
