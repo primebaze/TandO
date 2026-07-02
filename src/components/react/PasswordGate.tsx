@@ -111,10 +111,12 @@ export default function PasswordGate() {
             type="password"
             placeholder="Enter password"
             autoFocus
-            className="w-full rounded-xl border px-5 py-4 text-center font-sans text-sm text-white placeholder-white/35 outline-none transition focus:ring-2"
+            className="w-full rounded-xl border px-5 py-4 text-center font-sans text-white placeholder-white/35 outline-none transition focus:ring-2"
             style={{
               borderColor: error ? 'rgba(220,80,80,0.6)' : 'rgba(230,199,135,0.25)',
               backgroundColor: 'rgba(255,255,255,0.05)',
+              // 16px min prevents iOS Safari from auto-zooming on focus
+              fontSize: '16px',
             }}
           />
           {error && (
