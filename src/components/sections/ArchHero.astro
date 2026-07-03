@@ -5,25 +5,43 @@
  * transitioning into the page. Eyebrow + script title + subtitle over the image.
  */
 interface Props {
-  src: string;
+  src?: string;
+  video?: string;
+  poster?: string;
   eyebrow?: string;
   title: string;
   subtitle?: string;
 }
 
-const { src, eyebrow, title, subtitle } = Astro.props;
+const { src, video, poster, eyebrow, title, subtitle } = Astro.props;
 ---
 
 <section
   class="arch-hero relative isolate flex min-h-[92svh] flex-col overflow-hidden bg-[#4a2826]"
 >
-  {/* Background image */}
-  <img
-    src={src}
-    alt=""
-    aria-hidden="true"
-    class="arch-hero-media absolute inset-0 z-0 h-full w-full object-cover"
-  />
+  {/* Background media — video or image */}
+  {
+    video ? (
+      <video
+        class="arch-hero-media absolute inset-0 z-0 h-full w-full object-cover"
+        src={video}
+        poster={poster}
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        aria-hidden="true"
+      />
+    ) : (
+      <img
+        src={src}
+        alt=""
+        aria-hidden="true"
+        class="arch-hero-media arch-ken absolute inset-0 z-0 h-full w-full object-cover"
+      />
+    )
+  }
 
   {/* Legibility overlays */}
   <div
@@ -88,7 +106,7 @@ const { src, eyebrow, title, subtitle } = Astro.props;
 </section>
 
 <style>
-  .arch-hero-media {
+  .arch-ken {
     animation: archKen 22s ease-in-out infinite alternate;
   }
   @keyframes archKen {
@@ -139,7 +157,7 @@ const { src, eyebrow, title, subtitle } = Astro.props;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .arch-hero-media,
+    .arch-ken,
     .hero-rise,
     .arch-scroll-dot {
       animation: none;
