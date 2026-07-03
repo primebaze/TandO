@@ -30,8 +30,10 @@ const { src, poster, eyebrow, title, label, heightVh = 300 } = Astro.props;
       playsinline
       preload="auto"
       aria-hidden="true"></video>
+    {/* Legibility scrim — kept light so the footage stays bright on mobile,
+        just enough at top/bottom for the title, cue and label. */}
     <div
-      class="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/45 via-black/15 to-black/55"
+      class="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/30"
       aria-hidden="true"
     >
     </div>
@@ -84,6 +86,10 @@ const { src, poster, eyebrow, title, label, heightVh = 300 } = Astro.props;
 </section>
 
 <style>
+  /* Lift the footage a touch — it reads dark on small screens otherwise. */
+  .sv-video {
+    filter: brightness(1.12) saturate(1.05);
+  }
   .sv-dot {
     animation: svScroll 1.8s ease-in-out infinite;
   }
