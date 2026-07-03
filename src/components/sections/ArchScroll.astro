@@ -1,9 +1,11 @@
 ---
 /**
- * Pinned GSAP + MorphSVG scroll sequence.
- * A maroon "curtain" window (SVG clip path) MORPHS through the keyframe shapes
- * as you scroll — pill -> arch -> dome -> open — revealing each content image
- * behind it (with a zoom), then opens to a footer band. Reusable via `beats`.
+ * Pinned GTA-VI-style zoom sequence.
+ * A maroon curtain with a Moroccan-arch window pins to the viewport. On
+ * scroll, the camera zooms IN through the arch until the image fills the
+ * screen (content revealed + caption), holds, then zooms back OUT to the
+ * curtain — then the next image takes the window and it repeats.
+ * Reusable via `beats`.
  */
 interface Beat {
   image: string;
@@ -16,8 +18,8 @@ interface Props {
   footerLabel?: string;
 }
 const { beats, footerLabel = "Your journey begins" } = Astro.props;
-// Scroll room: intro + each beat + footer.
-const heightVh = (beats.length + 2) * 100;
+// Scroll room: each beat gets ~1.6 viewports (zoom in, hold, zoom out).
+const heightVh = Math.round(beats.length * 160 + 100);
 ---
 
 <section
@@ -33,9 +35,10 @@ const heightVh = (beats.length + 2) * 100;
     >
       <defs>
         <clipPath id="as-window" clipPathUnits="userSpaceOnUse">
+          {/* Moroccan arch window — scales up to swallow the viewport (zoom-in) */}
           <path
             class="as-window-path"
-            d="M440,480 Q440,450 500,450 Q560,450 560,480 L560,520 Q560,550 500,550 Q440,550 440,520 Z"
+            d="M330,420 Q330,180 500,180 Q670,180 670,420 L670,820 L330,820 Z"
           ></path>
         </clipPath>
       </defs>
@@ -55,20 +58,23 @@ const heightVh = (beats.length + 2) * 100;
             />
           ))
         }
-        <rect width="1000" height="1000" fill="#000000" opacity="0.28"></rect>
+        <rect
+          class="as-dim"
+          width="1000"
+          height="1000"
+          fill="#000000"
+          opacity="0.3"></rect>
       </g>
     </svg>
 
-    {/* Captions — fade per beat, over the revealed window */}
-    <div
-      class="pointer-events-none absolute inset-x-0 bottom-[16%] flex flex-col items-center px-6 text-center text-white"
-    >
+    {/* Captions — appear while zoomed in (content full-screen) */}
+    <div class="pointer-events-none absolute inset-0">
       {
         beats.map((b, i) => (
           <figcaption
-            class="as-cap absolute inset-x-0 px-6"
+            class="as-cap absolute inset-x-0 bottom-[12%] px-6 text-center text-white"
             data-i={i}
-            style={i === 0 ? "opacity:1" : "opacity:0"}
+            style="opacity:0"
           >
             {b.eyebrow && (
               <p class="font-sans text-[10px] font-semibold uppercase tracking-[0.42em] text-[#e6c787]/85">
@@ -91,7 +97,7 @@ const heightVh = (beats.length + 2) * 100;
       }
     </div>
 
-    {/* Footer label — rises as the curtain opens */}
+    {/* Footer label — rises on the final zoom-out */}
     <p
       class="as-footer pointer-events-none absolute inset-x-0 bottom-[10%] text-center font-[family-name:var(--font-family-script)] text-4xl text-[#e6c787] md:text-5xl"
       style="opacity:0"
@@ -102,40 +108,36 @@ const heightVh = (beats.length + 2) * 100;
 </section>
 
 <style>
+  .as-window-path,
   .as-img {
-    transform-box: view-box;
-    transform-origin: center;
+    will-change: transform;
   }
 </style>
 
 <script>
   import gsap from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
-  import { MorphSVGPlugin } from "gsap/MorphSVGPlugin";
 
-  gsap.registerPlugin(ScrollTrigger, MorphSVGPlugin);
-
-  // Keyframe window shapes (userSpace 0-1000, stretched to the viewport).
-  const SHAPES = {
-    dot: "M440,480 Q440,450 500,450 Q560,450 560,480 L560,520 Q560,550 500,550 Q440,550 440,520 Z",
-    pill: "M350,360 Q350,190 500,190 Q650,190 650,360 L650,640 Q650,810 500,810 Q350,810 350,640 Z",
-    arch: "M260,440 Q260,170 500,170 Q740,170 740,440 L740,830 L260,830 Z",
-    dome: "M120,520 Q120,230 500,230 Q880,230 880,520 L880,870 L120,870 Z",
-    open: "M0,0 L1000,0 L1000,730 L0,730 Z",
-  };
-  const SEQ = [SHAPES.pill, SHAPES.arch, SHAPES.dome];
+  gsap.registerPlugin(ScrollTrigger);
 
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   document.querySelectorAll<HTMLElement>(".arch-scroll").forEach((section) => {
     const path = section.querySelector<SVGPathElement>(".as-window-path");
+    const dim = section.querySelector<SVGRectElement>(".as-dim");
     const imgs = gsap.utils.toArray<SVGImageElement>(section.querySelectorAll(".as-img"));
     const caps = gsap.utils.toArray<HTMLElement>(section.querySelectorAll(".as-cap"));
     const footer = section.querySelector<HTMLElement>(".as-footer");
     if (!path || !imgs.length) return;
 
+    // SVG-space transform origins (user units) — reliable for clip-path
+    // children where CSS transform-origin is not.
+    const WIN_ORIGIN = "500 470";
+    const IMG_ORIGIN = "500 500";
+
     if (reduce) {
-      gsap.set(path, { morphSVG: SHAPES.dome });
+      gsap.set(path, { scale: 9, svgOrigin: WIN_ORIGIN });
+      if (caps[0]) gsap.set(caps[0], { autoAlpha: 1 });
       return;
     }
 
@@ -150,28 +152,50 @@ const heightVh = (beats.length + 2) * 100;
     });
 
     imgs.forEach((img, i) => {
-      const shape = SEQ[Math.min(i, SEQ.length - 1)];
-
-      // Cross-fade to this beat's image + caption.
+      // Swap in this beat's image behind the closed curtain.
       if (i > 0) {
-        tl.to(imgs[i - 1], { opacity: 0, duration: 0.5 });
-        tl.to(img, { opacity: 1, duration: 0.5 }, "<");
-        if (caps[i - 1]) tl.to(caps[i - 1], { autoAlpha: 0, duration: 0.4 }, "<");
+        tl.set(imgs[i - 1], { opacity: 0 });
+        tl.set(img, { opacity: 1 });
       }
-      // Morph the window open to this beat's shape + zoom the image in.
-      tl.to(path, { morphSVG: shape, duration: 1, ease: "power2.inOut" }, i ? "<" : 0);
-      tl.fromTo(img, { scale: 1.28 }, { scale: 1, duration: 1.1 }, "<");
-      if (caps[i]) tl.fromTo(caps[i], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5 }, "<0.2");
 
-      // Hold on the revealed content.
-      tl.to({}, { duration: 0.5 });
+      // ZOOM IN — the arch window scales up past the viewport, camera pushes
+      // through it; the image settles from a push-in as it fills the screen.
+      tl.fromTo(
+        path,
+        { scale: 1, svgOrigin: WIN_ORIGIN },
+        { scale: 9, svgOrigin: WIN_ORIGIN, duration: 1, ease: "power2.in" },
+      );
+      tl.fromTo(
+        img,
+        { scale: 1.3, svgOrigin: IMG_ORIGIN },
+        { scale: 1.05, svgOrigin: IMG_ORIGIN, duration: 1, ease: "power1.inOut" },
+        "<",
+      );
+      if (dim) tl.fromTo(dim, { opacity: 0.3 }, { opacity: 0, duration: 0.6 }, "<0.3");
+
+      // Caption fades in once we're through the arch.
+      if (caps[i]) tl.fromTo(caps[i], { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.35, ease: "power2.out" }, ">-0.25");
+
+      // HOLD — full-screen content.
+      tl.to({}, { duration: 0.45 });
+
+      const last = i === imgs.length - 1;
+
+      // ZOOM OUT — back through the arch to the maroon curtain.
+      if (caps[i]) tl.to(caps[i], { autoAlpha: 0, y: -18, duration: 0.3 });
+      if (!last) {
+        tl.to(path, { scale: 1, svgOrigin: WIN_ORIGIN, duration: 0.9, ease: "power2.out" }, "<");
+        tl.to(img, { scale: 1.3, svgOrigin: IMG_ORIGIN, duration: 0.9, ease: "power1.inOut" }, "<");
+        if (dim) tl.to(dim, { opacity: 0.3, duration: 0.5 }, "<0.2");
+      } else {
+        // Final beat: zoom back out so the arch frames the last image,
+        // and the footer label rises over the curtain.
+        tl.to(path, { scale: 1, svgOrigin: WIN_ORIGIN, duration: 0.9, ease: "power2.out" }, "<");
+        tl.to(img, { scale: 1.25, svgOrigin: IMG_ORIGIN, duration: 0.9, ease: "power1.inOut" }, "<");
+        if (dim) tl.to(dim, { opacity: 0.3, duration: 0.5 }, "<0.2");
+        if (footer) tl.fromTo(footer, { autoAlpha: 0, y: 26 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" }, ">-0.3");
+      }
     });
-
-    // Final: last caption out, curtain opens fully, footer rises.
-    if (caps.length) tl.to(caps[caps.length - 1], { autoAlpha: 0, duration: 0.4 });
-    tl.to(path, { morphSVG: SHAPES.open, duration: 1, ease: "power3.inOut" }, "<");
-    tl.to(imgs[imgs.length - 1], { scale: 1.12, duration: 1 }, "<");
-    if (footer) tl.fromTo(footer, { autoAlpha: 0, y: 28 }, { autoAlpha: 1, y: 0, duration: 0.6 }, "<0.3");
   });
 
   window.addEventListener("load", () => ScrollTrigger.refresh());
