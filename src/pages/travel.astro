@@ -2,6 +2,7 @@
 import GatedLayout from "../layouts/GatedLayout.astro";
 import ArchHero from "../components/sections/ArchHero.astro";
 import ArchScroll from "../components/sections/ArchScroll.astro";
+import ScrollVideo from "../components/sections/ScrollVideo.astro";
 import Marquee from "../components/sections/Marquee.astro";
 
 // Single beat — one zoom in/out, then the page scrolls on (img1 element).
@@ -285,30 +286,18 @@ const bookingUrl =
     </svg>
   </section>
 
-  <!-- cream breather -->
-  <div class="relative z-10 -mt-px bg-[#fffaf0] px-6 py-16 text-center">
+  <!-- Closing note -->
+  <div class="relative z-10 -mt-px bg-[#fffaf0] px-6 pb-20 pt-4 text-center">
     <p class="reveal mx-auto max-w-xl font-serif text-lg italic leading-relaxed text-[#5d574a]">
       December is a busy travel season, so we gently encourage you to book
       early.
     </p>
   </div>
 
-  <!-- img4 · maroon dome rises and flows into the footer (img5) -->
-  <section class="relative z-10 -mt-px bg-[#fffaf0]">
-    <svg
-      class="block h-[clamp(130px,18vw,260px)] w-full"
-      viewBox="0 0 1440 260"
-      preserveAspectRatio="none"
-      aria-hidden="true"
-    >
-      <path d="M0,260 Q720,-170 1440,260 Z" fill="#4a2826"></path>
-    </svg>
-    <div class="-mt-px bg-[#4a2826] px-6 pb-16 text-center">
-      <p
-        class="reveal font-[family-name:var(--font-family-script)] text-4xl text-[#e6c787] md:text-5xl"
-      >
-        We can't wait to welcome you
-      </p>
-    </div>
-  </section>
+  <!-- GTA-VI scroll-scrubbed video → reveals the footer -->
+  <ScrollVideo
+    src="/hero.mp4"
+    poster="/images/hero-travel.jpg"
+    label="We can't wait to welcome you"
+  />
 </GatedLayout>

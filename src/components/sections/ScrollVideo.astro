@@ -1,0 +1,109 @@
+---
+/**
+ * GTA-VI-style scroll-scrubbed video.
+ * The video pins to the viewport and its playhead is driven by scroll
+ * (scrubbing frame-by-frame). A label rises near the end, then the pin
+ * releases to reveal whatever follows (the footer). Reusable.
+ */
+interface Props {
+  src: string;
+  poster?: string;
+  label?: string;
+}
+const { src, poster, label } = Astro.props;
+---
+
+<section class="scroll-video relative w-full bg-black" style="height:320vh">
+  <div class="sv-pin sticky top-0 h-[100svh] w-full overflow-hidden bg-black">
+    <video
+      class="sv-video absolute inset-0 h-full w-full object-cover"
+      src={src}
+      poster={poster}
+      muted
+      playsinline
+      preload="auto"
+      aria-hidden="true"></video>
+    <div
+      class="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/55"
+      aria-hidden="true"
+    >
+    </div>
+    {
+      label && (
+        <p
+          class="sv-label pointer-events-none absolute inset-x-0 bottom-[14%] px-6 text-center font-[family-name:var(--font-family-script)] text-5xl text-[#e6c787] drop-shadow-[0_4px_24px_rgba(0,0,0,0.7)] md:text-7xl"
+          style="opacity:0"
+        >
+          {label}
+        </p>
+      )
+    }
+  </div>
+</section>
+
+<script>
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  document.querySelectorAll<HTMLElement>(".scroll-video").forEach((section) => {
+    const video = section.querySelector<HTMLVideoElement>(".sv-video");
+    const label = section.querySelector<HTMLElement>(".sv-label");
+    if (!video) return;
+
+    if (reduce) {
+      video.setAttribute("autoplay", "");
+      video.loop = true;
+      video.play?.().catch(() => {});
+      if (label) gsap.set(label, { autoAlpha: 1 });
+      return;
+    }
+
+    video.pause();
+
+    let dur = 0;
+    const setDur = () => {
+      dur = video.duration || 0;
+      ScrollTrigger.refresh();
+    };
+    if (video.readyState >= 1 && video.duration) setDur();
+    else video.addEventListener("loadedmetadata", setDur, { once: true });
+
+    // Scrub the playhead with scroll.
+    ScrollTrigger.create({
+      trigger: section,
+      start: "top top",
+      end: "bottom bottom",
+      scrub: true,
+      onUpdate: (self) => {
+        if (!dur) return;
+        const t = Math.min(dur - 0.05, Math.max(0, self.progress * dur));
+        if (isFinite(t)) video.currentTime = t;
+      },
+    });
+
+    // Label rises over the final stretch.
+    if (label) {
+      gsap.fromTo(
+        label,
+        { autoAlpha: 0, y: 30 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          ease: "none",
+          scrollTrigger: {
+            trigger: section,
+            start: "72% bottom",
+            end: "94% bottom",
+            scrub: true,
+          },
+        },
+      );
+    }
+  });
+
+  window.addEventListener("load", () => ScrollTrigger.refresh());
+</script>

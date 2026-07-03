@@ -38,7 +38,7 @@ const heightVh = Math.round(beats.length * 160 + 100);
           {/* Capsule window (img1) — scales up to swallow the viewport (zoom-in) */}
           <path
             class="as-window-path"
-            d="M330,420 Q330,180 500,180 Q670,180 670,420 L670,580 Q670,820 500,820 Q330,820 330,580 Z"
+            d="M205,405 Q205,110 500,110 Q795,110 795,405 L795,595 Q795,890 500,890 Q205,890 205,595 Z"
           ></path>
         </clipPath>
       </defs>
@@ -176,24 +176,18 @@ const heightVh = Math.round(beats.length * 160 + 100);
       // Caption fades in once we're through the arch.
       if (caps[i]) tl.fromTo(caps[i], { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.35, ease: "power2.out" }, ">-0.25");
 
-      // HOLD — full-screen content.
-      tl.to({}, { duration: 0.45 });
-
       const last = i === imgs.length - 1;
 
-      // ZOOM OUT — back through the arch to the maroon curtain.
-      if (caps[i]) tl.to(caps[i], { autoAlpha: 0, y: -18, duration: 0.3 });
+      // HOLD — full-screen content (longer on the last beat before releasing).
+      tl.to({}, { duration: last ? 0.9 : 0.45 });
+
+      // ZOOM OUT only BETWEEN beats. The last beat stays full-screen and the
+      // pin simply releases — the page scrolls straight on (no snap back).
       if (!last) {
+        if (caps[i]) tl.to(caps[i], { autoAlpha: 0, y: -18, duration: 0.3 });
         tl.to(path, { scale: 1, svgOrigin: WIN_ORIGIN, duration: 0.9, ease: "power2.out" }, "<");
         tl.to(img, { scale: 1.3, svgOrigin: IMG_ORIGIN, duration: 0.9, ease: "power1.inOut" }, "<");
         if (dim) tl.to(dim, { opacity: 0.3, duration: 0.5 }, "<0.2");
-      } else {
-        // Final beat: zoom back out so the arch frames the last image,
-        // and the footer label rises over the curtain.
-        tl.to(path, { scale: 1, svgOrigin: WIN_ORIGIN, duration: 0.9, ease: "power2.out" }, "<");
-        tl.to(img, { scale: 1.25, svgOrigin: IMG_ORIGIN, duration: 0.9, ease: "power1.inOut" }, "<");
-        if (dim) tl.to(dim, { opacity: 0.3, duration: 0.5 }, "<0.2");
-        if (footer) tl.fromTo(footer, { autoAlpha: 0, y: 26 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" }, ">-0.3");
       }
     });
   });
