@@ -1,7 +1,29 @@
 ---
 import GatedLayout from "../layouts/GatedLayout.astro";
 import ArchHero from "../components/sections/ArchHero.astro";
+import ArchScroll from "../components/sections/ArchScroll.astro";
 import Marquee from "../components/sections/Marquee.astro";
+
+const archBeats = [
+  {
+    image: "/images/balloon-marrakech.jpg",
+    eyebrow: "Arrive in Wonder",
+    title: "Above the Red City",
+    text: "Sunrise balloon rides drift over the palm groves and rooftops of Marrakech.",
+  },
+  {
+    image: "/images/hero-qa.jpg",
+    eyebrow: "Ancient Ground",
+    title: "Kasbahs & Colour",
+    text: "Golden-hour walls, hidden riads, and centuries of Moroccan craft.",
+  },
+  {
+    image: "/images/hero-schedule.jpg",
+    eyebrow: "Where You'll Stay",
+    title: "Rest in Beauty",
+    text: "Courtyards, fountains, and lantern light at Le Méridien N'Fis.",
+  },
+];
 
 const bookingUrl =
   "https://www.marriott.com/en-gb/event-reservations/reservation-link.mi?id=1782748635355&key=GRP&app=resvlink&_p=c91429c099007af1e11990fce8bc";
@@ -147,23 +169,12 @@ const bookingUrl =
         </div>
       </div>
     </section>
+  </main>
 
-    <!-- Full-width airport photo band -->
-    <section class="reveal relative h-[44svh] min-h-[320px] overflow-hidden">
-      <img
-        src="/pagesphotos/airport/marrakech-airport-morocco.jpg"
-        alt="Marrakesh Menara Airport"
-        class="h-full w-full object-cover"
-        loading="lazy"
-      />
-      <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-black/15 to-transparent"></div>
-      <p
-        class="absolute bottom-8 left-1/2 -translate-x-1/2 text-center font-[family-name:var(--font-family-script)] text-4xl text-white drop-shadow-lg md:text-6xl"
-      >
-        Welcome to Marrakech
-      </p>
-    </section>
+  <!-- Pinned arch-reveal interlude — outside the overflow-hidden main so the pin sticks -->
+  <ArchScroll beats={archBeats} footerLabel="Welcome to Marrakech" />
 
+  <div class="relative z-10 overflow-hidden bg-[#fffaf0]">
     <!-- Accommodation · overlapping card -->
     <section class="reveal mx-auto max-w-6xl px-6 py-24 md:py-32">
       <div class="relative md:pl-24">
@@ -265,5 +276,5 @@ const bookingUrl =
         early.
       </p>
     </section>
-  </main>
+  </div>
 </GatedLayout>

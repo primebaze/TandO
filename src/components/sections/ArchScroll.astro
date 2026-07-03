@@ -1,0 +1,190 @@
+---
+/**
+ * Pinned GSAP "arch reveal" scroll sequence.
+ * A Moroccan-arch window pins to the viewport and, as you scroll, zooms in to
+ * reveal each panel's image + caption, holds, then zooms/morphs out to the
+ * next — ending on a maroon footer band. Reusable: pass `beats`.
+ */
+interface Beat {
+  image: string;
+  eyebrow?: string;
+  title: string;
+  text?: string;
+}
+interface Props {
+  beats: Beat[];
+  footerLabel?: string;
+}
+const { beats, footerLabel = "Your journey begins" } = Astro.props;
+// Enough scroll room for each beat to play + the footer reveal.
+const heightVh = (beats.length + 1) * 105;
+---
+
+<section
+  class="arch-scroll relative w-full bg-[#4a2826]"
+  style={`height:${heightVh}vh`}
+>
+  <div
+    class="as-pin sticky top-0 flex h-[100svh] w-full items-center justify-center overflow-hidden bg-[#4a2826]"
+  >
+    {
+      beats.map((b, i) => (
+        <figure
+          class="as-panel absolute inset-0 m-0 flex items-center justify-center px-6"
+          data-panel={i}
+        >
+          <div class="as-frame relative overflow-hidden shadow-[0_40px_120px_rgba(0,0,0,0.45)]">
+            <img
+              src={b.image}
+              alt=""
+              aria-hidden="true"
+              class="as-img absolute inset-0 h-full w-full object-cover"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-black/25" />
+            <figcaption class="absolute inset-x-0 bottom-0 p-8 text-center text-white md:p-10">
+              {b.eyebrow && (
+                <p class="font-sans text-[10px] font-semibold uppercase tracking-[0.42em] text-[#e6c787]/85">
+                  {b.eyebrow}
+                </p>
+              )}
+              <p
+                class="mt-3 text-[clamp(2rem,5.5vw,3.6rem)] leading-[0.95] drop-shadow-[0_4px_24px_rgba(0,0,0,0.6)]"
+                style="font-family: var(--font-family-script), 'Great Vibes', cursive;"
+              >
+                {b.title}
+              </p>
+              {b.text && (
+                <p class="mx-auto mt-3 max-w-md font-serif text-base italic leading-relaxed text-white/85">
+                  {b.text}
+                </p>
+              )}
+            </figcaption>
+          </div>
+        </figure>
+      ))
+    }
+
+    {/* Footer band — the maroon recedes to a base as the sequence ends */}
+    <div
+      class="as-footer pointer-events-none absolute inset-x-0 bottom-0 z-[2] flex items-end justify-center pb-[8vh]"
+      style="height:0;"
+    >
+      <p
+        class="font-[family-name:var(--font-family-script)] text-4xl text-[#e6c787] md:text-5xl"
+      >
+        {footerLabel}
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .as-frame {
+    width: min(80vw, 560px);
+    height: min(74svh, 760px);
+    border-radius: 46% 46% 40% 40% / 40% 40% 12% 12%;
+    will-change: transform, border-radius;
+  }
+  .as-img {
+    will-change: transform;
+  }
+  .as-panel {
+    opacity: 0;
+    visibility: hidden;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .as-panel:first-child {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+</style>
+
+<script>
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  document.querySelectorAll<HTMLElement>(".arch-scroll").forEach((section) => {
+    const panels = gsap.utils.toArray<HTMLElement>(
+      section.querySelectorAll(".as-panel"),
+    );
+    const footer = section.querySelector<HTMLElement>(".as-footer");
+    if (!panels.length) return;
+
+    // Reduced motion: just show the first panel, no scroll animation.
+    if (reduce) {
+      gsap.set(panels[0], { autoAlpha: 1 });
+      return;
+    }
+
+    const tl = gsap.timeline({
+      defaults: { ease: "none" },
+      scrollTrigger: {
+        trigger: section,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 0.6,
+      },
+    });
+
+    panels.forEach((panel, i) => {
+      const frame = panel.querySelector<HTMLElement>(".as-frame");
+      const img = panel.querySelector<HTMLElement>(".as-img");
+
+      // Reveal — arch zooms in, image settles from a push-in.
+      tl.fromTo(
+        panel,
+        { autoAlpha: 0 },
+        { autoAlpha: 1, duration: 0.3 },
+        i ? ">-0.18" : 0,
+      );
+      tl.fromTo(
+        frame,
+        {
+          scale: 0.68,
+          borderRadius: "50% 50% 46% 46% / 46% 46% 14% 14%",
+        },
+        {
+          scale: 1,
+          borderRadius: "40% 40% 34% 34% / 32% 32% 10% 10%",
+          duration: 0.7,
+          ease: "power2.out",
+        },
+        "<",
+      );
+      tl.fromTo(img, { scale: 1.4 }, { scale: 1, duration: 1 }, "<");
+
+      // Hold on the revealed content.
+      tl.to({}, { duration: 0.5 });
+
+      // Zoom out / morph away (except the last panel).
+      if (i < panels.length - 1) {
+        tl.to(frame, {
+          scale: 1.16,
+          borderRadius: "44% 44% 40% 40% / 40% 40% 12% 12%",
+          duration: 0.45,
+          ease: "power2.in",
+        });
+        tl.to(panel, { autoAlpha: 0, duration: 0.3 }, "<");
+      }
+    });
+
+    // Final beat: the last panel eases back and the footer label rises.
+    if (footer) {
+      const lastFrame = panels[panels.length - 1].querySelector(".as-frame");
+      tl.to(lastFrame, { scale: 0.92, autoAlpha: 0.15, duration: 0.6 });
+      tl.fromTo(
+        footer,
+        { autoAlpha: 0, y: 30 },
+        { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" },
+        "<0.1",
+      );
+    }
+  });
+
+  window.addEventListener("load", () => ScrollTrigger.refresh());
+</script>
