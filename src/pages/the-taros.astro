@@ -11,14 +11,18 @@ const proposal = "/pagesphotos/couple/WhatsApp Image 2026-06-30 at 20.04.32(1).j
 const brideImg = "/pagesphotos/bride/WhatsApp Image 2026-06-28 at 18.50.55.jpeg";
 const groomImg = "/pagesphotos/groom/WhatsApp Image 2026-06-28 at 19.05.01.jpeg";
 
+const ringImg = "/images/hero-ring.jpg";
+
 // Best man & groomsmen photos.
-const bestMan = "/pagesphotos/bestman/bestman.jpg";
+const bestMan = { name: "Akin Oyelekan", img: "/pagesphotos/bestman/bestman.jpg" };
 const groomsmen = [
-  "/pagesphotos/groomsmen/WhatsApp Image 2026-06-28 at 14.42.00.jpeg",
-  "/pagesphotos/groomsmen/WhatsApp Image 2026-06-28 at 14.49.30.jpeg",
-  "/pagesphotos/groomsmen/WhatsApp Image 2026-06-28 at 15.03.34.jpeg",
-  "/pagesphotos/groomsmen/WhatsApp Image 2026-06-28 at 16.53.39.jpeg",
-  "/pagesphotos/groomsmen/WhatsApp Image 2026-06-28 at 18.53.30.jpeg",
+  { name: "Debo Okunrinboye", img: "/pagesphotos/groomsmen/Debo Okunrinboye.jpeg" },
+  { name: "Kenneth Nzeukwu", img: "/pagesphotos/groomsmen/Kenneth Nzeukwu.jpeg" },
+  { name: "Seyi Afolabi", img: "/pagesphotos/groomsmen/Seyi Afolabi.jpeg" },
+  { name: "Tobi Jayeola", img: "/pagesphotos/groomsmen/Tobi Jayeola.jpeg" },
+  { name: "Tolu Jinadu", img: "/pagesphotos/groomsmen/Tolu Jinadu.jpeg" },
+  { name: "Tolu Olurumfemi", img: "/pagesphotos/groomsmen/Tolu Olurumfemi.jpeg" },
+  { name: "Wale Adejumo", img: "/pagesphotos/groomsmen/Wale adejumo.jpeg" },
 ];
 
 // Wedding party — photos named per person in /pagesphotos/bridal.
@@ -47,7 +51,7 @@ const bridesmaids = [
   description="The love story of Tayo & Ope, and the family and friends celebrating with us."
 >
   <ArchHero
-    src={embrace}
+    src={ringImg}
     eyebrow="Our Story"
     title="Meet the Taros"
     subtitle="Every great love story is supported by an incredible community."
@@ -56,52 +60,6 @@ const bridesmaids = [
   <main
     class="relative z-10 overflow-hidden bg-[#fffdf0] text-[#76353a] shadow-[0_-40px_80px_rgba(0,0,0,0.25)]"
   >
-    <!-- ===== From One Message to a Lifetime (overlapping card) ===== -->
-    <section class="relative">
-      <!-- full-width image band -->
-      <div class="relative h-[42svh] min-h-[300px] overflow-hidden md:h-[52svh]">
-        <img
-          src={champagne}
-          alt="Tayo & Ope"
-          class="h-full w-full object-cover object-[center_46%]"
-          loading="lazy"
-        />
-      </div>
-
-      <!-- overlapping cream card -->
-      <div
-        class="relative z-10 mx-auto -mt-20 max-w-5xl bg-[#fffdf0] px-6 pb-24 pt-8 md:-mt-28 md:px-14 md:pb-28"
-      >
-        <!-- inset photo, upper-right, overlapping up into the image -->
-        <img
-          src={proposal}
-          alt="Tayo & Ope — the proposal"
-          class="absolute -top-12 right-6 h-36 w-52 object-cover object-[center_35%] shadow-[0_18px_50px_rgba(0,0,0,0.3)] md:-top-24 md:right-14 md:h-48 md:w-72"
-          loading="lazy"
-        />
-
-        <div class="max-w-xl pt-24 md:pt-44">
-          <h2 class="font-serif text-4xl font-semibold leading-[1.1] md:text-5xl">
-            From One Message<br />to a Lifetime
-          </h2>
-          <div
-            class="mt-8 space-y-6 font-serif text-xl leading-loose text-[#76353a]/85 md:text-2xl"
-          >
-            <p>
-              Ope came into Tayo's life with full force. From their very first
-              date, he was already sharing his dreams and aspirations for their
-              future together.
-            </p>
-            <p>
-              On day one, he told her: <span class="italic">"I'm not here to date
-              you — I'm here to make you my wife."</span> And lo and behold, here
-              we are.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- ===== Pinned love-story (cinematic beats) ===== -->
     <section
       class="story-pin relative flex h-[100svh] items-center justify-center overflow-hidden bg-[#0c0a08] text-[#fffdf0]"
@@ -110,7 +68,7 @@ const bridesmaids = [
       <img data-story-bg src={proposal} alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover object-[center_30%]" />
       <img data-story-bg src={embrace} alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover" />
       <img data-story-bg src={champagne} alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover object-[center_30%]" />
-      <img data-story-bg src="/images/hero.jpeg" alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover" />
+      <img data-story-bg src={embrace} alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover object-[center_35%]" />
       <div class="absolute inset-0 bg-[#0c0a08]/68"></div>
       <div
         class="absolute inset-0"
@@ -274,8 +232,8 @@ const bridesmaids = [
         <div class="reveal mx-auto mt-24 w-full max-w-sm">
           <div class="group relative aspect-[4/5] overflow-hidden rounded-[1.75rem] shadow-[0_24px_60px_rgba(118,53,58,0.22)]">
             <img
-              src={bestMan}
-              alt="Best Man"
+              src={bestMan.img}
+              alt={bestMan.name}
               class="h-full w-full object-cover object-top transition duration-700 group-hover:scale-[1.05]"
               loading="lazy"
             />
@@ -284,6 +242,7 @@ const bridesmaids = [
               <p class="font-sans text-[10px] font-semibold uppercase tracking-[0.32em] text-[#fffdf0]/75">
                 Best Man
               </p>
+              <p class="mt-1.5 font-serif text-3xl">{bestMan.name}</p>
             </div>
           </div>
         </div>
@@ -292,17 +251,23 @@ const bridesmaids = [
         <p class="reveal mt-20 text-center font-sans text-[10px] font-semibold uppercase tracking-[0.3em] text-[#76353a]/60">
           Groomsmen
         </p>
-        <div class="mt-10 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">
+        <div class="mt-10 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
           {
-            groomsmen.map((src) => (
+            groomsmen.map((g) => (
               <div class="reveal group relative aspect-[3/4] overflow-hidden rounded-2xl shadow-[0_16px_40px_rgba(118,53,58,0.14)]">
                 <img
-                  src={src}
-                  alt="Groomsman"
+                  src={g.img}
+                  alt={g.name}
                   class="h-full w-full object-cover object-top transition duration-700 group-hover:scale-[1.06]"
                   loading="lazy"
                 />
-                <div class="absolute inset-0 bg-gradient-to-t from-[#5a2a2e]/70 via-transparent to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-[#5a2a2e]/95 via-[#5a2a2e]/15 to-transparent"></div>
+                <div class="absolute inset-x-0 bottom-0 p-4 text-center text-[#fffdf0]">
+                  <p class="font-serif text-lg leading-tight">{g.name}</p>
+                  <p class="mt-1 font-sans text-[8px] font-semibold uppercase tracking-[0.22em] text-[#fffdf0]/70">
+                    Groomsman
+                  </p>
+                </div>
               </div>
             ))
           }
