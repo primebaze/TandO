@@ -1,6 +1,6 @@
 ---
 import GatedLayout from "../layouts/GatedLayout.astro";
-import ArchHero from "../components/sections/ArchHero.astro";
+import ScrollVideo from "../components/sections/ScrollVideo.astro";
 import Marquee from "../components/sections/Marquee.astro";
 
 const bride = [
@@ -59,11 +59,12 @@ const tipIcons: Record<string, string> = {
   title="Explore Morocco — Tayo & Ope"
   description="The couple's favourite places in Marrakech, plus travel tips for your stay."
 >
-  <ArchHero
-    src="/images/hero-explore.jpg"
+  <ScrollVideo
+    src="/hero.mp4"
+    poster="/images/hero-explore.jpg"
     eyebrow="The Red City"
     title="Explore Morocco"
-    subtitle="A few of our favourite things to experience while you're here."
+    heightVh={280}
   />
 
   <main
