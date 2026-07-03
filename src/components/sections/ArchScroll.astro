@@ -35,10 +35,10 @@ const heightVh = Math.round(beats.length * 160 + 100);
     >
       <defs>
         <clipPath id="as-window" clipPathUnits="userSpaceOnUse">
-          {/* Moroccan arch window — scales up to swallow the viewport (zoom-in) */}
+          {/* Capsule window (img1) — scales up to swallow the viewport (zoom-in) */}
           <path
             class="as-window-path"
-            d="M330,420 Q330,180 500,180 Q670,180 670,420 L670,820 L330,820 Z"
+            d="M330,420 Q330,180 500,180 Q670,180 670,420 L670,580 Q670,820 500,820 Q330,820 330,580 Z"
           ></path>
         </clipPath>
       </defs>
@@ -132,7 +132,7 @@ const heightVh = Math.round(beats.length * 160 + 100);
 
     // SVG-space transform origins (user units) — reliable for clip-path
     // children where CSS transform-origin is not.
-    const WIN_ORIGIN = "500 470";
+    const WIN_ORIGIN = "500 500";
     const IMG_ORIGIN = "500 500";
 
     if (reduce) {

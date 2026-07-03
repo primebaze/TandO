@@ -4,24 +4,13 @@ import ArchHero from "../components/sections/ArchHero.astro";
 import ArchScroll from "../components/sections/ArchScroll.astro";
 import Marquee from "../components/sections/Marquee.astro";
 
+// Single beat — one zoom in/out, then the page scrolls on (img1 element).
 const archBeats = [
   {
     image: "/images/balloon-marrakech.jpg",
     eyebrow: "Arrive in Wonder",
     title: "Above the Red City",
     text: "Sunrise balloon rides drift over the palm groves and rooftops of Marrakech.",
-  },
-  {
-    image: "/images/hero-qa.jpg",
-    eyebrow: "Ancient Ground",
-    title: "Kasbahs & Colour",
-    text: "Golden-hour walls, hidden riads, and centuries of Moroccan craft.",
-  },
-  {
-    image: "/images/hero-schedule.jpg",
-    eyebrow: "Where You'll Stay",
-    title: "Rest in Beauty",
-    text: "Courtyards, fountains, and lantern light at Le Méridien N'Fis.",
   },
 ];
 
@@ -174,7 +163,19 @@ const bookingUrl =
   <!-- Pinned arch-reveal interlude — outside the overflow-hidden main so the pin sticks -->
   <ArchScroll beats={archBeats} footerLabel="Welcome to Marrakech" />
 
-  <div class="relative z-10 overflow-hidden bg-[#fffaf0]">
+  <!-- img2 · corner-curve transition — cream sweeps in from the maroon stage -->
+  <div class="relative z-10 -mt-px bg-[#4a2826]" aria-hidden="true">
+    <svg
+      class="block h-[clamp(110px,16vw,220px)] w-full"
+      viewBox="0 0 1440 220"
+      preserveAspectRatio="none"
+    >
+      <path d="M0,220 L0,150 Q0,40 160,40 L1440,40 L1440,220 Z" fill="#fffaf0"
+      ></path>
+    </svg>
+  </div>
+
+  <div class="relative z-10 -mt-px overflow-hidden bg-[#fffaf0]">
     <!-- Accommodation · overlapping card -->
     <section class="reveal mx-auto max-w-6xl px-6 py-24 md:py-32">
       <div class="relative md:pl-24">
@@ -254,27 +255,60 @@ const bookingUrl =
       </div>
     </section>
 
-    <!-- Visa + closing -->
-    <section class="reveal mx-auto max-w-2xl px-6 pb-28 text-center">
-      <div class="mx-auto h-px w-20 bg-[var(--color-gold)]/40"></div>
+  </div>
+
+  <!-- img3 · maroon block with the cream arch cut into its base — visa note -->
+  <section class="relative z-10 -mt-px overflow-hidden bg-[#4a2826]">
+    <div class="reveal relative z-10 mx-auto max-w-2xl px-6 pb-52 pt-20 text-center md:pt-24">
       <p
-        class="mt-8 font-[family-name:var(--font-family-script)] text-4xl text-[var(--color-gold)] md:text-5xl"
+        class="font-[family-name:var(--font-family-script)] text-4xl text-[#e6c787] md:text-5xl"
       >
         Need a visa?
       </p>
-      <p class="mx-auto mt-5 max-w-xl font-serif text-lg leading-relaxed text-[#5d574a]">
+      <p class="mx-auto mt-5 max-w-xl font-serif text-lg leading-relaxed text-[#f5ead9]/85">
         We've partnered with <strong>Bi-Adroit Tours &amp; Travel</strong> to
         help with every visa application to Morocco.
       </p>
       <a
         href="tel:+2348034706057"
-        class="mt-6 inline-block font-sans text-sm tracking-[0.1em] text-[var(--color-gold)] underline-offset-4 hover:underline"
+        class="mt-6 inline-block font-sans text-sm tracking-[0.1em] text-[#e6c787] underline-offset-4 hover:underline"
         >+234 803 470 6057</a
       >
-      <p class="mt-12 font-serif text-lg italic leading-relaxed text-[#5d574a]">
-        December is a busy travel season — we gently encourage you to book
-        early.
-      </p>
-    </section>
+    </div>
+    <svg
+      class="absolute bottom-0 left-0 h-[clamp(90px,13vw,180px)] w-full"
+      viewBox="0 0 1440 180"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      <path d="M0,180 Q720,-140 1440,180 Z" fill="#fffaf0"></path>
+    </svg>
+  </section>
+
+  <!-- cream breather -->
+  <div class="relative z-10 -mt-px bg-[#fffaf0] px-6 py-16 text-center">
+    <p class="reveal mx-auto max-w-xl font-serif text-lg italic leading-relaxed text-[#5d574a]">
+      December is a busy travel season, so we gently encourage you to book
+      early.
+    </p>
   </div>
+
+  <!-- img4 · maroon dome rises and flows into the footer (img5) -->
+  <section class="relative z-10 -mt-px bg-[#fffaf0]">
+    <svg
+      class="block h-[clamp(130px,18vw,260px)] w-full"
+      viewBox="0 0 1440 260"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      <path d="M0,260 Q720,-170 1440,260 Z" fill="#4a2826"></path>
+    </svg>
+    <div class="-mt-px bg-[#4a2826] px-6 pb-16 text-center">
+      <p
+        class="reveal font-[family-name:var(--font-family-script)] text-4xl text-[#e6c787] md:text-5xl"
+      >
+        We can't wait to welcome you
+      </p>
+    </div>
+  </section>
 </GatedLayout>
