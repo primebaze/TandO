@@ -133,6 +133,7 @@ const { src, poster, eyebrow, title, label, heightVh = 300 } = Astro.props;
     video.pause();
 
     let dur = 0;
+    let target = 0;
     const setDur = () => {
       dur = video.duration || 0;
       ScrollTrigger.refresh();
@@ -140,17 +141,30 @@ const { src, poster, eyebrow, title, label, heightVh = 300 } = Astro.props;
     if (video.readyState >= 1 && video.duration) setDur();
     else video.addEventListener("loadedmetadata", setDur, { once: true });
 
-    // Scrub the playhead with scroll.
+    // Scroll drives the TARGET playhead; a ticker eases the real playhead
+    // toward it so fast scrolls glide instead of snapping/stuttering.
     ScrollTrigger.create({
       trigger: section,
       start: "top top",
       end: "bottom bottom",
       scrub: true,
       onUpdate: (self) => {
-        if (!dur) return;
-        const t = Math.min(dur - 0.05, Math.max(0, self.progress * dur));
-        if (isFinite(t)) video.currentTime = t;
+        if (dur) target = Math.min(dur - 0.05, Math.max(0, self.progress * dur));
       },
+    });
+
+    // Only issue the next seek once the previous one resolves (avoids the
+    // browser queueing seeks and glitching on rapid scroll).
+    let seeking = false;
+    video.addEventListener("seeking", () => (seeking = true));
+    video.addEventListener("seeked", () => (seeking = false));
+    gsap.ticker.add(() => {
+      if (!dur || seeking) return;
+      const cur = video.currentTime;
+      const diff = target - cur;
+      if (Math.abs(diff) > 0.01) {
+        video.currentTime = cur + diff * 0.22;
+      }
     });
 
     // Hero text + scroll cue fade out as the video takes over.
