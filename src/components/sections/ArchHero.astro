@@ -57,16 +57,6 @@ const { src, video, poster, eyebrow, title, subtitle } = Astro.props;
   >
   </div>
 
-  {/* Domed maroon base — curves up into the photo */}
-  <svg
-    class="pointer-events-none absolute bottom-0 left-0 z-[5] h-[clamp(150px,19vw,250px)] w-full"
-    viewBox="0 0 1440 260"
-    preserveAspectRatio="none"
-    aria-hidden="true"
-  >
-    <path d="M0,260 L0,58 Q720,282 1440,58 L1440,260 Z" fill="#4a2826"></path>
-  </svg>
-
   {/* Content */}
   <div
     data-hero-content
@@ -95,9 +85,9 @@ const { src, video, poster, eyebrow, title, subtitle } = Astro.props;
     }
   </div>
 
-  {/* Scroll cue */}
+  {/* Scroll cue — sits just above the arch */}
   <div
-    class="hero-rise hero-rise--3 pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2"
+    class="hero-rise hero-rise--3 pointer-events-none absolute bottom-[calc(clamp(150px,19vw,250px)+1.25rem)] left-1/2 z-10 -translate-x-1/2"
     aria-hidden="true"
   >
     <span
@@ -107,6 +97,22 @@ const { src, video, poster, eyebrow, title, subtitle } = Astro.props;
     </span>
   </div>
 </section>
+
+{/* Domed maroon base — sits over the pinned hero at rest, then scrolls up
+    with the page body (revealing the content beneath the arch). */}
+<div
+  class="arch-base pointer-events-none relative z-10 -mt-[clamp(150px,19vw,250px)] h-[clamp(150px,19vw,250px)] w-full overflow-hidden"
+  aria-hidden="true"
+>
+  <svg
+    class="absolute inset-0 h-full w-full"
+    viewBox="0 0 1440 260"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+  >
+    <path d="M0,260 L0,58 Q720,282 1440,58 L1440,260 Z" fill="#4a2826"></path>
+  </svg>
+</div>
 
 <style>
   .hero-rise {
