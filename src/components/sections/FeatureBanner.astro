@@ -11,7 +11,7 @@ interface Props {
   ctaLabel?: string;
   ctaHref?: string;
   leftImage: string;
-  rightImage: string;
+  rightImage?: string;
 }
 const {
   header,
@@ -36,8 +36,8 @@ const {
     </h2>
   </div>
 
-  <!-- Photo | message | photo -->
-  <div class="grid md:grid-cols-[1fr_1.15fr_1fr]">
+  <!-- Photo | message [ | photo ] -->
+  <div class={`grid ${rightImage ? "md:grid-cols-[1fr_1.15fr_1fr]" : "md:grid-cols-[1fr_1.25fr]"}`}>
     <div class="relative min-h-[300px] overflow-hidden md:min-h-[560px]">
       <img
         src={leftImage}
@@ -82,14 +82,18 @@ const {
       </div>
     </div>
 
-    <div class="relative min-h-[300px] overflow-hidden md:min-h-[560px]">
-      <img
-        src={rightImage}
-        alt=""
-        aria-hidden="true"
-        class="h-full w-full object-cover"
-        loading="lazy"
-      />
-    </div>
+    {
+      rightImage && (
+        <div class="relative min-h-[300px] overflow-hidden md:min-h-[560px]">
+          <img
+            src={rightImage}
+            alt=""
+            aria-hidden="true"
+            class="h-full w-full object-cover"
+            loading="lazy"
+          />
+        </div>
+      )
+    }
   </div>
 </section>
