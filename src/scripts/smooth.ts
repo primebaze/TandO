@@ -14,6 +14,17 @@ gsap.registerPlugin(ScrollTrigger);
 export function initSmooth() {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // Clickable scroll cues — tapping the "scroll" indicator nudges the page down
+  // a viewport. Helps guests who aren't sure the page scrolls (feedback: "it's
+  // hard to scroll"). `go` is supplied per-context (Lenis on smooth pages,
+  // native smooth-scroll under reduced motion).
+  function wireScrollCues(go: (px: number) => void) {
+    gsap.utils.toArray<HTMLElement>('[data-scroll-cue]').forEach((cue) => {
+      cue.style.cursor = 'pointer';
+      cue.addEventListener('click', () => go(window.innerHeight * 0.9));
+    });
+  }
+
   function setupReveals() {
     const revealEls = gsap.utils.toArray<HTMLElement>('.reveal');
 
@@ -96,7 +107,7 @@ export function initSmooth() {
         scrollTrigger: {
           trigger: section,
           start: 'top top',
-          end: '+=' + beats.length * 95 + '%',
+          end: '+=' + beats.length * 72 + '%',
           scrub: 1,
           pin: true,
           anticipatePin: 1,
@@ -123,14 +134,16 @@ export function initSmooth() {
   if (reduce) {
     setupReveals();
     setupPinnedStories();
+    wireScrollCues((px) => window.scrollBy({ top: px, behavior: 'smooth' }));
     return;
   }
 
   const lenis = new Lenis({
-    duration: 1.15,
+    duration: 0.9,
     easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     smoothWheel: true,
-    touchMultiplier: 1.6,
+    wheelMultiplier: 1.1,
+    touchMultiplier: 1.8,
   });
 
   lenis.on('scroll', ScrollTrigger.update);
@@ -156,6 +169,8 @@ export function initSmooth() {
 
   // expose for debugging / the anchor handler below
   (window as unknown as { __lenis?: Lenis }).__lenis = lenis;
+
+  wireScrollCues((px) => lenis.scrollTo(window.scrollY + px, { duration: 1.1 }));
 
   // Smooth in-page anchor jumps too
   document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((a) => {

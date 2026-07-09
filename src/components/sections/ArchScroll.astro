@@ -18,8 +18,8 @@ interface Props {
   footerLabel?: string;
 }
 const { beats, footerLabel = "Your journey begins" } = Astro.props;
-// Scroll room: each beat gets ~1.6 viewports (zoom in, hold, zoom out).
-const heightVh = Math.round(beats.length * 160 + 100);
+// Scroll room: each beat gets ~1.1 viewports (zoom in, hold, zoom out).
+const heightVh = Math.round(beats.length * 115 + 60);
 ---
 
 <section

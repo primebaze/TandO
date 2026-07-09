@@ -37,6 +37,25 @@
       <span class="h-px w-10 bg-current/35 md:w-14"></span>
     </div>
   </div>
+
+  {/* Scroll cue — tap to scroll down */}
+  <button
+    type="button"
+    data-scroll-cue
+    aria-label="Scroll down"
+    class="hero-morph group absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2"
+  >
+    <span
+      class="flex h-9 w-5 items-start justify-center rounded-full border border-[#626951]/40 p-1 transition group-hover:border-[#626951]/70"
+    >
+      <span class="hero-scroll-dot h-1.5 w-1.5 rounded-full bg-[#626951]/70"></span>
+    </span>
+    <span
+      class="font-sans text-[9px] font-semibold uppercase tracking-[0.34em] text-[#626951]/65 transition group-hover:text-[#626951]"
+    >
+      Scroll
+    </span>
+  </button>
 </section>
 
 <style>
@@ -51,11 +70,31 @@
     filter: blur(8px);
   }
 
+  .hero-scroll-dot {
+    animation: heroScrollDot 1.8s ease-in-out infinite;
+  }
+  @keyframes heroScrollDot {
+    0% {
+      opacity: 0;
+      transform: translateY(0);
+    }
+    35% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .hero-morph {
       opacity: 1;
       transform: none;
       filter: none;
+    }
+    .hero-scroll-dot {
+      animation: none;
     }
 
     .hero-video {
@@ -72,3 +111,16 @@
     }
   }
 </style>
+
+<script>
+  // Home page uses native scroll (no Lenis) — wire the cue to nudge down a
+  // viewport so guests can see the page scrolls.
+  document
+    .querySelector<HTMLElement>("#hero [data-scroll-cue]")
+    ?.addEventListener("click", () => {
+      const lenis = (window as unknown as { __lenis?: { scrollTo: (y: number, o?: object) => void } }).__lenis;
+      const y = window.scrollY + window.innerHeight * 0.9;
+      if (lenis) lenis.scrollTo(y, { duration: 1.1 });
+      else window.scrollTo({ top: y, behavior: "smooth" });
+    });
+</script>
