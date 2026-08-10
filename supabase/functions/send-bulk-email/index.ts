@@ -78,11 +78,14 @@ function buildText(name: string, message: string) {
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: cors });
   try {
-    const { access_code, subject, message, audience } = (await req.json()) as {
+    const { access_code, subject, message, audience, emails } = (await req.json()) as {
       access_code: string;
       subject: string;
       message: string;
       audience?: 'all' | 'attending' | 'declined';
+      // Optional: restrict the send to specific RSVP addresses (one guest or a
+      // hand-picked group). Addresses not in the RSVP list are ignored.
+      emails?: string[];
     };
     if (!access_code || !subject?.trim() || !message?.trim()) {
       return new Response(JSON.stringify({ error: 'Missing access code, subject or message.' }), {
@@ -105,13 +108,30 @@ Deno.serve(async (req) => {
     }
     const rows = (await rpcRes.json()) as Recipient[];
     const seen = new Set<string>();
-    const recipients: Recipient[] = [];
+    let recipients: Recipient[] = [];
     for (const r of rows) {
       const email = (r.email || '').trim().toLowerCase();
       if (!email || seen.has(email)) continue;
       seen.add(email);
       recipients.push({ email, name: r.name });
     }
+
+    // Individual / hand-picked group send. We intersect with the RSVP list
+    // rather than emailing the given addresses directly, so this can never be
+    // used to send to arbitrary recipients and we keep each guest's name.
+    if (Array.isArray(emails) && emails.length > 0) {
+      const wanted = new Set(
+        emails.map((e) => (e || '').trim().toLowerCase()).filter(Boolean),
+      );
+      recipients = recipients.filter((r) => wanted.has(r.email));
+      if (recipients.length === 0) {
+        return new Response(
+          JSON.stringify({ error: 'None of the selected addresses are in the RSVP list.' }),
+          { status: 400, headers: { ...cors, 'Content-Type': 'application/json' } },
+        );
+      }
+    }
+
     if (recipients.length === 0) {
       return new Response(JSON.stringify({ total: 0, sent: 0, failed: 0 }), { headers: { ...cors, 'Content-Type': 'application/json' } });
     }

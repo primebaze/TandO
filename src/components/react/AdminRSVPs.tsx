@@ -107,6 +107,10 @@ export default function AdminRSVPs() {
   const [bulkAudience, setBulkAudience] = useState<'all' | 'attending' | 'declined'>('all');
   const [bulkSending, setBulkSending] = useState(false);
   const [bulkResult, setBulkResult] = useState<{ ok: boolean; text: string } | null>(null);
+  // 'group' = everyone in the chosen audience · 'pick' = hand-picked guests
+  const [bulkMode, setBulkMode] = useState<'group' | 'pick'>('group');
+  const [selectedEmails, setSelectedEmails] = useState<string[]>([]);
+  const [pickerSearch, setPickerSearch] = useState('');
 
   const stats = useMemo(() => {
     const attending = rows.filter((row) => row.attending === 'yes');
@@ -127,6 +131,30 @@ export default function AdminRSVPs() {
     if (filter === 'all') return rows;
     return rows.filter((row) => row.attending === filter);
   }, [filter, rows]);
+
+  // Guest picker — newest RSVPs first so late replies are easy to find.
+  const pickerRows = useMemo(() => {
+    const term = pickerSearch.trim().toLowerCase();
+    const sorted = [...rows].sort(
+      (a, b) => new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime(),
+    );
+    if (!term) return sorted;
+    return sorted.filter((row) =>
+      `${fullName(row)} ${row.email}`.toLowerCase().includes(term),
+    );
+  }, [rows, pickerSearch]);
+
+  function toggleRecipient(email: string) {
+    const key = email.trim().toLowerCase();
+    setSelectedEmails((prev) =>
+      prev.includes(key) ? prev.filter((e) => e !== key) : [...prev, key],
+    );
+  }
+
+  function selectShown() {
+    const shown = pickerRows.map((row) => row.email.trim().toLowerCase());
+    setSelectedEmails((prev) => Array.from(new Set([...prev, ...shown])));
+  }
 
   const totalPages = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE));
   const safePage = Math.min(currentPage, totalPages);
@@ -212,12 +240,19 @@ export default function AdminRSVPs() {
       return;
     }
 
+    if (bulkMode === 'pick' && selectedEmails.length === 0) {
+      setBulkResult({ ok: false, text: 'Select at least one guest to email.' });
+      return;
+    }
+
     const who =
-      bulkAudience === 'all'
-        ? "everyone who has RSVP'd"
-        : bulkAudience === 'attending'
-          ? 'guests who are attending'
-          : 'guests who declined';
+      bulkMode === 'pick'
+        ? `${selectedEmails.length} selected guest${selectedEmails.length === 1 ? '' : 's'}`
+        : bulkAudience === 'all'
+          ? "everyone who has RSVP'd"
+          : bulkAudience === 'attending'
+            ? 'guests who are attending'
+            : 'guests who declined';
     if (
       !confirm(
         `Send this email to ${who}? Each person receives their own individual copy — this cannot be undone.`,
@@ -231,7 +266,8 @@ export default function AdminRSVPs() {
         access_code: accessCode.trim(),
         subject: bulkSubject.trim(),
         message: bulkMessage.trim(),
-        audience: bulkAudience,
+        audience: bulkMode === 'pick' ? 'all' : bulkAudience,
+        ...(bulkMode === 'pick' ? { emails: selectedEmails } : {}),
       },
     });
     setBulkSending(false);
@@ -261,6 +297,7 @@ export default function AdminRSVPs() {
     });
     setBulkSubject('');
     setBulkMessage('');
+    setSelectedEmails([]);
   }
 
   async function deleteRSVP(id: string) {
@@ -557,23 +594,23 @@ export default function AdminRSVPs() {
               Email guests
             </label>
             <p className="mt-1 font-sans text-xs text-white/40">
-              Sends an individual branded email to everyone who RSVP'd. Uses the admin password above.
+              Send a branded email to a whole group or to hand-picked guests. Uses the admin password above.
             </p>
           </div>
         </div>
 
+        {/* Who to send to — a whole group, or hand-picked guests */}
         <div className="mt-5 flex flex-wrap gap-2">
           {[
-            { label: 'All RSVPs', value: 'all' as const },
-            { label: 'Attending', value: 'attending' as const },
-            { label: 'Declined', value: 'declined' as const },
+            { label: 'Send to a group', value: 'group' as const },
+            { label: 'Pick guests', value: 'pick' as const },
           ].map((option) => (
             <button
               key={option.value}
               type="button"
-              onClick={() => setBulkAudience(option.value)}
+              onClick={() => setBulkMode(option.value)}
               className={`${filterButton} ${
-                bulkAudience === option.value
+                bulkMode === option.value
                   ? 'bg-[#e6c787] text-[#1a1410]'
                   : 'border border-white/12 bg-white/[0.04] text-white/62 hover:bg-white/[0.08] hover:text-white'
               }`}
@@ -582,6 +619,116 @@ export default function AdminRSVPs() {
             </button>
           ))}
         </div>
+
+        {bulkMode === 'group' ? (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {[
+              { label: 'All RSVPs', value: 'all' as const },
+              { label: 'Attending', value: 'attending' as const },
+              { label: 'Declined', value: 'declined' as const },
+            ].map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => setBulkAudience(option.value)}
+                className={`${filterButton} ${
+                  bulkAudience === option.value
+                    ? 'bg-[#e6c787] text-[#1a1410]'
+                    : 'border border-white/12 bg-white/[0.04] text-white/62 hover:bg-white/[0.08] hover:text-white'
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div className="mt-3 rounded-2xl border border-white/12 bg-white/[0.03] p-4">
+            {!rows.length ? (
+              <p className="font-sans text-sm text-white/50">
+                Load the RSVPs above first, then pick who to email.
+              </p>
+            ) : (
+              <>
+                <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                  <input
+                    value={pickerSearch}
+                    onChange={(event) => setPickerSearch(event.target.value)}
+                    type="text"
+                    placeholder="Search name or email…"
+                    className={`${inputCls} md:max-w-xs`}
+                  />
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={selectShown}
+                      className="inline-flex min-h-9 items-center rounded-full border border-white/16 bg-white/[0.05] px-4 font-sans text-[10px] font-semibold uppercase tracking-[0.2em] text-white/70 transition hover:bg-white/10 hover:text-white"
+                    >
+                      Select shown
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedEmails([])}
+                      disabled={!selectedEmails.length}
+                      className="inline-flex min-h-9 items-center rounded-full border border-white/16 bg-white/[0.05] px-4 font-sans text-[10px] font-semibold uppercase tracking-[0.2em] text-white/70 transition hover:bg-white/10 hover:text-white disabled:opacity-40"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                </div>
+
+                <p className="mt-3 font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-[#e6c787]">
+                  {selectedEmails.length} selected · newest RSVPs first
+                </p>
+
+                <div className="mt-3 max-h-72 space-y-1.5 overflow-y-auto pr-1">
+                  {pickerRows.map((row) => {
+                    const key = row.email.trim().toLowerCase();
+                    const checked = selectedEmails.includes(key);
+                    return (
+                      <label
+                        key={row.id}
+                        className={`flex cursor-pointer items-center gap-3 rounded-xl border px-3 py-2.5 transition ${
+                          checked
+                            ? 'border-[#e6c787]/45 bg-[#e6c787]/10'
+                            : 'border-white/10 bg-white/[0.03] hover:bg-white/[0.06]'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => toggleRecipient(row.email)}
+                          className="h-4 w-4 flex-shrink-0 accent-[#e6c787]"
+                        />
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate font-serif text-base text-white">
+                            {fullName(row)}
+                          </span>
+                          <span className="block truncate font-sans text-xs text-white/45">
+                            {row.email} · {formatDate(row.submitted_at)}
+                          </span>
+                        </span>
+                        <span
+                          className={`flex-shrink-0 rounded-full px-2.5 py-1 font-sans text-[9px] font-semibold uppercase tracking-[0.18em] ${
+                            row.attending === 'yes'
+                              ? 'bg-[#e6c787]/12 text-[#e6c787]'
+                              : 'bg-white/10 text-white/60'
+                          }`}
+                        >
+                          {row.attending === 'yes' ? 'Attending' : 'Declined'}
+                        </span>
+                      </label>
+                    );
+                  })}
+                  {!pickerRows.length && (
+                    <p className="py-4 text-center font-sans text-sm text-white/45">
+                      No guests match that search.
+                    </p>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        )}
 
         <input
           value={bulkSubject}
@@ -600,11 +747,13 @@ export default function AdminRSVPs() {
 
         <div className="mt-4 flex items-center justify-between gap-3">
           <p className="font-sans text-xs text-white/40">
-            Each guest gets their own copy — never a group/BCC email.
+            {bulkMode === 'pick'
+              ? `Sending to ${selectedEmails.length} selected guest${selectedEmails.length === 1 ? '' : 's'}.`
+              : 'Each guest gets their own copy — never a group/BCC email.'}
           </p>
           <button
             type="submit"
-            disabled={bulkSending}
+            disabled={bulkSending || (bulkMode === 'pick' && !selectedEmails.length)}
             className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#e6c787] px-6 font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-[#1a1410] transition hover:bg-white disabled:opacity-60"
           >
             {bulkSending ? <RefreshCw className="h-3.5 w-3.5 animate-spin" /> : <Send className="h-3.5 w-3.5" />}
