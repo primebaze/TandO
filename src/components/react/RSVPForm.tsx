@@ -193,7 +193,7 @@ export default function RSVPForm() {
           RSVPs are closed
         </p>
         <p className="mt-3 font-serif text-base font-light italic leading-relaxed text-white/85 md:text-lg">
-          Thank you to everyone who replied — our guest list is now final.
+          Thank you to everyone who replied. Our guest list is now final.
         </p>
         <p className="mt-4 font-serif text-base font-light leading-relaxed text-white/70">
           If you still need to reach us, please contact Etal Events on{' '}
@@ -237,7 +237,7 @@ export default function RSVPForm() {
         <p className="mt-3 font-serif text-base font-light italic leading-relaxed text-white/85 md:text-lg">
           {attending === 'yes'
             ? "We can't wait to celebrate with you in Marrakech."
-            : "We'll miss you — thank you for letting us know."}
+            : "We'll miss you, and thank you for letting us know."}
         </p>
         <p className="mt-6 font-sans text-[10px] uppercase tracking-[0.36em] text-white/55">
           Your RSVP has been recorded
@@ -473,7 +473,7 @@ export default function RSVPForm() {
           type="text"
           value={song}
           onChange={(e) => setSong(e.target.value)}
-          placeholder="e.g. Calm Down — Rema"
+          placeholder="e.g. Calm Down by Rema"
           className={inputCls}
         />
       </div>

@@ -44,7 +44,7 @@ export default function PasswordGate() {
       setLocked(false);
       window.dispatchEvent(new CustomEvent('site-unlocked'));
     } else {
-      setError("That password isn't right — please check your invitation.");
+      setError("That password isn't right. Please check your invitation.");
     }
   }
 

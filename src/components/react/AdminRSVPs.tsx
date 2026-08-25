@@ -394,7 +394,7 @@ export default function AdminRSVPs() {
               : 'your manually-added contacts';
     if (
       !confirm(
-        `Send this email to ${who}? Each person receives their own individual copy — this cannot be undone.`,
+        `Send this email to ${who}? Each person receives their own individual copy. This cannot be undone.`,
       )
     )
       return;
@@ -483,7 +483,7 @@ export default function AdminRSVPs() {
             const allergies = person.allergies
               ? `<div class="companion-allergy">Allergies: ${escapeHtml(person.allergies)}</div>`
               : `<div class="companion-allergy">No allergies</div>`;
-            return `<div class="companion-entry"><span class="companion-num">${i + 1}.</span> <strong>${escapeHtml(type)}</strong> — ${escapeHtml(name)}${allergies}</div>`;
+            return `<div class="companion-entry"><span class="companion-num">${i + 1}.</span> <strong>${escapeHtml(type)}</strong> · ${escapeHtml(name)}${allergies}</div>`;
           }).join('')
         : '<span class="none">None</span>';
 
@@ -496,10 +496,10 @@ export default function AdminRSVPs() {
           <td class="${row.attending === 'yes' ? 'attending' : 'declined'}">${escapeHtml(row.attending === 'yes' ? 'Attending' : 'Cannot attend')}</td>
           <td><strong>${escapeHtml(fullName(row))}</strong></td>
           <td>${escapeHtml(row.email)}<br /><span class="phone">${escapeHtml(row.phone)}</span></td>
-          <td>${escapeHtml(row.allergies || '—')}</td>
+          <td>${escapeHtml(row.allergies || '-')}</td>
           <td class="companions-cell">${companionHtml}</td>
-          <td>${escapeHtml(row.song || '—')}</td>
-          <td>${escapeHtml(row.message || '—')}</td>
+          <td>${escapeHtml(row.song || '-')}</td>
+          <td>${escapeHtml(row.message || '-')}</td>
         </tr>
       `;
     }).join('');
@@ -735,7 +735,7 @@ export default function AdminRSVPs() {
                   ? 'Checking current status…'
                   : rsvpOpen
                     ? 'Guests can currently submit the RSVP form.'
-                    : 'The RSVP form is closed — guests cannot submit.'}
+                    : 'The RSVP form is closed. Guests cannot submit.'}
               </p>
             </div>
           </div>
@@ -941,7 +941,7 @@ export default function AdminRSVPs() {
           <p className="font-sans text-xs text-white/40">
             {bulkMode === 'pick'
               ? `Sending to ${selectedEmails.length} selected guest${selectedEmails.length === 1 ? '' : 's'}.`
-              : 'Each guest gets their own copy — never a group/BCC email.'}
+              : 'Each guest gets their own copy, never a group/BCC email.'}
           </p>
           <button
             type="submit"

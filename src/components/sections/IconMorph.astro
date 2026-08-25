@@ -1,0 +1,106 @@
+---
+/**
+ * Pinned GSAP + MorphSVG icon morph.
+ * A single line-icon morphs from `from` -> `to` as you scroll (e.g. plane ->
+ * car), with the caption cross-fading. Maroon stage. Reusable.
+ */
+interface Props {
+  from: string;
+  to: string;
+  fromLabel?: string;
+  toLabel?: string;
+  eyebrow?: string;
+}
+const { from, to, fromLabel, toLabel, eyebrow } = Astro.props;
+---
+
+<section class="icon-morph relative w-full bg-[#4a2826]" style="height:220vh">
+  <div
+    class="im-pin sticky top-0 flex h-[100svh] w-full flex-col items-center justify-center overflow-hidden bg-[#4a2826] px-6 text-center"
+  >
+    <div
+      class="pointer-events-none absolute inset-0 opacity-70"
+      style="background: radial-gradient(60% 50% at 50% 45%, rgba(160,120,30,0.16), transparent 70%);"
+      aria-hidden="true"
+    >
+    </div>
+
+    {
+      eyebrow && (
+        <p class="im-eyebrow relative mb-10 font-sans text-[10px] font-semibold uppercase tracking-[0.5em] text-[#e6c787]/70">
+          {eyebrow}
+        </p>
+      )
+    }
+
+    <svg
+      class="relative h-40 w-40 md:h-56 md:w-56"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#e6c787"
+      stroke-width="0.9"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path class="im-path" d={from} data-to={to}></path>
+    </svg>
+
+    <div class="relative mt-12 h-10 w-full">
+      <p
+        class="im-cap absolute inset-x-0 font-[family-name:var(--font-family-script)] text-4xl text-[#f5ead9] md:text-5xl"
+        data-i="0"
+      >
+        {fromLabel}
+      </p>
+      <p
+        class="im-cap absolute inset-x-0 font-[family-name:var(--font-family-script)] text-4xl text-[#f5ead9] md:text-5xl"
+        data-i="1"
+        style="opacity:0"
+      >
+        {toLabel}
+      </p>
+    </div>
+  </div>
+</section>
+
+<script>
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { MorphSVGPlugin } from "gsap/MorphSVGPlugin";
+
+  gsap.registerPlugin(ScrollTrigger, MorphSVGPlugin);
+
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  document.querySelectorAll<HTMLElement>(".icon-morph").forEach((section) => {
+    const path = section.querySelector<SVGPathElement>(".im-path");
+    const caps = gsap.utils.toArray<HTMLElement>(section.querySelectorAll(".im-cap"));
+    if (!path) return;
+    const toD = path.dataset.to;
+    if (!toD) return;
+
+    if (reduce) return;
+
+    const tl = gsap.timeline({
+      defaults: { ease: "none" },
+      scrollTrigger: {
+        trigger: section,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 0.6,
+      },
+    });
+
+    // Hold on the plane, morph to the car, hold on the car.
+    tl.to({}, { duration: 0.35 });
+    tl.to(path, { morphSVG: toD, duration: 1, ease: "power2.inOut" });
+    tl.to({}, { duration: 0.35 });
+
+    // Cross-fade the captions across the morph.
+    if (caps[0]) tl.to(caps[0], { autoAlpha: 0, duration: 0.4 }, 0.5);
+    if (caps[1]) tl.to(caps[1], { autoAlpha: 1, duration: 0.4 }, "<");
+  });
+
+  window.addEventListener("load", () => ScrollTrigger.refresh());
+</script>

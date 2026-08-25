@@ -131,7 +131,7 @@ export default function ScratchHearts() {
           className="mt-1 text-center font-serif text-xl leading-tight text-[#5A321A] transition-opacity duration-500 md:text-2xl"
           style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: cleared ? 1 : 0.85 }}
         >
-          16<span className="text-[#8b6914]">—</span>20 December 2026
+          16 <span className="text-[#8b6914]">to</span> 20 December 2026
         </p>
         <p className="mt-1 font-sans text-[8px] uppercase tracking-[0.4em] text-[#8b6914]/80">Marrakech · Morocco</p>
       </div>
