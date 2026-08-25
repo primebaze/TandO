@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import confetti from 'canvas-confetti';
 import { supabase } from '../../lib/supabase';
 
@@ -63,6 +63,15 @@ export default function RSVPForm() {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // null = still checking. Registration can be closed by the couple from /admin.
+  const [rsvpOpen, setRsvpOpen] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    supabase.rpc('get_rsvp_open').then(({ data, error: openError }) => {
+      // Fail open — never block a genuine guest because the check failed.
+      setRsvpOpen(openError ? true : data !== false);
+    });
+  }, []);
 
   function addCompanion(type: 'adult' | 'child') {
     setCompanions((prev) => [...prev, newCompanion(type)]);
@@ -158,6 +167,49 @@ export default function RSVPForm() {
     } finally {
       setSubmitting(false);
     }
+  }
+
+  if (rsvpOpen === false) {
+    return (
+      <div className={`${sectionCls} text-center`}>
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-[#e6c787]/40 bg-[#e6c787]/10">
+          <svg
+            className="h-6 w-6 text-[#e6c787]"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M12 8v5M12 16.5v.01" />
+            <circle cx="12" cy="12" r="9" />
+          </svg>
+        </div>
+        <p
+          className="mt-6 font-normal text-5xl text-[#e6c787]"
+          style={{ fontFamily: "var(--font-family-script), 'Great Vibes', cursive" }}
+        >
+          RSVPs are closed
+        </p>
+        <p className="mt-3 font-serif text-base font-light italic leading-relaxed text-white/85 md:text-lg">
+          Thank you to everyone who replied — our guest list is now final.
+        </p>
+        <p className="mt-4 font-serif text-base font-light leading-relaxed text-white/70">
+          If you still need to reach us, please contact Etal Events on{' '}
+          <a href="tel:+2348107368766" className="text-[#e6c787] underline-offset-4 hover:underline">
+            +234 810 736 8766
+          </a>
+          .
+        </p>
+        <a
+          href="/"
+          className="mt-8 inline-flex min-h-11 items-center justify-center rounded-full border border-white/25 bg-white/5 px-7 font-sans text-[10px] font-semibold uppercase tracking-[0.32em] text-white transition hover:bg-white/10"
+        >
+          Homepage
+        </a>
+      </div>
+    );
   }
 
   if (done) {

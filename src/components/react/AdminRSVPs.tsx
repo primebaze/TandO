@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { ChevronLeft, ChevronRight, Download, LockKeyhole, Mail, RefreshCw, Search, Send, Trash2, UsersRound } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { ChevronLeft, ChevronRight, Download, LockKeyhole, Mail, Power, RefreshCw, Search, Send, Trash2, UserPlus, UsersRound } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 type Companion = {
@@ -24,6 +24,22 @@ type RSVPRow = {
   notification_email: string;
   submitted_at: string;
   created_at: string;
+};
+
+type Contact = {
+  id: string;
+  email: string;
+  name: string | null;
+  created_at: string;
+};
+
+// A single addressable person in the email picker — an RSVP or a manual contact.
+type PickTarget = {
+  email: string;
+  name: string;
+  badge: 'Attending' | 'Declined' | 'Added';
+  when: string;
+  sortAt: number;
 };
 
 type Filter = 'all' | 'yes' | 'no';
@@ -104,13 +120,23 @@ export default function AdminRSVPs() {
   const [pwMessage, setPwMessage] = useState<{ ok: boolean; text: string } | null>(null);
   const [bulkSubject, setBulkSubject] = useState('');
   const [bulkMessage, setBulkMessage] = useState('');
-  const [bulkAudience, setBulkAudience] = useState<'all' | 'attending' | 'declined'>('all');
+  const [bulkAudience, setBulkAudience] = useState<'all' | 'attending' | 'declined' | 'contacts'>('all');
   const [bulkSending, setBulkSending] = useState(false);
   const [bulkResult, setBulkResult] = useState<{ ok: boolean; text: string } | null>(null);
   // 'group' = everyone in the chosen audience · 'pick' = hand-picked guests
   const [bulkMode, setBulkMode] = useState<'group' | 'pick'>('group');
   const [selectedEmails, setSelectedEmails] = useState<string[]>([]);
   const [pickerSearch, setPickerSearch] = useState('');
+  // RSVP registration open/closed
+  const [rsvpOpen, setRsvpOpen] = useState<boolean | null>(null);
+  const [rsvpToggling, setRsvpToggling] = useState(false);
+  const [rsvpMessage, setRsvpMessage] = useState<{ ok: boolean; text: string } | null>(null);
+  // Manually-added email contacts (people who never RSVP'd)
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [contactEmail, setContactEmail] = useState('');
+  const [contactName, setContactName] = useState('');
+  const [contactSaving, setContactSaving] = useState(false);
+  const [contactMessage, setContactMessage] = useState<{ ok: boolean; text: string } | null>(null);
 
   const stats = useMemo(() => {
     const attending = rows.filter((row) => row.attending === 'yes');
@@ -132,17 +158,34 @@ export default function AdminRSVPs() {
     return rows.filter((row) => row.attending === filter);
   }, [filter, rows]);
 
-  // Guest picker — newest RSVPs first so late replies are easy to find.
-  const pickerRows = useMemo(() => {
+  // Guest picker — RSVPs plus manually-added contacts, newest first so late
+  // replies (and people just added by hand) are easy to find.
+  const pickerRows = useMemo<PickTarget[]>(() => {
+    const fromRsvps: PickTarget[] = rows.map((row) => ({
+      email: row.email.trim().toLowerCase(),
+      name: fullName(row),
+      badge: row.attending === 'yes' ? 'Attending' : 'Declined',
+      when: formatDate(row.submitted_at),
+      sortAt: new Date(row.submitted_at).getTime(),
+    }));
+
+    const rsvpEmails = new Set(fromRsvps.map((t) => t.email));
+    const fromContacts: PickTarget[] = contacts
+      .map((contact) => ({
+        email: contact.email.trim().toLowerCase(),
+        name: contact.name || contact.email,
+        badge: 'Added' as const,
+        when: formatDate(contact.created_at),
+        sortAt: new Date(contact.created_at).getTime(),
+      }))
+      .filter((t) => !rsvpEmails.has(t.email));
+
+    const merged = [...fromRsvps, ...fromContacts].sort((a, b) => b.sortAt - a.sortAt);
+
     const term = pickerSearch.trim().toLowerCase();
-    const sorted = [...rows].sort(
-      (a, b) => new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime(),
-    );
-    if (!term) return sorted;
-    return sorted.filter((row) =>
-      `${fullName(row)} ${row.email}`.toLowerCase().includes(term),
-    );
-  }, [rows, pickerSearch]);
+    if (!term) return merged;
+    return merged.filter((t) => `${t.name} ${t.email}`.toLowerCase().includes(term));
+  }, [rows, contacts, pickerSearch]);
 
   function toggleRecipient(email: string) {
     const key = email.trim().toLowerCase();
@@ -152,8 +195,101 @@ export default function AdminRSVPs() {
   }
 
   function selectShown() {
-    const shown = pickerRows.map((row) => row.email.trim().toLowerCase());
+    const shown = pickerRows.map((t) => t.email);
     setSelectedEmails((prev) => Array.from(new Set([...prev, ...shown])));
+  }
+
+  // ---- RSVP registration open/closed ----
+  useEffect(() => {
+    supabase.rpc('get_rsvp_open').then(({ data, error: openError }) => {
+      if (!openError) setRsvpOpen(data === true);
+    });
+  }, []);
+
+  async function toggleRsvpOpen() {
+    setRsvpMessage(null);
+    if (!accessCode.trim()) {
+      setRsvpMessage({ ok: false, text: 'Enter the admin access code above first.' });
+      return;
+    }
+    const next = !rsvpOpen;
+    if (
+      !confirm(
+        next
+          ? 'Re-open RSVP registration? Guests will be able to submit the form again.'
+          : 'Close RSVP registration? Guests will no longer be able to submit the RSVP form.',
+      )
+    )
+      return;
+
+    setRsvpToggling(true);
+    const { data, error: toggleError } = await supabase.rpc('set_rsvp_open', {
+      p_access_code: accessCode.trim(),
+      p_open: next,
+    });
+    setRsvpToggling(false);
+
+    if (toggleError) {
+      setRsvpMessage({ ok: false, text: toggleError.message || 'Could not update RSVP status.' });
+      return;
+    }
+    setRsvpOpen(data === true);
+    setRsvpMessage({
+      ok: true,
+      text: data === true ? 'RSVP registration is now OPEN.' : 'RSVP registration is now CLOSED.',
+    });
+  }
+
+  // ---- Manually-added email contacts ----
+  async function loadContacts(code: string) {
+    const { data, error: contactsError } = await supabase.rpc('get_email_contacts', {
+      p_access_code: code,
+    });
+    if (!contactsError) setContacts((data ?? []) as Contact[]);
+  }
+
+  async function addContact(event: React.FormEvent) {
+    event.preventDefault();
+    setContactMessage(null);
+
+    if (!accessCode.trim()) {
+      setContactMessage({ ok: false, text: 'Enter the admin access code above first.' });
+      return;
+    }
+    if (!contactEmail.trim()) {
+      setContactMessage({ ok: false, text: 'Enter an email address.' });
+      return;
+    }
+
+    setContactSaving(true);
+    const { error: addError } = await supabase.rpc('add_email_contact', {
+      p_access_code: accessCode.trim(),
+      p_email: contactEmail.trim(),
+      p_name: contactName.trim() || null,
+    });
+    setContactSaving(false);
+
+    if (addError) {
+      setContactMessage({ ok: false, text: addError.message || 'Could not add the contact.' });
+      return;
+    }
+    setContactMessage({ ok: true, text: `${contactEmail.trim()} added.` });
+    setContactEmail('');
+    setContactName('');
+    loadContacts(accessCode.trim());
+  }
+
+  async function deleteContact(id: string, email: string) {
+    if (!confirm(`Remove ${email} from the manual email list?`)) return;
+    const { error: delError } = await supabase.rpc('delete_email_contact', {
+      p_access_code: accessCode.trim(),
+      p_id: id,
+    });
+    if (delError) {
+      setContactMessage({ ok: false, text: delError.message || 'Could not remove the contact.' });
+      return;
+    }
+    setContacts((prev) => prev.filter((c) => c.id !== id));
   }
 
   const totalPages = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE));
@@ -192,6 +328,7 @@ export default function AdminRSVPs() {
     } else {
       setRows((data ?? []) as RSVPRow[]);
       setCurrentPage(1);
+      loadContacts(accessCode.trim());
     }
     setLoading(false);
   }
@@ -249,10 +386,12 @@ export default function AdminRSVPs() {
       bulkMode === 'pick'
         ? `${selectedEmails.length} selected guest${selectedEmails.length === 1 ? '' : 's'}`
         : bulkAudience === 'all'
-          ? "everyone who has RSVP'd"
+          ? "everyone who has RSVP'd, plus your added contacts"
           : bulkAudience === 'attending'
             ? 'guests who are attending'
-            : 'guests who declined';
+            : bulkAudience === 'declined'
+              ? 'guests who declined'
+              : 'your manually-added contacts';
     if (
       !confirm(
         `Send this email to ${who}? Each person receives their own individual copy — this cannot be undone.`,
@@ -580,6 +719,57 @@ export default function AdminRSVPs() {
         )}
       </form>
 
+      {/* RSVP registration on/off */}
+      <div className="rounded-[1.75rem] border border-white/12 bg-white/[0.04] p-5 shadow-[0_28px_90px_rgba(0,0,0,0.22)] backdrop-blur-xl md:p-6">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center gap-3">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#e6c787]/25 bg-[#e6c787]/10 text-[#e6c787]">
+              <Power className="h-4 w-4" />
+            </span>
+            <div>
+              <label className="block font-sans text-[10px] font-semibold uppercase tracking-[0.34em] text-white/55">
+                RSVP registration
+              </label>
+              <p className="mt-1 font-sans text-xs text-white/40">
+                {rsvpOpen === null
+                  ? 'Checking current status…'
+                  : rsvpOpen
+                    ? 'Guests can currently submit the RSVP form.'
+                    : 'The RSVP form is closed — guests cannot submit.'}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <span
+              className={`inline-flex rounded-full px-3 py-1.5 font-sans text-[10px] font-semibold uppercase tracking-[0.22em] ${
+                rsvpOpen === null
+                  ? 'bg-white/10 text-white/50'
+                  : rsvpOpen
+                    ? 'bg-emerald-400/15 text-emerald-200'
+                    : 'bg-red-400/15 text-red-200'
+              }`}
+            >
+              {rsvpOpen === null ? '…' : rsvpOpen ? 'Open' : 'Closed'}
+            </span>
+            <button
+              type="button"
+              onClick={toggleRsvpOpen}
+              disabled={rsvpToggling || rsvpOpen === null}
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[#e6c787]/40 bg-[#e6c787]/10 px-6 font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-[#e6c787] transition hover:bg-[#e6c787]/20 disabled:opacity-60"
+            >
+              {rsvpToggling ? <RefreshCw className="h-3.5 w-3.5 animate-spin" /> : <Power className="h-3.5 w-3.5" />}
+              {rsvpToggling ? 'Saving' : rsvpOpen ? 'Close RSVPs' : 'Open RSVPs'}
+            </button>
+          </div>
+        </div>
+        {rsvpMessage && (
+          <p className={`mt-3 font-sans text-sm ${rsvpMessage.ok ? 'text-emerald-200' : 'text-red-200'}`}>
+            {rsvpMessage.text}
+          </p>
+        )}
+      </div>
+
       {/* Email all RSVPs */}
       <form
         onSubmit={sendBulkEmail}
@@ -623,9 +813,10 @@ export default function AdminRSVPs() {
         {bulkMode === 'group' ? (
           <div className="mt-3 flex flex-wrap gap-2">
             {[
-              { label: 'All RSVPs', value: 'all' as const },
+              { label: 'Everyone', value: 'all' as const },
               { label: 'Attending', value: 'attending' as const },
               { label: 'Declined', value: 'declined' as const },
+              { label: 'Added contacts', value: 'contacts' as const },
             ].map((option) => (
               <button
                 key={option.value}
@@ -643,7 +834,7 @@ export default function AdminRSVPs() {
           </div>
         ) : (
           <div className="mt-3 rounded-2xl border border-white/12 bg-white/[0.03] p-4">
-            {!rows.length ? (
+            {!rows.length && !contacts.length ? (
               <p className="font-sans text-sm text-white/50">
                 Load the RSVPs above first, then pick who to email.
               </p>
@@ -677,16 +868,15 @@ export default function AdminRSVPs() {
                 </div>
 
                 <p className="mt-3 font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-[#e6c787]">
-                  {selectedEmails.length} selected · newest RSVPs first
+                  {selectedEmails.length} selected · newest first
                 </p>
 
                 <div className="mt-3 max-h-72 space-y-1.5 overflow-y-auto pr-1">
-                  {pickerRows.map((row) => {
-                    const key = row.email.trim().toLowerCase();
-                    const checked = selectedEmails.includes(key);
+                  {pickerRows.map((target) => {
+                    const checked = selectedEmails.includes(target.email);
                     return (
                       <label
-                        key={row.id}
+                        key={target.email}
                         className={`flex cursor-pointer items-center gap-3 rounded-xl border px-3 py-2.5 transition ${
                           checked
                             ? 'border-[#e6c787]/45 bg-[#e6c787]/10'
@@ -696,32 +886,34 @@ export default function AdminRSVPs() {
                         <input
                           type="checkbox"
                           checked={checked}
-                          onChange={() => toggleRecipient(row.email)}
+                          onChange={() => toggleRecipient(target.email)}
                           className="h-4 w-4 flex-shrink-0 accent-[#e6c787]"
                         />
                         <span className="min-w-0 flex-1">
                           <span className="block truncate font-serif text-base text-white">
-                            {fullName(row)}
+                            {target.name}
                           </span>
                           <span className="block truncate font-sans text-xs text-white/45">
-                            {row.email} · {formatDate(row.submitted_at)}
+                            {target.email} · {target.when}
                           </span>
                         </span>
                         <span
                           className={`flex-shrink-0 rounded-full px-2.5 py-1 font-sans text-[9px] font-semibold uppercase tracking-[0.18em] ${
-                            row.attending === 'yes'
+                            target.badge === 'Attending'
                               ? 'bg-[#e6c787]/12 text-[#e6c787]'
-                              : 'bg-white/10 text-white/60'
+                              : target.badge === 'Added'
+                                ? 'bg-sky-400/12 text-sky-200'
+                                : 'bg-white/10 text-white/60'
                           }`}
                         >
-                          {row.attending === 'yes' ? 'Attending' : 'Declined'}
+                          {target.badge}
                         </span>
                       </label>
                     );
                   })}
                   {!pickerRows.length && (
                     <p className="py-4 text-center font-sans text-sm text-white/45">
-                      No guests match that search.
+                      No one matches that search.
                     </p>
                   )}
                 </div>
@@ -764,6 +956,92 @@ export default function AdminRSVPs() {
           <p className={`mt-3 font-sans text-sm ${bulkResult.ok ? 'text-emerald-200' : 'text-red-200'}`}>
             {bulkResult.text}
           </p>
+        )}
+      </form>
+
+      {/* Manually-added email contacts */}
+      <form
+        onSubmit={addContact}
+        className="rounded-[1.75rem] border border-white/12 bg-white/[0.04] p-5 shadow-[0_28px_90px_rgba(0,0,0,0.22)] backdrop-blur-xl md:p-6"
+      >
+        <div className="flex items-center gap-3">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#e6c787]/25 bg-[#e6c787]/10 text-[#e6c787]">
+            <UserPlus className="h-4 w-4" />
+          </span>
+          <div>
+            <label className="block font-sans text-[10px] font-semibold uppercase tracking-[0.34em] text-white/55">
+              Add email contacts
+            </label>
+            <p className="mt-1 font-sans text-xs text-white/40">
+              Email people who haven't RSVP'd. Added contacts appear in the picker above.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-4 flex flex-col gap-3 md:flex-row">
+          <input
+            value={contactEmail}
+            onChange={(event) => setContactEmail(event.target.value)}
+            type="email"
+            placeholder="Email address"
+            className={inputCls}
+          />
+          <input
+            value={contactName}
+            onChange={(event) => setContactName(event.target.value)}
+            type="text"
+            placeholder="Name (optional)"
+            className={inputCls}
+          />
+          <button
+            type="submit"
+            disabled={contactSaving}
+            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[#e6c787]/40 bg-[#e6c787]/10 px-6 font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-[#e6c787] transition hover:bg-[#e6c787]/20 disabled:opacity-60"
+          >
+            {contactSaving ? <RefreshCw className="h-3.5 w-3.5 animate-spin" /> : <UserPlus className="h-3.5 w-3.5" />}
+            {contactSaving ? 'Adding' : 'Add'}
+          </button>
+        </div>
+
+        {contactMessage && (
+          <p className={`mt-3 font-sans text-sm ${contactMessage.ok ? 'text-emerald-200' : 'text-red-200'}`}>
+            {contactMessage.text}
+          </p>
+        )}
+
+        {!!contacts.length && (
+          <div className="mt-5">
+            <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-white/45">
+              {contacts.length} added contact{contacts.length === 1 ? '' : 's'}
+            </p>
+            <div className="mt-3 max-h-56 space-y-1.5 overflow-y-auto pr-1">
+              {contacts.map((contact) => (
+                <div
+                  key={contact.id}
+                  className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5"
+                >
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate font-serif text-base text-white">
+                      {contact.name || contact.email}
+                    </span>
+                    {!!contact.name && (
+                      <span className="block truncate font-sans text-xs text-white/45">
+                        {contact.email}
+                      </span>
+                    )}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => deleteContact(contact.id, contact.email)}
+                    title="Remove contact"
+                    className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-red-400/20 bg-red-400/10 text-red-300 transition hover:bg-red-400/25 hover:text-red-200"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
         )}
       </form>
 

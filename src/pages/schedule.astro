@@ -2,7 +2,18 @@
 import GatedLayout from "../layouts/GatedLayout.astro";
 import ArchHero from "../components/sections/ArchHero.astro";
 
-const days = [
+type Day = {
+  date: string;
+  title: string;
+  body: string;
+  intro?: string;
+  venue?: string;
+  address?: string;
+  time?: string;
+  note?: string;
+};
+
+const days: Day[] = [
   {
     date: "16th December 2026",
     title: "Welcome & Arrivals",
@@ -12,6 +23,10 @@ const days = [
     date: "17th December 2026",
     title: "Traditional Welcome Party",
     body: "One of the most special moments of our celebration. Join us for our Nigerian Traditional Wedding, filled with rich culture, vibrant attire, music, and unforgettable energy.",
+    venue: "Luxury Villa (PF - AY)",
+    address: "KM17 Route D’Amezmiz, Marrakech, Tameslouht 40000",
+    time: "3:30 PM",
+    note: "Complimentary transfers to the Traditional Wedding will be provided for guests staying at the host hotel, Le Méridien N’Fis.",
   },
   {
     date: "18th December 2026",
@@ -21,7 +36,10 @@ const days = [
   {
     date: "19th December 2026",
     title: "White Wedding & Reception",
-    body: "Our special day. Celebrate with us as we say “I do”, followed by a beautiful reception and an unforgettable afterparty.",
+    body: "Our special day. Celebrate with us as we say “I do”, followed by a beautiful reception and an unforgettable after-party.",
+    intro: "The wedding will take place in the ballroom of the host hotel, Le Méridien N’Fis.",
+    address: "Bd Mohamed VI, Marrakech 40000, Morocco",
+    time: "4:30 PM",
   },
   {
     date: "20th December 2026",
@@ -102,6 +120,47 @@ const dressCode = [
                   <p class="mt-4 max-w-2xl font-serif text-lg leading-relaxed text-[#5d574a]">
                     {day.body}
                   </p>
+                  {day.intro && (
+                    <p class="mt-3 max-w-2xl font-serif text-lg leading-relaxed text-[#5d574a]">
+                      {day.intro}
+                    </p>
+                  )}
+                  {(day.venue || day.address || day.time) && (
+                    <div class="mt-6 grid gap-5 rounded-[1.25rem] border border-[var(--color-gold)]/15 bg-[var(--color-gold)]/[0.05] p-5 sm:grid-cols-[1fr_auto]">
+                      {(day.venue || day.address) && (
+                        <div>
+                          <p class="font-sans text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-gold)]">
+                            Location
+                          </p>
+                          {day.venue && (
+                            <p class="mt-2 font-serif text-lg font-semibold text-[var(--color-charcoal)]">
+                              {day.venue}
+                            </p>
+                          )}
+                          {day.address && (
+                            <p class="mt-1 font-serif text-base leading-relaxed text-[#5d574a]">
+                              {day.address}
+                            </p>
+                          )}
+                        </div>
+                      )}
+                      {day.time && (
+                        <div class="sm:text-right">
+                          <p class="font-sans text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-gold)]">
+                            Time
+                          </p>
+                          <p class="mt-2 font-serif text-2xl font-semibold text-[var(--color-charcoal)]">
+                            {day.time}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {day.note && (
+                    <p class="mt-4 max-w-2xl font-serif text-base italic leading-relaxed text-[#5d574a]/90">
+                      {day.note}
+                    </p>
+                  )}
                 </div>
               </li>
             ))
