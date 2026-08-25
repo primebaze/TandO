@@ -7,9 +7,12 @@ import PasswordGate from "../components/react/PasswordGate";
 interface Props {
   title?: string;
   description?: string;
+  /** Render the shared SiteNav + SiteFooter. Pages with their own layout
+   *  (e.g. /location) opt out and get only the password gate. */
+  chrome?: boolean;
 }
 
-const { title, description } = Astro.props;
+const { title, description, chrome = true } = Astro.props;
 ---
 
 <BaseLayout title={title} description={description}>
@@ -27,9 +30,9 @@ const { title, description } = Astro.props;
   <PasswordGate client:load />
 
   <div class="gated-content">
-    <SiteNav />
+    {chrome && <SiteNav />}
     <slot />
-    <SiteFooter />
+    {chrome && <SiteFooter />}
   </div>
 
   {/* Smooth (Lenis) scrolling + GSAP scroll-triggered reveals */}

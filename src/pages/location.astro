@@ -1,10 +1,11 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
+import GatedLayout from "../layouts/GatedLayout.astro";
 ---
 
-<BaseLayout
+<GatedLayout
   title="Location · Tayo & Ope"
   description="Marrakech, Morocco: the destination for our wedding celebration."
+  chrome={false}
 >
   <main class="relative min-h-[100svh] overflow-hidden bg-[#0c0a08] text-white">
     <video
@@ -297,4 +298,4 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       </section>
     </div>
   </main>
-</BaseLayout>
+</GatedLayout>
