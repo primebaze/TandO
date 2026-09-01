@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ChevronLeft, ChevronRight, Download, LockKeyhole, Mail, Power, RefreshCw, Search, Send, Trash2, UserPlus, UsersRound } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Download, FileText, LockKeyhole, Mail, Power, RefreshCw, Search, Send, Trash2, Upload, UserPlus, UsersRound } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 type Companion = {
@@ -23,6 +23,13 @@ type RSVPRow = {
   message: string | null;
   notification_email: string;
   submitted_at: string;
+  created_at: string;
+};
+
+type GuestFile = {
+  path: string;
+  url: string;
+  size: number;
   created_at: string;
 };
 
@@ -137,6 +144,13 @@ export default function AdminRSVPs() {
   const [contactName, setContactName] = useState('');
   const [contactSaving, setContactSaving] = useState(false);
   const [contactMessage, setContactMessage] = useState<{ ok: boolean; text: string } | null>(null);
+  // Guest PDFs — uploaded once, sent as a download button in emails.
+  const [files, setFiles] = useState<GuestFile[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const [fileMessage, setFileMessage] = useState<{ ok: boolean; text: string } | null>(null);
+  // '' = send a normal email with no download button (the default).
+  const [bulkFileUrl, setBulkFileUrl] = useState('');
+  const [bulkFileLabel, setBulkFileLabel] = useState('');
 
   const stats = useMemo(() => {
     const attending = rows.filter((row) => row.attending === 'yes');
@@ -240,6 +254,68 @@ export default function AdminRSVPs() {
     });
   }
 
+  // ---- Guest PDFs ----
+  async function loadFiles(code: string) {
+    const { data, error: filesError } = await supabase.functions.invoke('guest-files', {
+      body: { access_code: code, action: 'list' },
+    });
+    if (!filesError && data?.files) setFiles(data.files as GuestFile[]);
+  }
+
+  async function uploadFile(file: File) {
+    setFileMessage(null);
+    if (!accessCode.trim()) {
+      setFileMessage({ ok: false, text: 'Enter the admin access code above first.' });
+      return;
+    }
+    if (file.type !== 'application/pdf') {
+      setFileMessage({ ok: false, text: 'Only PDF files can be uploaded.' });
+      return;
+    }
+    if (file.size > 20 * 1024 * 1024) {
+      setFileMessage({ ok: false, text: 'That PDF is larger than 20MB.' });
+      return;
+    }
+
+    setUploading(true);
+    // The browser has no write access to storage — ask the admin function for
+    // a short-lived signed URL, then upload straight to it.
+    const { data, error: signError } = await supabase.functions.invoke('guest-files', {
+      body: { access_code: accessCode.trim(), action: 'sign', filename: file.name },
+    });
+    if (signError || !data?.token) {
+      setUploading(false);
+      setFileMessage({ ok: false, text: data?.error || 'Could not start the upload.' });
+      return;
+    }
+
+    const { error: uploadError } = await supabase.storage
+      .from('guest-files')
+      .uploadToSignedUrl(data.path, data.token, file, { contentType: 'application/pdf' });
+    setUploading(false);
+
+    if (uploadError) {
+      setFileMessage({ ok: false, text: uploadError.message || 'Upload failed.' });
+      return;
+    }
+    setFileMessage({ ok: true, text: `${file.name} uploaded.` });
+    setBulkFileUrl(data.publicUrl);
+    loadFiles(accessCode.trim());
+  }
+
+  async function deleteFile(path: string, url: string) {
+    if (!confirm('Delete this PDF? Any email already sent will stop linking to it.')) return;
+    const { error: delError } = await supabase.functions.invoke('guest-files', {
+      body: { access_code: accessCode.trim(), action: 'delete', path },
+    });
+    if (delError) {
+      setFileMessage({ ok: false, text: 'Could not delete the file.' });
+      return;
+    }
+    setFiles((prev) => prev.filter((f) => f.path !== path));
+    if (bulkFileUrl === url) setBulkFileUrl('');
+  }
+
   // ---- Manually-added email contacts ----
   async function loadContacts(code: string) {
     const { data, error: contactsError } = await supabase.rpc('get_email_contacts', {
@@ -329,6 +405,7 @@ export default function AdminRSVPs() {
       setRows((data ?? []) as RSVPRow[]);
       setCurrentPage(1);
       loadContacts(accessCode.trim());
+      loadFiles(accessCode.trim());
     }
     setLoading(false);
   }
@@ -407,6 +484,7 @@ export default function AdminRSVPs() {
         message: bulkMessage.trim(),
         audience: bulkMode === 'pick' ? 'all' : bulkAudience,
         ...(bulkMode === 'pick' ? { emails: selectedEmails } : {}),
+        ...(bulkFileUrl ? { file_url: bulkFileUrl, file_label: bulkFileLabel.trim() || 'Download the PDF' } : {}),
       },
     });
     setBulkSending(false);
@@ -937,6 +1015,32 @@ export default function AdminRSVPs() {
           className={`${inputCls} mt-3 resize-y`}
         />
 
+        {/* Optional PDF download button. Defaults to none, so a normal email
+            sends exactly as before. */}
+        <div className="mt-3 flex flex-col gap-3 md:flex-row">
+          <select
+            value={bulkFileUrl}
+            onChange={(event) => setBulkFileUrl(event.target.value)}
+            className={inputCls}
+          >
+            <option value="">No PDF (normal email)</option>
+            {files.map((f) => (
+              <option key={f.path} value={f.url}>
+                {f.path.replace(/^\d+-/, '')} ({Math.max(1, Math.round(f.size / 1024))} KB)
+              </option>
+            ))}
+          </select>
+          {!!bulkFileUrl && (
+            <input
+              value={bulkFileLabel}
+              onChange={(event) => setBulkFileLabel(event.target.value)}
+              type="text"
+              placeholder="Button text (default: Download the PDF)"
+              className={inputCls}
+            />
+          )}
+        </div>
+
         <div className="mt-4 flex items-center justify-between gap-3">
           <p className="font-sans text-xs text-white/40">
             {bulkMode === 'pick'
@@ -958,6 +1062,87 @@ export default function AdminRSVPs() {
           </p>
         )}
       </form>
+
+      {/* Guest PDFs */}
+      <div className="rounded-[1.75rem] border border-white/12 bg-white/[0.04] p-5 shadow-[0_28px_90px_rgba(0,0,0,0.22)] backdrop-blur-xl md:p-6">
+        <div className="flex items-center gap-3">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#e6c787]/25 bg-[#e6c787]/10 text-[#e6c787]">
+            <FileText className="h-4 w-4" />
+          </span>
+          <div>
+            <label className="block font-sans text-[10px] font-semibold uppercase tracking-[0.34em] text-white/55">
+              Guest documents
+            </label>
+            <p className="mt-1 font-sans text-xs text-white/40">
+              Upload a PDF (max 20MB), then pick it above to add a download button to an email.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <label
+            className={`inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-xl border border-[#e6c787]/40 bg-[#e6c787]/10 px-6 font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-[#e6c787] transition hover:bg-[#e6c787]/20 ${
+              uploading ? 'pointer-events-none opacity-60' : ''
+            }`}
+          >
+            {uploading ? <RefreshCw className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
+            {uploading ? 'Uploading' : 'Upload PDF'}
+            <input
+              type="file"
+              accept="application/pdf"
+              className="hidden"
+              onChange={(event) => {
+                const file = event.target.files?.[0];
+                if (file) uploadFile(file);
+                event.target.value = '';
+              }}
+            />
+          </label>
+        </div>
+
+        {fileMessage && (
+          <p className={`mt-3 font-sans text-sm ${fileMessage.ok ? 'text-emerald-200' : 'text-red-200'}`}>
+            {fileMessage.text}
+          </p>
+        )}
+
+        {!!files.length && (
+          <div className="mt-5 max-h-56 space-y-1.5 overflow-y-auto pr-1">
+            {files.map((f) => (
+              <div
+                key={f.path}
+                className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5"
+              >
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate font-serif text-base text-white">
+                    {f.path.replace(/^\d+-/, '')}
+                  </span>
+                  <span className="block truncate font-sans text-xs text-white/45">
+                    {Math.max(1, Math.round(f.size / 1024))} KB · {formatDate(f.created_at)}
+                  </span>
+                </span>
+                <a
+                  href={f.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  title="Open PDF"
+                  className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-white/16 bg-white/[0.05] text-white/70 transition hover:bg-white/10 hover:text-white"
+                >
+                  <Download className="h-3.5 w-3.5" />
+                </a>
+                <button
+                  type="button"
+                  onClick={() => deleteFile(f.path, f.url)}
+                  title="Delete PDF"
+                  className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-red-400/20 bg-red-400/10 text-red-300 transition hover:bg-red-400/25 hover:text-red-200"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Manually-added email contacts */}
       <form

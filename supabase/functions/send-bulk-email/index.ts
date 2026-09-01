@@ -23,7 +23,7 @@ function escapeHtml(value: string) {
 }
 
 // img1-style: ornate floral vault arch, blush panel, mirrored arch footer.
-function buildHtml(name: string, subject: string, message: string) {
+function buildHtml(name: string, subject: string, message: string, fileUrl?: string, fileLabel?: string) {
   const greeting = name ? `Dear ${escapeHtml(name)},` : 'Dear guest,';
   const body = escapeHtml(message)
     .split(/\n{2,}/)
@@ -32,6 +32,16 @@ function buildHtml(name: string, subject: string, message: string) {
         `<p style="margin:0 0 16px;font-family:Georgia,serif;font-size:15px;color:#5c3b30;line-height:1.9;">${p.replace(/\n/g, '<br />')}</p>`,
     )
     .join('');
+
+  const downloadBlock = fileUrl
+    ? `<tr><td align="center" style="padding:6px 48px 22px;">
+          <table cellpadding="0" cellspacing="0" style="margin:0 auto;"><tr>
+            <td align="center" style="background-color:#6b2f28;border-radius:999px;">
+              <a href="${fileUrl}" style="display:inline-block;padding:14px 32px;font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#f4e3d5;text-decoration:none;">${escapeHtml(fileLabel || 'Download the PDF')}</a>
+            </td>
+          </tr></table>
+        </td></tr>`
+    : '';
 
   return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1.0" /><meta name="color-scheme" content="light" /><meta name="supported-color-schemes" content="light" /><title>${escapeHtml(subject)}</title><style>:root{color-scheme:light;supported-color-schemes:light;}</style></head>
 <body style="margin:0;padding:0;background-color:#3b211d;">
@@ -54,6 +64,7 @@ function buildHtml(name: string, subject: string, message: string) {
           <p style="margin:0 0 18px;font-family:Georgia,serif;font-size:20px;font-style:italic;color:#6b2f28;">${greeting}</p>
           ${body}
         </td></tr>
+        ${downloadBlock}
         <tr><td style="padding:12px 48px 30px;">
           <p style="margin:0;font-family:Georgia,serif;font-size:25px;color:#6b2f28;line-height:1;">Tayo &amp; Ope</p>
           <p style="margin:8px 0 0;font-family:Arial,sans-serif;font-size:10px;letter-spacing:0.26em;text-transform:uppercase;color:#a8472f;">Marrakech, Morocco &middot; 16&ndash;20 December 2026</p>
@@ -70,22 +81,26 @@ function buildHtml(name: string, subject: string, message: string) {
 </body></html>`;
 }
 
-function buildText(name: string, message: string) {
+function buildText(name: string, message: string, fileUrl?: string, fileLabel?: string) {
   const greeting = name ? `Dear ${name},` : 'Dear guest,';
-  return `${greeting}\n\n${message}\n\nWith love,\nTayo & Ope\nMarrakech, Morocco · 16–20 December 2026\n\nYou're receiving this because you RSVP'd at tothetaros.com. If this wasn't you, please disregard this email.`;
+  const download = fileUrl ? `\n\n${fileLabel || 'Download the PDF'}: ${fileUrl}` : '';
+  return `${greeting}\n\n${message}${download}\n\nWith love,\nTayo & Ope\nMarrakech, Morocco · 16–20 December 2026\n\nYou're receiving this because you RSVP'd at tothetaros.com. If this wasn't you, please disregard this email.`;
 }
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: cors });
   try {
-    const { access_code, subject, message, audience, emails } = (await req.json()) as {
+    const { access_code, subject, message, audience, emails, file_url, file_label } = (await req.json()) as {
       access_code: string;
       subject: string;
       message: string;
-      audience?: 'all' | 'attending' | 'declined';
+      audience?: 'all' | 'attending' | 'declined' | 'contacts';
       // Optional: restrict the send to specific RSVP addresses (one guest or a
       // hand-picked group). Addresses not in the RSVP list are ignored.
       emails?: string[];
+      // Optional PDF download button (file lives in the guest-files bucket).
+      file_url?: string;
+      file_label?: string;
     };
     if (!access_code || !subject?.trim() || !message?.trim()) {
       return new Response(JSON.stringify({ error: 'Missing access code, subject or message.' }), {
@@ -144,8 +159,8 @@ Deno.serve(async (req) => {
         to: [r.email],
         reply_to: REPLY_TO,
         subject: subject.trim(),
-        html: buildHtml(r.name ?? '', subject.trim(), message.trim()),
-        text: buildText(r.name ?? '', message.trim()),
+        html: buildHtml(r.name ?? '', subject.trim(), message.trim(), file_url, file_label),
+        text: buildText(r.name ?? '', message.trim(), file_url, file_label),
       }));
       const res = await fetch('https://api.resend.com/emails/batch', {
         method: 'POST',
